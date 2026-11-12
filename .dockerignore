@@ -1,0 +1,19 @@
+node_modules
+dist
+.git
+.vscode
+.idea
+android
+ios
+*.local
+*.log
+
+# Local settings reach the build through --build-arg only.
+.env
+.env.*
+
+Dockerfile
+docker-compose.yml
+README.md
+deploy.sh
+.github
