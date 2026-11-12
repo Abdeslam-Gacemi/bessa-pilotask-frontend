@@ -37,7 +37,7 @@ error() { echo -e "${RED}[ERROR]${NC} $*" >&2; }
 # ---- Flags -----------------------------------------------------------------
 PULL=true
 FORCE=false
-WEB_ROOT="${WEB_ROOT:-/opt/kiwi/pilotask-web}"
+WEB_ROOT="${WEB_ROOT:-/opt/pilotask/web}"
 PUBLIC_PORT="${PUBLIC_PORT:-${HTTP_PORT:-8013}}"
 RELEASES_KEPT=3
 
@@ -239,7 +239,7 @@ if [ -e "$WEB_ROOT/current" ] && [ ! -L "$WEB_ROOT/current" ]; then
   rm -rf "$WEB_ROOT/current"
 fi
 # The link must be RELATIVE: nginx sees this directory mounted at /srv/web, so
-# an absolute /opt/kiwi/pilotask-web/... target would dangle inside the container and
+# an absolute /opt/pilotask/web/... target would dangle inside the container and
 # every request would fall through to the backend.
 ln -sfn "releases/$STAMP" "$WEB_ROOT/.current.tmp"
 mv -Tf "$WEB_ROOT/.current.tmp" "$WEB_ROOT/current"
@@ -261,7 +261,7 @@ if printf '%s' "$SERVED" | grep -q 'id="app"'; then
 elif [ -z "$SERVED" ]; then
   warn "Nothing answers on http://127.0.0.1:${PUBLIC_PORT}/."
   echo "  The backend stack owns that port; deploy it first:"
-  echo "    cd /opt/kiwi/bessa-pilotask-backend && sudo bash ./deploy.sh"
+  echo "    cd /opt/pilotask/backend && sudo bash ./deploy.sh"
   echo "  The files are published, so it will pick them up as soon as it runs."
 else
   warn "Port ${PUBLIC_PORT} answers, but not with this release - nginx is still"

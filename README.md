@@ -41,7 +41,7 @@ uses logical properties (`ms-`, `pe-`, `start-`…) so Arabic mirrors correctly.
 
 ## Deploy
 
-`sudo bash ./deploy.sh` on the server (after the backend's deploy): builds the app in
-Docker and publishes it to `/opt/kiwi/pilotask-web`, served on port 8013 with `/api` going
+Clone to `/opt/pilotask/frontend`, then `sudo bash ./deploy.sh` (after the backend's deploy): builds the app in
+Docker and publishes it to `/opt/pilotask/web`, served on port 8013 with `/api` going
 to Laravel. Keep `VITE_API_URL` unset (or `/api`) in the server's `.env`.
 Local preview: `docker compose up -d --build` → http://localhost:8093.
