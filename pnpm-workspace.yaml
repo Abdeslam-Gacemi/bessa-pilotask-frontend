@@ -1,0 +1,8 @@
+# pnpm 12 fails the install (ERR_PNPM_IGNORED_BUILDS) when a dependency's build
+# script has no explicit decision here. When pnpm adds a new entry, replace its
+# "set this to true or false" placeholder with true or false.
+allowBuilds:
+  '@firebase/util': true
+  core-js: true
+  esbuild: true
+  protobufjs: true

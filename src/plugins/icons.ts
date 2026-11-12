@@ -1,0 +1,73 @@
+import {
+  BookOpen01Icon,
+  Briefcase01Icon,
+  Bug01Icon,
+  Building03Icon,
+  Calendar03Icon,
+  Camera01Icon,
+  ChartLineData01Icon,
+  ClipboardIcon,
+  CodeIcon,
+  FavouriteIcon,
+  Flag02Icon,
+  Folder01Icon,
+  Globe02Icon,
+  GraduationScrollIcon,
+  House03Icon,
+  Idea01Icon,
+  Leaf01Icon,
+  Mail01Icon,
+  Megaphone01Icon,
+  MoneyBag02Icon,
+  PaintBoardIcon,
+  PuzzleIcon,
+  Rocket01Icon,
+  Settings02Icon,
+  Shield01Icon,
+  ShoppingCart01Icon,
+  StarIcon,
+  Target02Icon,
+  TruckIcon,
+  UserGroupIcon,
+} from "@hugeicons/core-free-icons";
+
+/** Shape of a Hugeicons icon definition. */
+export type Icon = typeof Folder01Icon;
+
+/** Icons a project or table can wear. Keys match config/pilotask.php → table_icons. */
+export const TABLE_ICONS: Record<string, Icon> = {
+  "folder-01": Folder01Icon,
+  "briefcase-01": Briefcase01Icon,
+  "rocket-01": Rocket01Icon,
+  "target-02": Target02Icon,
+  "idea-01": Idea01Icon,
+  "paint-board": PaintBoardIcon,
+  code: CodeIcon,
+  "bug-01": Bug01Icon,
+  "megaphone-01": Megaphone01Icon,
+  "chart-line-data-01": ChartLineData01Icon,
+  "building-03": Building03Icon,
+  "house-03": House03Icon,
+  truck: TruckIcon,
+  "shopping-cart-01": ShoppingCart01Icon,
+  "money-bag-02": MoneyBag02Icon,
+  "user-group": UserGroupIcon,
+  "calendar-03": Calendar03Icon,
+  "mail-01": Mail01Icon,
+  "camera-01": Camera01Icon,
+  "book-open-01": BookOpen01Icon,
+  "graduation-scroll": GraduationScrollIcon,
+  clipboard: ClipboardIcon,
+  "settings-02": Settings02Icon,
+  "flag-02": Flag02Icon,
+  star: StarIcon,
+  favourite: FavouriteIcon,
+  "leaf-01": Leaf01Icon,
+  "globe-02": Globe02Icon,
+  "shield-01": Shield01Icon,
+  puzzle: PuzzleIcon,
+};
+
+export function tableIcon(name: string | null | undefined): Icon {
+  return (name && TABLE_ICONS[name]) || Folder01Icon;
+}
