@@ -18,7 +18,7 @@
 #  Nothing here starts a container or binds a port.
 #
 #  Requirements:
-#    - SSH key "kiwi_app" at <your home>/.ssh/kiwi_app (git pull over SSH)
+#    - deploy key at <your home>/.ssh/pilotask_frontend (git pull over SSH)
 #    - Docker, and the backend stack already deployed (sudo bash deploy.sh
 #      in bessa-pilotask-backend)
 # =============================================================================
@@ -69,7 +69,7 @@ if [ -z "$RUN_HOME" ]; then
   RUN_HOME="$HOME"
 fi
 
-SSH_KEY="$RUN_HOME/.ssh/kiwi_app"
+SSH_KEY="${SSH_KEY:-$RUN_HOME/.ssh/pilotask_frontend}"
 GIT_SSH_CMD="ssh -i $SSH_KEY -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o BatchMode=yes -o ConnectTimeout=15"
 
 info "Preflight checks..."
