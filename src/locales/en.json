@@ -414,7 +414,22 @@
     "accessIntro": "What simple users can see",
     "accessHint": "By default a user only sees their own tasks, and the tables and projects holding them, and is only notified about those. Team visibility can be set here for the whole workspace, then per entity and per table: the table wins, then the entity, then this setting.",
     "teamTasks": "Show teammates’ tasks (read-only)",
-    "teamTasksHint": "In the tables where they have a task, users also see the other tasks, without editing or commenting."
+    "teamTasksHint": "In the tables where they have a task, users also see the other tasks, without editing or commenting.",
+    "install": {
+      "title": "Install Pilotask",
+      "hint": "Add Pilotask to your home screen or desktop: it opens like a real app, full screen.",
+      "action": "Install the app",
+      "done": "Pilotask is installed.",
+      "iosStep1": "Tap",
+      "iosStep2": "then “Add to Home Screen”."
+    },
+    "test": {
+      "title": "Test notifications",
+      "hint": "Sends an alert in the app, by e-mail and to your devices.",
+      "action": "Send a test",
+      "sent": "Test sent: check the app, {mail} and your {n} device(s).",
+      "sentNoDevice": "Test sent in the app and to {mail}. No device is registered for push."
+    }
   },
   "notifications": {
     "title": "Notifications",

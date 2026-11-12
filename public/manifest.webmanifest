@@ -1,0 +1,26 @@
+{
+  "id": "/",
+  "name": "Bessa Pilotask",
+  "short_name": "Pilotask",
+  "description": "Projets, tableaux et tâches de vos équipes.",
+  "lang": "fr",
+  "dir": "auto",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#F3F2EE",
+  "theme_color": "#F3F2EE",
+  "categories": ["productivity", "business"],
+  "icons": [
+    { "src": "/icons/pilotask-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/pilotask-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/pilotask-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/brand/pilotask-app-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ],
+  "shortcuts": [
+    { "name": "Mes tâches", "url": "/my-tasks", "icons": [{ "src": "/icons/pilotask-192.png", "sizes": "192x192" }] },
+    { "name": "Calendrier", "url": "/calendar", "icons": [{ "src": "/icons/pilotask-192.png", "sizes": "192x192" }] },
+    { "name": "Notifications", "url": "/notifications", "icons": [{ "src": "/icons/pilotask-192.png", "sizes": "192x192" }] }
+  ]
+}

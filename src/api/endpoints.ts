@@ -206,6 +206,8 @@ export const notificationsApi = {
     data(http.get<Paginated<AppNotification> & { meta: { unread: number; last_page: number } }>("/notifications", { params: { page, unread: unread ? 1 : 0 } })),
   read: (id: string) => http.post(`/notifications/${id}/read`),
   readAll: () => http.post("/notifications/read-all"),
+  /** Sends the signed-in person a test alert on every channel (inbox, e-mail, push). */
+  test: () => data(http.post<{ devices: number; mail: string }>("/notifications/test")),
   registerDevice: (token: string, platform: "web" | "android" | "ios") => http.post("/device-tokens", { token, platform }),
   unregisterDevice: (token: string) => http.delete("/device-tokens", { data: { token } }),
 };

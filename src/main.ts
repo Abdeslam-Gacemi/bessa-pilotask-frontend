@@ -8,9 +8,11 @@ import { router } from "./router";
 import { stagger } from "./directives/stagger";
 import { media } from "./directives/media";
 import { installBackButton } from "./services/backButton";
+import { registerServiceWorker } from "./services/pwa";
 
 const app = createApp(App).use(createPinia()).use(i18n).use(router);
 app.directive("stagger", stagger);
 app.directive("media", media);
 installBackButton(router);
 app.mount("#app");
+registerServiceWorker();
