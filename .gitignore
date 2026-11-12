@@ -1,0 +1,14 @@
+node_modules
+dist
+.env
+*.local
+android/app/build
+ios/App/Pods
+*.log
+
+# Secrets and signing keys
+.env.*
+!.env.example
+android/app/google-services.json
+*.keystore
+*.jks

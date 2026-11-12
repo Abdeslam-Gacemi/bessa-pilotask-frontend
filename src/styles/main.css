@@ -1,0 +1,570 @@
+@import "tailwindcss";
+@import "@fontsource-variable/plus-jakarta-sans";
+@import "@fontsource-variable/cairo";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Caveat (hand-written accents), self-hosted from /public/fonts. */
+@font-face {
+  font-family: "Caveat";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/caveat-latin-600.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Caveat";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/caveat-latin-ext-600.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/*
+ * Design tokens. Warm paper neutrals and the ink of the Pilotask wordmark,
+ * with the logo's blue as the action colour and its red for alerts.
+ */
+:root {
+  --pt-bg: #f3f2ee;
+  --pt-surface: #ffffff;
+  --pt-surface-2: #f8f7f4;
+  --pt-surface-3: #efede8;
+  --pt-border: #e6e3dc;
+  --pt-ink: #171e23;
+  --pt-text: #171e23;
+  --pt-muted: #6c7277;
+  --pt-subtle: #9aa0a4;
+  --pt-primary: #326899;
+  --pt-primary-soft: #e3eef8;
+  --pt-sky: #53aeff;
+  --pt-danger: #e04047;
+  --pt-danger-soft: #fbe6e7;
+  --pt-success: #22a06b;
+  --pt-success-soft: #e2f4ec;
+  --pt-warning: #e8962e;
+  --pt-warning-soft: #fcefdc;
+  --pt-accent: #dfe7d6;
+  --pt-on-ink: #f6f5f1;
+  --pt-shadow: 0 1px 2px rgb(23 30 35 / 0.04), 0 8px 24px -12px rgb(23 30 35 / 0.12);
+  --pt-shadow-lg: 0 24px 48px -20px rgb(23 30 35 / 0.28);
+  color-scheme: light;
+}
+
+.dark {
+  --pt-bg: #0e1215;
+  --pt-surface: #161c20;
+  --pt-surface-2: #1b2227;
+  --pt-surface-3: #232b31;
+  --pt-border: #2a3238;
+  --pt-ink: #edf2f5;
+  --pt-text: #e8edf0;
+  --pt-muted: #98a2a9;
+  --pt-subtle: #6b757c;
+  --pt-primary: #6bb8ff;
+  --pt-primary-soft: #1b2b3a;
+  --pt-danger: #ff6b70;
+  --pt-danger-soft: #3a1f22;
+  --pt-success: #3ccf8e;
+  --pt-success-soft: #16302a;
+  --pt-warning: #f2b45a;
+  --pt-warning-soft: #352a1a;
+  --pt-accent: #24302a;
+  --pt-on-ink: #0e1215;
+  --pt-shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.5);
+  --pt-shadow-lg: 0 24px 48px -20px rgb(0 0 0 / 0.7);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--pt-bg);
+  --color-surface: var(--pt-surface);
+  --color-surface-2: var(--pt-surface-2);
+  --color-surface-3: var(--pt-surface-3);
+  --color-line: var(--pt-border);
+  --color-ink: var(--pt-ink);
+  --color-fg: var(--pt-text);
+  --color-muted: var(--pt-muted);
+  --color-subtle: var(--pt-subtle);
+  --color-primary: var(--pt-primary);
+  --color-primary-soft: var(--pt-primary-soft);
+  --color-sky: var(--pt-sky);
+  --color-danger: var(--pt-danger);
+  --color-danger-soft: var(--pt-danger-soft);
+  --color-success: var(--pt-success);
+  --color-success-soft: var(--pt-success-soft);
+  --color-warning: var(--pt-warning);
+  --color-warning-soft: var(--pt-warning-soft);
+  --color-accent: var(--pt-accent);
+  --color-on-ink: var(--pt-on-ink);
+  --shadow-soft: var(--pt-shadow);
+  --shadow-float: var(--pt-shadow-lg);
+  --radius-card: 1.25rem;
+  --radius-sheet: 1.75rem;
+  --font-sans: "Plus Jakarta Sans Variable", "Cairo Variable", ui-sans-serif, system-ui, sans-serif;
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --font-hand: "Caveat", "Aref Ruqaa", cursive;
+}
+
+@layer base {
+  html,
+  body,
+  #app {
+    min-height: 100%;
+  }
+  body {
+    @apply bg-bg text-fg font-sans antialiased;
+    -webkit-tap-highlight-color: transparent;
+    font-feature-settings: "ss01", "cv11";
+  }
+  [dir="rtl"] body {
+    font-family: "Cairo Variable", "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--pt-sky) 35%, transparent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--pt-sky);
+    outline-offset: 2px;
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--pt-border) transparent;
+  }
+}
+
+@layer components {
+  .pt-card {
+    @apply bg-surface rounded-card border border-line shadow-soft;
+  }
+  .pt-label {
+    @apply text-xs font-semibold text-muted;
+  }
+  .pt-field {
+    @apply w-full rounded-2xl border border-line bg-surface-2 px-4 py-3 text-sm text-fg outline-none transition placeholder:text-subtle focus:border-sky focus:bg-surface focus:ring-4 focus:ring-sky/15;
+  }
+  .pt-chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1.5 text-xs font-semibold text-fg transition;
+  }
+  .pt-safe-bottom {
+    padding-bottom: max(env(safe-area-inset-bottom), 0.75rem);
+  }
+  .pt-safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  /* Horizontal sliders: keep the page gutter on both ends, also when snapped. */
+  .pt-scroll-x {
+    @apply flex overflow-x-auto snap-x snap-mandatory;
+    scrollbar-width: none;
+    scroll-padding-inline: 1rem;
+  }
+  .pt-scroll-x::after {
+    /* Browsers drop a flex scroller's end padding: this spacer restores it. */
+    content: "";
+    flex: 0 0 1px;
+  }
+  @media (min-width: 48rem) {
+    .pt-scroll-x {
+      scroll-padding-inline: 2rem;
+    }
+  }
+  .pt-scroll-x::-webkit-scrollbar {
+    display: none;
+  }
+  .pt-mark-gradient {
+    background: linear-gradient(135deg, #53aeff 0%, #326899 100%);
+  }
+}
+
+/* Kanban strip: a slim visible scrollbar on desktop (no swipe there). */
+@media (hover: hover) and (pointer: fine) {
+  .pt-scroll-x.pt-kanban-strip {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--pt-ink) 22%, transparent) transparent;
+  }
+  .pt-scroll-x.pt-kanban-strip::-webkit-scrollbar {
+    display: block;
+    height: 8px;
+  }
+  .pt-scroll-x.pt-kanban-strip::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--pt-ink) 22%, transparent);
+  }
+}
+
+/* Rich text produced by the editor (descriptions, comments). */
+.pt-prose {
+  @apply text-sm leading-relaxed text-fg;
+}
+.pt-prose p {
+  @apply my-1.5;
+}
+.pt-prose h1 {
+  @apply mt-3 mb-1 text-lg font-bold;
+}
+.pt-prose h2 {
+  @apply mt-3 mb-1 text-base font-bold;
+}
+.pt-prose h3 {
+  @apply mt-2 mb-1 text-sm font-bold;
+}
+.pt-prose ul {
+  @apply my-1.5 list-disc ps-5;
+}
+.pt-prose ol {
+  @apply my-1.5 list-decimal ps-5;
+}
+.pt-prose blockquote {
+  @apply my-2 border-s-4 border-line ps-3 text-muted;
+}
+.pt-prose code {
+  @apply rounded-md bg-surface-3 px-1.5 py-0.5 text-[0.8em];
+}
+.pt-prose pre {
+  @apply my-2 overflow-x-auto rounded-xl bg-ink p-3 text-on-ink;
+}
+.pt-prose a {
+  @apply text-primary underline underline-offset-2;
+}
+.pt-prose img {
+  @apply my-2 max-h-96 max-w-full rounded-xl border border-line object-contain;
+}
+/* Images still downloading: a shimmering block of the right shape instead of a pop-in. */
+.pt-prose img.pt-img-loading,
+.pt-img-frame img.pt-img-loading {
+  min-width: min(16rem, 100%);
+  min-height: 9rem;
+  color: transparent;
+  background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--pt-surface) 70%, transparent),
+      transparent
+    )
+    0 0 / 50% 100% no-repeat,
+    color-mix(in srgb, var(--pt-ink) 8%, transparent);
+  animation: pt-img-shimmer 1.2s ease-in-out infinite;
+}
+@keyframes pt-img-shimmer {
+  from {
+    background-position: -50% 0, 0 0;
+  }
+  to {
+    background-position: 150% 0, 0 0;
+  }
+}
+/* Image that failed to load: a quiet dashed tile with an "image" glyph, not the browser's broken icon. */
+.pt-prose img.pt-img-error,
+.pt-img-frame img.pt-img-error {
+  width: 10rem;
+  height: 6rem;
+  padding: 1.75rem;
+  border-style: dashed;
+  background: var(--pt-surface-2);
+  object-fit: contain;
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239AA0A4' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='18' height='18' rx='3'/%3E%3Ccircle cx='9' cy='9' r='2'/%3E%3Cpath d='m21 15-4.5-4.5L6 21'/%3E%3Cpath d='M3 3l18 18'/%3E%3C/svg%3E");
+}
+/* Editor image (node view): the upload overlay sits on the local preview. */
+.pt-img-frame {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+}
+.pt-img-frame img {
+  display: block;
+}
+.pt-img-frame.is-uploading img {
+  opacity: 0.55;
+  filter: saturate(0.6);
+}
+.pt-img-upload {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.pt-img-upload svg {
+  filter: drop-shadow(0 2px 6px rgb(0 0 0 / 0.25));
+}
+.pt-img-upload circle {
+  fill: none;
+  stroke-width: 4;
+}
+.pt-img-upload .track {
+  stroke: rgb(255 255 255 / 0.55);
+}
+.pt-img-upload .bar {
+  stroke: var(--pt-primary);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.2s ease-out;
+}
+.pt-img-upload span {
+  grid-area: 1 / 1;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.5);
+}
+.pt-prose .pt-img-frame.ProseMirror-selectednode img {
+  outline: 2px solid var(--pt-primary);
+  outline-offset: 2px;
+}
+
+.pt-prose .mention {
+  @apply rounded-md bg-primary-soft px-1 py-0.5 font-semibold text-primary;
+}
+.pt-prose p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  @apply pointer-events-none float-start h-0 text-subtle;
+}
+
+/* Page transitions. */
+.pt-fade-enter-active,
+.pt-fade-leave-active {
+  transition: opacity 0.18s ease, transform 0.22s var(--ease-spring);
+}
+.pt-fade-enter-from {
+  opacity: 0;
+  transform: translateY(6px);
+}
+.pt-fade-leave-to {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Staggered entrance for list items (v-stagger). */
+.pt-stagger {
+  animation: pt-rise 0.55s var(--ease-spring) backwards;
+  animation-delay: calc(var(--pt-i, 0) * 45ms);
+}
+@keyframes pt-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+}
+
+/* Theme switch: repaint in one frame instead of animating every colour. */
+.pt-theme-switching,
+.pt-theme-switching *,
+.pt-theme-switching *::before,
+.pt-theme-switching *::after {
+  transition: none !important;
+}
+
+/* Kanban drag & drop (Sortable fallback mode: same feel on mouse and touch).
+ * Sortable moves the clone with an inline `transform`, so the lift and tilt use
+ * the separate `scale` / `rotate` properties (they compose, never override).
+ * The tilt is driven by a JS spring (KanbanBoard), so `rotate` has no transition. */
+.pt-drag-ghost {
+  /* The slot the card will land in: a soft, sunken placeholder. */
+  background: color-mix(in srgb, var(--pt-primary) 8%, var(--pt-surface-3)) !important;
+  border-color: transparent !important;
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--pt-primary) 30%, transparent) !important;
+  animation: none !important;
+}
+.pt-drag-ghost > * {
+  visibility: hidden;
+}
+.pt-drag-chosen {
+  animation: none !important;
+}
+.pt-drag-fallback {
+  opacity: 0.97 !important;
+  animation: pt-lift 0.22s cubic-bezier(0.2, 0.9, 0.25, 1) both !important;
+  transition: none !important;
+  will-change: transform, rotate, scale;
+  scale: 1.035;
+  rotate: var(--pt-tilt, 0deg);
+  /* transform-origin is set to the grab point by KanbanBoard. */
+  box-shadow:
+    0 2px 6px rgb(23 30 35 / 0.08),
+    0 18px 40px -12px rgb(23 30 35 / 0.38) !important;
+  cursor: grabbing;
+  pointer-events: none;
+  z-index: 9999 !important;
+}
+@keyframes pt-lift {
+  from {
+    scale: 1;
+    box-shadow: 0 1px 2px rgb(23 30 35 / 0.06);
+  }
+}
+/* Dropped card: eases from the lifted size into place. */
+.pt-drop-settle {
+  animation: pt-settle 0.32s cubic-bezier(0.2, 0.9, 0.25, 1) !important;
+}
+@keyframes pt-settle {
+  from {
+    scale: 1.035;
+    box-shadow: 0 18px 40px -12px rgb(23 30 35 / 0.3);
+  }
+}
+.pt-dragging,
+.pt-dragging * {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  cursor: grabbing !important;
+}
+
+/* Indeterminate thin bar on top of a list that is refreshing. */
+.pt-bar-loading {
+  background: linear-gradient(90deg, transparent, var(--pt-primary), transparent) 0 0 / 40% 100% no-repeat;
+  animation: pt-bar 1s ease-in-out infinite;
+}
+@keyframes pt-bar {
+  from {
+    background-position: -40% 0;
+  }
+  to {
+    background-position: 140% 0;
+  }
+}
+
+/* Task card saving a status change. */
+.pt-card-busy {
+  cursor: progress;
+}
+.pt-card-busy > :not(.pt-bar-loading):not(.animate-spin):not(:has(.animate-spin)) {
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+/* Skeletons: a tint of the ink (visible on white and on paper) plus a soft sweep. */
+.pt-skeleton {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: color-mix(in srgb, var(--pt-ink) 9%, transparent);
+}
+.dark .pt-skeleton {
+  background: color-mix(in srgb, var(--pt-ink) 8%, transparent);
+}
+.pt-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  translate: -100% 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--pt-surface) 75%, transparent),
+    transparent
+  );
+  animation: pt-shimmer 1.3s ease-in-out infinite;
+}
+.dark .pt-skeleton::after {
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.06), transparent);
+}
+/* Skeleton on the dark ink cards (dashboard week card). */
+.pt-skeleton-dark {
+  position: relative;
+  overflow: hidden;
+  background: rgb(255 255 255 / 0.12);
+}
+.pt-skeleton-dark::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  translate: -100% 0;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.12), transparent);
+  animation: pt-shimmer 1.3s ease-in-out infinite;
+}
+
+@keyframes pt-shimmer {
+  to {
+    translate: 100% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pt-skeleton::after {
+    animation: none;
+  }
+}
+
+/* Arabic hand-written accents: Aref Ruqaa (calligraphic, SIL OFL), picked up by
+   --font-hand for Arabic letters since Caveat has none. */
+@font-face {
+  font-family: "Aref Ruqaa";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/aref-ruqaa-arabic-700.woff2") format("woff2");
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+}
+
+/* Hand-written accents, like the notes in the reference designs. */
+.pt-hand {
+  font-family: var(--font-hand);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+/* Text arrows (→ ↗) point the reading way. */
+.pt-arrow {
+  display: inline-block;
+}
+[dir="rtl"] .pt-arrow {
+  transform: scaleX(-1);
+}
+
+/* Arabic script must not be letter-spaced (it breaks the joins); Ruqaa reads best bold and airy. */
+[dir="rtl"] .pt-hand {
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.7;
+}
+
+/* Soft brand backdrop: two blurred blobs and a faint dot grid. */
+.pt-aurora {
+  background:
+    radial-gradient(40rem 28rem at 12% 8%, color-mix(in oklab, var(--pt-sky) 26%, transparent), transparent 70%),
+    radial-gradient(32rem 24rem at 92% 88%, color-mix(in oklab, #e04047 14%, transparent), transparent 70%),
+    radial-gradient(color-mix(in oklab, var(--pt-ink) 9%, transparent) 1px, transparent 1px) 0 0 / 22px 22px,
+    var(--pt-bg);
+}
+
+@keyframes pt-float {
+  0%, 100% { transform: translateY(0) rotate(var(--pt-tilt, 0deg)); }
+  50% { transform: translateY(-10px) rotate(var(--pt-tilt, 0deg)); }
+}
+.pt-float {
+  animation: pt-float 6s ease-in-out infinite;
+}
+
+/* Report export (services/reportExport): header shows, chrome and motion go. */
+.pt-export-only {
+  display: none;
+}
+.pt-exporting .pt-export-only {
+  display: block;
+}
+.pt-exporting .pt-export-hide {
+  display: none !important;
+}
+/* Phone cards replace wide, scrolling tables in the PDF. */
+.pt-exporting .pt-export-cards {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+}
+.pt-exporting .overflow-x-auto,
+.pt-exporting .overflow-auto {
+  overflow: visible !important;
+}
+.pt-exporting [data-export-skip] {
+  display: none !important;
+}
+.pt-exporting,
+.pt-exporting * {
+  animation: none !important;
+  transition: none !important;
+}

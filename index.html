@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="fr" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/brand/pilotask-app-icon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#F3F2EE" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0F1316" media="(prefers-color-scheme: dark)" />
+    <title>Pilotask</title>
+    <script>
+      // Paint the saved theme before Vue boots, so dark mode never flashes white.
+      try {
+        const theme = localStorage.getItem("pt.theme") || "system";
+        const dark = theme === "dark" || (theme === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", dark);
+        const locale = localStorage.getItem("pt.locale") || "fr";
+        document.documentElement.lang = locale;
+        document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
