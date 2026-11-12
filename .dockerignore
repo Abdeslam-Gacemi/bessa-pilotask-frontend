@@ -17,3 +17,4 @@ docker-compose.yml
 README.md
 deploy.sh
 .github
+docs
