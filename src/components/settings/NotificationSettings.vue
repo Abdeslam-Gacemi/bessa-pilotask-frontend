@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { Capacitor } from "@capacitor/core";
-import { Notification03Icon } from "@hugeicons/core-free-icons";
+import { Notification03Icon, SentIcon } from "@hugeicons/core-free-icons";
 import PtButton from "@/components/ui/PtButton.vue";
 import PtIcon from "@/components/ui/PtIcon.vue";
 import PtSwitch from "@/components/ui/PtSwitch.vue";
+import { useApiError } from "@/composables/useApiError";
 import { useProfileSave } from "@/composables/useProfileSave";
+import { useToast } from "@/composables/useToast";
+import { notificationsApi } from "@/api/endpoints";
 import { useNotificationTarget } from "@/composables/useNotificationTarget";
 import { pushEnabled, startPush, webPushSupported } from "@/services/push";
 import { useNotificationsStore } from "@/stores/notifications";
@@ -40,6 +44,25 @@ function set(topic: NotificationTopic, channel: "mail" | "push", value: boolean)
 async function enablePush(): Promise<void> {
   await startPush({ onMessage: () => void inbox.refresh(), onOpen: openTarget }, true);
 }
+
+// "Does it work?": one alert in the inbox, by e-mail and on every registered device.
+const { t } = useI18n();
+const toast = useToast();
+const apiError = useApiError();
+const testing = ref(false);
+
+async function sendTest(): Promise<void> {
+  testing.value = true;
+  try {
+    const { devices, mail } = await notificationsApi.test();
+    toast.success(devices ? t("settings.test.sent", { mail, n: devices }) : t("settings.test.sentNoDevice", { mail }), undefined);
+    void inbox.refresh();
+  } catch (error) {
+    apiError.report(error);
+  } finally {
+    testing.value = false;
+  }
+}
 </script>
 
 <template>
@@ -53,6 +76,14 @@ async function enablePush(): Promise<void> {
       </span>
       <PtButton v-else size="sm" variant="soft" class="mt-2" @click="enablePush">{{ $t("settings.enablePush") }}</PtButton>
     </div>
+  </div>
+
+  <div v-stagger="0" class="pt-card flex items-center gap-3.5 p-4">
+    <div class="min-w-0 flex-1">
+      <p class="text-sm font-semibold">{{ $t("settings.test.title") }}</p>
+      <p class="mt-0.5 text-xs text-muted">{{ $t("settings.test.hint") }}</p>
+    </div>
+    <PtButton size="sm" variant="secondary" :icon="SentIcon" flip :loading="testing" @click="sendTest">{{ $t("settings.test.action") }}</PtButton>
   </div>
 
   <p class="px-1 text-sm text-muted">{{ $t("settings.notificationsHint") }}</p>

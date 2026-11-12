@@ -414,7 +414,22 @@
     "accessIntro": "Ce que voient les utilisateurs simples",
     "accessHint": "Par défaut, un utilisateur ne voit que ses tâches, et les tableaux et projets qui les contiennent ; il n'est notifié que pour celles-ci. La visibilité d'équipe se règle ici pour tout l'espace, puis par entité et par tableau : le tableau l'emporte, puis l'entité, puis ce réglage.",
     "teamTasks": "Voir les tâches de l'équipe (lecture seule)",
-    "teamTasksHint": "Dans les tableaux où il a une tâche, l'utilisateur voit aussi les autres tâches, sans modifier ni commenter."
+    "teamTasksHint": "Dans les tableaux où il a une tâche, l'utilisateur voit aussi les autres tâches, sans modifier ni commenter.",
+    "install": {
+      "title": "Installer Pilotask",
+      "hint": "Ajoutez Pilotask à votre écran d'accueil ou à votre bureau : il s'ouvre comme une vraie application, en plein écran.",
+      "action": "Installer l'application",
+      "done": "Pilotask est installé.",
+      "iosStep1": "Touchez",
+      "iosStep2": "puis « Sur l'écran d'accueil »."
+    },
+    "test": {
+      "title": "Tester les notifications",
+      "hint": "Envoie une alerte dans l'app, par e-mail et sur vos appareils.",
+      "action": "Envoyer un test",
+      "sent": "Test envoyé : vérifiez l'app, {mail} et vos {n} appareil(s).",
+      "sentNoDevice": "Test envoyé dans l'app et à {mail}. Aucun appareil n'est enregistré pour le push."
+    }
   },
   "notifications": {
     "title": "Notifications",
