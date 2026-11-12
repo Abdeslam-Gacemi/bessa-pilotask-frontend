@@ -1,0 +1,14 @@
+# Local preview of the web app only (no API inside):
+#   docker compose up -d --build      -> http://localhost:8093
+# Point it at a running API with VITE_API_URL=http://<host>:8013/api.
+# Production: ../deploy.sh builds this app and serves it on port 8013.
+services:
+  web:
+    build:
+      context: .
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8013/api}
+    image: bessa-pilotask-web:preview
+    restart: unless-stopped
+    ports:
+      - "8093:80"
