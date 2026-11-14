@@ -653,5 +653,35 @@
       }
     },
     "dragOff": "Cards still move between columns; their order inside a column follows this sort."
+  },
+  "attachments": {
+    "title": "Attachments",
+    "attach": "Attach",
+    "dropHere": "Drop your files here",
+    "processing": "processing…",
+    "waiting": "waiting",
+    "retry": "Retry",
+    "remove": "Remove",
+    "preview": "Preview",
+    "download": "Download",
+    "open": "Open in a new tab",
+    "share": "Share",
+    "openWith": "Open with…",
+    "uploading": "Uploading files… {percent}%",
+    "fixErrors": "Remove or retry the files that failed.",
+    "tooMany": "Up to {max} files per comment.",
+    "hint": "Images (JPG, PNG, WebP, SVG) up to 20 MB · PDF, Word, Excel, PowerPoint up to 200 MB",
+    "units": "B,KB,MB,GB",
+    "of": "{index} of {total}",
+    "close": "Close",
+    "previous": "Previous",
+    "next": "Next",
+    "errors": {
+      "type": "“{name}”: format not accepted (JPG, PNG, WebP, SVG images; PDF, Word, Excel, PowerPoint documents).",
+      "imageType": "“{name}”: only JPG, PNG, WebP and SVG images are accepted.",
+      "imageTooLarge": "“{name}” is larger than {max} (image limit).",
+      "fileTooLarge": "“{name}” is larger than {max} (document limit).",
+      "empty": "“{name}” is empty."
+    }
   }
 }

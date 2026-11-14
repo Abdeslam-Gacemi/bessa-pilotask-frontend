@@ -17,6 +17,7 @@ import type {
   Task,
   TaskInput,
   User,
+  Attachment,
 } from "@/types/models";
 
 const data = <T>(promise: Promise<{ data: T }>) => promise.then((response) => response.data);
@@ -63,7 +64,7 @@ export const authApi = {
 
 export const uploadsApi = {
   /** Uploads an editor image and returns its public URL. */
-  image: (file: File, onProgress?: (percent: number) => void) => {
+  image: (file: File | Blob, onProgress?: (percent: number) => void) => {
     const body = new FormData();
     body.append("image", file);
     return data(
@@ -145,10 +146,27 @@ export const tasksApi = {
 
 export const commentsApi = {
   list: (taskId: number, o: CallOptions = {}) => data(http.get<Comment[]>(`/tasks/${taskId}/comments`, o)),
-  create: (taskId: number, body: string, mention_ids: number[]) =>
-    data(http.post<Comment>(`/tasks/${taskId}/comments`, { body, mention_ids })),
-  update: (id: number, body: string, mention_ids: number[]) => data(http.patch<Comment>(`/comments/${id}`, { body, mention_ids })),
+  create: (taskId: number, body: string, mention_ids: number[], attachment_ids: string[] = []) =>
+    data(http.post<Comment>(`/tasks/${taskId}/comments`, { body, mention_ids, attachment_ids })),
+  update: (id: number, body: string, mention_ids: number[], attachment_ids?: string[]) =>
+    data(http.patch<Comment>(`/comments/${id}`, { body, mention_ids, attachment_ids })),
   remove: (id: number) => http.delete(`/comments/${id}`),
+};
+
+export const attachmentsApi = {
+  /** Uploads one comment file; it stays pending until a comment claims it. No timeout: big files on slow links. */
+  upload: (taskId: number, file: File, onProgress?: (percent: number) => void, signal?: AbortSignal) => {
+    const body = new FormData();
+    body.append("file", file);
+    return data(
+      http.post<Attachment>(`/tasks/${taskId}/attachments`, body, {
+        timeout: 0,
+        signal,
+        onUploadProgress: (event) => event.total && onProgress?.((event.loaded / event.total) * 100),
+      }),
+    );
+  },
+  remove: (id: string) => http.delete(`/attachments/${id}`),
 };
 
 export const labelsApi = {

@@ -653,5 +653,35 @@
       }
     },
     "dragOff": "يمكن نقل البطاقات بين الأعمدة دائمًا؛ وترتيبها داخل العمود يتبع هذا الفرز."
+  },
+  "attachments": {
+    "title": "المرفقات",
+    "attach": "إرفاق",
+    "dropHere": "أفلت ملفاتك هنا",
+    "processing": "جارٍ المعالجة…",
+    "waiting": "في الانتظار",
+    "retry": "إعادة المحاولة",
+    "remove": "إزالة",
+    "preview": "معاينة",
+    "download": "تنزيل",
+    "open": "فتح في علامة تبويب",
+    "share": "مشاركة",
+    "openWith": "فتح بواسطة…",
+    "uploading": "جارٍ رفع الملفات… {percent}٪",
+    "fixErrors": "أزل الملفات التي فشلت أو أعد محاولتها.",
+    "tooMany": "{max} ملفات كحد أقصى لكل تعليق.",
+    "hint": "صور (JPG، PNG، WebP، SVG) حتى 20 ميغابايت · PDF، Word، Excel، PowerPoint حتى 200 ميغابايت",
+    "units": "بايت,ك.ب,م.ب,غ.ب",
+    "of": "{index} من {total}",
+    "close": "إغلاق",
+    "previous": "السابق",
+    "next": "التالي",
+    "errors": {
+      "type": "«{name}»: صيغة غير مقبولة (صور JPG، PNG، WebP، SVG؛ مستندات PDF، Word، Excel، PowerPoint).",
+      "imageType": "«{name}»: تُقبل صور JPG وPNG وWebP وSVG فقط.",
+      "imageTooLarge": "«{name}» أكبر من {max} (حد الصور).",
+      "fileTooLarge": "«{name}» أكبر من {max} (حد المستندات).",
+      "empty": "«{name}» فارغ."
+    }
   }
 }

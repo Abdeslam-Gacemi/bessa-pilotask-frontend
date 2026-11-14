@@ -153,7 +153,32 @@ export interface Comment {
   created_at: string;
   author?: User;
   mentions?: User[];
+  attachments?: Attachment[];
   can: { update: boolean; delete: boolean };
+}
+
+/** File sent with a comment. URLs are signed and expire after a couple of hours. */
+export interface Attachment {
+  id: string;
+  kind: "image" | "file";
+  name: string;
+  extension: string;
+  mime: string;
+  size: number;
+  width: number | null;
+  height: number | null;
+  url: string;
+  preview_url: string | null;
+  download_url: string;
+  opens_inline: boolean;
+  created_at: string;
+}
+
+export interface UploadRulesMeta {
+  images: { extensions: string[]; max_bytes: number };
+  files: { extensions: string[]; max_bytes: number };
+  max_per_comment: number;
+  image_edge: number;
 }
 
 export type ActivityEvent =
@@ -223,6 +248,7 @@ export interface Meta {
   locales: Locale[];
   deadline_warning_hours: number;
   access: AccessSettings;
+  uploads?: UploadRulesMeta;
 }
 
 export type AnalyticsScopeType = "global" | "project" | "board" | "user";

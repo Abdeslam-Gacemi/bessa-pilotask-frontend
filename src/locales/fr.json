@@ -653,5 +653,35 @@
       }
     },
     "dragOff": "Les cartes changent toujours de colonne ; leur ordre dans la colonne suit ce tri."
+  },
+  "attachments": {
+    "title": "Pièces jointes",
+    "attach": "Joindre",
+    "dropHere": "Déposez vos fichiers ici",
+    "processing": "traitement…",
+    "waiting": "en attente",
+    "retry": "Réessayer",
+    "remove": "Retirer",
+    "preview": "Aperçu",
+    "download": "Télécharger",
+    "open": "Ouvrir dans un onglet",
+    "share": "Partager",
+    "openWith": "Ouvrir avec…",
+    "uploading": "Envoi des fichiers… {percent} %",
+    "fixErrors": "Retirez ou réessayez les fichiers en erreur.",
+    "tooMany": "{max} fichiers maximum par commentaire.",
+    "hint": "Images (JPG, PNG, WebP, SVG) jusqu'à 20 Mo · PDF, Word, Excel, PowerPoint jusqu'à 200 Mo",
+    "units": "o,Ko,Mo,Go",
+    "of": "{index} sur {total}",
+    "close": "Fermer",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "errors": {
+      "type": "« {name} » : format non accepté (images JPG, PNG, WebP, SVG ; documents PDF, Word, Excel, PowerPoint).",
+      "imageType": "« {name} » : seules les images JPG, PNG, WebP et SVG sont acceptées.",
+      "imageTooLarge": "« {name} » dépasse {max} (taille maximale d'une image).",
+      "fileTooLarge": "« {name} » dépasse {max} (taille maximale d'un document).",
+      "empty": "« {name} » est vide."
+    }
   }
 }
