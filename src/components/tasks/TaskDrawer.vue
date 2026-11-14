@@ -12,8 +12,11 @@ import {
   UserMultipleIcon,
   Clock01Icon,
   DashboardSquare01Icon,
+  ViewIcon,
 } from "@hugeicons/core-free-icons";
 import PtAvatar from "@/components/ui/PtAvatar.vue";
+import PtButton from "@/components/ui/PtButton.vue";
+import PtUserPicker from "@/components/ui/PtUserPicker.vue";
 import PtIcon from "@/components/ui/PtIcon.vue";
 import PtIconButton from "@/components/ui/PtIconButton.vue";
 import PtSegmented from "@/components/ui/PtSegmented.vue";
@@ -30,7 +33,7 @@ import { useDates } from "@/composables/useDates";
 import { useRequest } from "@/composables/useRequest";
 import { useToast } from "@/composables/useToast";
 import { taskAccent } from "@/domain/tasks";
-import type { Task } from "@/types/models";
+import type { Task, User } from "@/types/models";
 
 /** Task details: fields, status, comments and history. Opening it is logged as a view. */
 const props = defineProps<{ taskId: number | null }>();
@@ -105,6 +108,47 @@ function onSaved(saved: Task): void {
   toast.success(t("common.saved"));
 }
 
+// Observers: read-only access to this one task, for anyone. Saved as soon as it changes.
+const savingObservers = ref(false);
+const observers = computed<User[]>({
+  get: () => task.value?.observers ?? [],
+  set: (next) => void saveObservers(next),
+});
+
+async function saveObservers(next: User[]): Promise<void> {
+  const current = task.value;
+  if (!current) return;
+  const before = current.observers ?? [];
+  current.observers = next;
+  savingObservers.value = true;
+  try {
+    current.observers = await tasksApi.setObservers(current.id, next.map((u) => u.id));
+    toast.success(t("tasks.observersSaved"));
+  } catch (error) {
+    current.observers = before;
+    errors.report(error);
+  } finally {
+    savingObservers.value = false;
+  }
+}
+
+const leaving = ref(false);
+async function leave(): Promise<void> {
+  if (!task.value) return;
+  const id = task.value.id;
+  leaving.value = true;
+  try {
+    await tasksApi.leaveObservers(id);
+    toast.show(t("tasks.leftObserving"));
+    emit("deleted", id); // gone from "Shared with me"
+    open.value = false;
+  } catch (error) {
+    errors.report(error);
+  } finally {
+    leaving.value = false;
+  }
+}
+
 async function remove(): Promise<void> {
   if (!task.value) return;
   const id = task.value.id;
@@ -135,6 +179,15 @@ async function remove(): Promise<void> {
 
     <article v-else class="flex flex-col gap-6 pb-4">
       <h1 class="text-2xl leading-tight font-bold">{{ task.title }}</h1>
+
+      <div v-if="task.is_observer" class="flex flex-wrap items-center gap-3 rounded-(--radius-card) bg-primary-soft p-3.5">
+        <PtIcon :icon="ViewIcon" :size="20" class="shrink-0 text-primary" />
+        <div class="min-w-0 flex-1">
+          <p class="text-sm font-semibold text-primary">{{ $t("tasks.sharedBanner") }}</p>
+          <p class="mt-0.5 text-xs text-muted">{{ $t("tasks.sharedBannerHint") }}</p>
+        </div>
+        <PtButton size="sm" variant="secondary" :loading="leaving" @click="leave">{{ $t("tasks.leaveObserving") }}</PtButton>
+      </div>
 
       <dl class="grid grid-cols-[auto_1fr] items-center gap-x-6 gap-y-3.5 text-sm">
         <dt class="flex items-center gap-2 text-muted"><PtIcon :icon="DashboardSquare01Icon" :size="17" />{{ $t("tasks.status") }}</dt>
@@ -170,6 +223,21 @@ async function remove(): Promise<void> {
           </span>
           <span v-if="!task.assignees?.length" class="text-muted">{{ $t("tasks.unassigned") }}</span>
         </dd>
+
+        <template v-if="task.can?.observers || task.observers?.length">
+          <dt class="flex items-center gap-2 self-start pt-1.5 text-muted"><PtIcon :icon="ViewIcon" :size="17" />{{ $t("tasks.observers") }}</dt>
+          <dd :aria-busy="savingObservers">
+            <template v-if="task.can?.observers">
+              <PtUserPicker v-model="observers" everyone />
+              <p class="mt-1.5 text-xs text-muted">{{ $t("tasks.observersHint") }}</p>
+            </template>
+            <div v-else class="flex flex-wrap gap-2">
+              <span v-for="user in task.observers" :key="user.id" class="pt-chip ps-1">
+                <PtAvatar :name="user.name" :src="user.avatar_url" :size="22" />{{ user.name }}
+              </span>
+            </div>
+          </dd>
+        </template>
 
         <template v-if="task.labels?.length">
           <dt class="flex items-center gap-2 text-muted"><PtIcon :icon="Tag01Icon" :size="17" />{{ $t("tasks.labels") }}</dt>

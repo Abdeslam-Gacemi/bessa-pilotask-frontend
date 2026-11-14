@@ -199,7 +199,17 @@
     "markDone": "Marquer comme terminée",
     "reopen": "Rouvrir",
     "open": "Ouvrir",
-    "readOnly": "Lecture seule : cette tâche ne vous est pas assignée."
+    "readOnly": "Lecture seule : cette tâche ne vous est pas assignée.",
+    "observers": "Observateurs",
+    "observersHint": "Ces personnes voient cette tâche en lecture seule, quels que soient leurs accès.",
+    "noObservers": "Personne",
+    "sharedBanner": "Partagée avec vous en lecture seule",
+    "sharedBannerHint": "Vous voyez cette tâche, ses commentaires et son historique, sans pouvoir la modifier.",
+    "leaveObserving": "Ne plus suivre",
+    "leftObserving": "Vous ne suivez plus cette tâche.",
+    "observersSaved": "Accès en lecture mis à jour",
+    "sharedWithMe": "Partagées",
+    "sharedEmpty": "Aucune tâche partagée avec vous"
   },
   "calendar": {
     "title": "Calendrier",
@@ -281,7 +291,9 @@
       "unassigned": "a retiré {name} de",
       "commented": "a commenté",
       "completed": "a terminé",
-      "reopened": "a rouvert"
+      "reopened": "a rouvert",
+      "observer_added": "a partagé en lecture avec {name}",
+      "observer_removed": "a retiré l'accès en lecture de {name} à"
     },
     "subjects": {
       "task": "la tâche",
@@ -388,7 +400,8 @@
       "status_changed": "Changement de statut",
       "mentioned": "Mention dans un commentaire",
       "commented": "Nouveau commentaire",
-      "item_changed": "Projets, tableaux et tâches modifiés (gestionnaires)"
+      "item_changed": "Projets, tableaux et tâches modifiés (gestionnaires)",
+      "observed": "Tâche partagée avec moi en lecture"
     },
     "security": "Sécurité",
     "currentPassword": "Mot de passe actuel",

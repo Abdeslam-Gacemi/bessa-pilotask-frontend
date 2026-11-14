@@ -41,6 +41,8 @@ export type TaskQuery = Partial<{
   from: string;
   to: string;
   sort: "position" | "due_at" | "priority" | "created_at" | "updated_at";
+  /** Tasks shared with me read-only (observer), outside my usual reach. */
+  observed: boolean;
 }>;
 
 /** Hidden-captcha proof sent with the sign-in (see services/captcha). */
@@ -79,7 +81,7 @@ export const metaApi = {
 
 export const usersApi = {
   list: (params: { search?: string; role?: string; page?: number; entity_id?: number } = {}, o: CallOptions = {}) => data(http.get<Paginated<User>>("/users", { params, ...o })),
-  directory: (params: { search?: string; project_id?: number } = {}, o: CallOptions = {}) => data(http.get<User[]>("/users/directory", { params, ...o })),
+  directory: (params: { search?: string; project_id?: number; everyone?: boolean } = {}, o: CallOptions = {}) => data(http.get<User[]>("/users/directory", { params, ...o })),
   create: (payload: Partial<User> & { password: string; password_confirmation: string }) => data(http.post<User>("/users", payload)),
   update: (id: number, payload: Partial<User> & { password?: string; password_confirmation?: string }) => data(http.patch<User>(`/users/${id}`, payload)),
   remove: (id: number) => http.delete(`/users/${id}`),
@@ -137,6 +139,9 @@ export const tasksApi = {
     data(http.post<Task>(`/tasks/${id}/move`, { status_id: statusId, position })),
   remove: (id: number) => http.delete(`/tasks/${id}`),
   activity: (id: number, params: ActivityQuery = {}, o: CallOptions = {}) => data(http.get<Paginated<ActivityLog>>(`/tasks/${id}/activity`, { params, ...o })),
+  /** Who may read this task (read-only), whatever their other access. */
+  setObservers: (id: number, userIds: number[]) => data(http.put<User[]>(`/tasks/${id}/observers`, { user_ids: userIds })),
+  leaveObservers: (id: number) => http.delete(`/tasks/${id}/observers/me`),
 };
 
 export const commentsApi = {
