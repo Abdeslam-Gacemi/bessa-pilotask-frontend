@@ -205,8 +205,6 @@
     "noObservers": "Nobody",
     "sharedBanner": "Shared with you, read-only",
     "sharedBannerHint": "You see this task, its comments and history, without changing it.",
-    "leaveObserving": "Stop following",
-    "leftObserving": "You no longer follow this task.",
     "observersSaved": "Read access updated",
     "sharedWithMe": "Shared",
     "sharedEmpty": "No task shared with you"

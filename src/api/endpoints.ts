@@ -141,7 +141,6 @@ export const tasksApi = {
   activity: (id: number, params: ActivityQuery = {}, o: CallOptions = {}) => data(http.get<Paginated<ActivityLog>>(`/tasks/${id}/activity`, { params, ...o })),
   /** Who may read this task (read-only), whatever their other access. */
   setObservers: (id: number, userIds: number[]) => data(http.put<User[]>(`/tasks/${id}/observers`, { user_ids: userIds })),
-  leaveObservers: (id: number) => http.delete(`/tasks/${id}/observers/me`),
 };
 
 export const commentsApi = {

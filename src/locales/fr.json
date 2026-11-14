@@ -205,8 +205,6 @@
     "noObservers": "Personne",
     "sharedBanner": "Partagée avec vous en lecture seule",
     "sharedBannerHint": "Vous voyez cette tâche, ses commentaires et son historique, sans pouvoir la modifier.",
-    "leaveObserving": "Ne plus suivre",
-    "leftObserving": "Vous ne suivez plus cette tâche.",
     "observersSaved": "Accès en lecture mis à jour",
     "sharedWithMe": "Partagées",
     "sharedEmpty": "Aucune tâche partagée avec vous"
