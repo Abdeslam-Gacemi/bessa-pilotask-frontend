@@ -14,7 +14,8 @@ export type NotificationTopic =
   | "status_changed"
   | "mentioned"
   | "commented"
-  | "item_changed";
+  | "item_changed"
+  | "observed";
 export type ReportFrequency = "daily" | "weekly" | "monthly";
 export type ReportPreferences = Partial<Record<ReportFrequency, boolean>>;
 export type NotificationPreferences = Partial<Record<NotificationTopic, { mail?: boolean; push?: boolean }>>;
@@ -138,7 +139,10 @@ export interface Task {
   assignees?: User[];
   labels?: Label[];
   comments_count?: number;
-  can?: { update: boolean; move: boolean; delete: boolean; comment: boolean };
+  /** People with read-only access to this task only (detail view). */
+  observers?: User[];
+  is_observer?: boolean;
+  can?: { update: boolean; move: boolean; delete: boolean; comment: boolean; observers?: boolean };
 }
 
 export interface Comment {
@@ -166,7 +170,9 @@ export type ActivityEvent =
   | "unassigned"
   | "commented"
   | "completed"
-  | "reopened";
+  | "reopened"
+  | "observer_added"
+  | "observer_removed";
 
 export interface ActivityLog {
   id: number;

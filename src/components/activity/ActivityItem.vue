@@ -44,6 +44,8 @@ const ICONS: Record<ActivityEvent, { icon: Icon; tone: string }> = {
   commented: { icon: Comment01Icon, tone: "bg-primary-soft text-primary" },
   completed: { icon: CheckmarkCircle02Icon, tone: "bg-success-soft text-success" },
   reopened: { icon: RotateClockwiseIcon, tone: "bg-warning-soft text-warning" },
+  observer_added: { icon: ViewIcon, tone: "bg-primary-soft text-primary" },
+  observer_removed: { icon: ViewIcon, tone: "bg-surface-3 text-muted" },
 };
 
 const visual = computed(() => ICONS[props.log.event] ?? ICONS.updated);

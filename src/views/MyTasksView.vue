@@ -39,7 +39,8 @@ const HIDE_PEOPLE = true;
 const tasks = taskFilters.filtered;
 const request = useRequest();
 const loading = request.loading;
-const scope = ref<"open" | "done">("open");
+// "shared": tasks shared with me read-only (observer), outside my usual reach.
+const scope = ref<"open" | "done" | "shared">("open");
 const search = ref("");
 const query = refDebounced(search, 300);
 
@@ -48,8 +49,9 @@ async function load(): Promise<void> {
     const result = await request.run((signal) =>
       tasksApi.list(
         {
-          assignee_id: "me",
-          category: scope.value === "open" ? undefined : ["done"],
+          assignee_id: scope.value === "shared" ? undefined : "me",
+          observed: scope.value === "shared" || undefined,
+          category: scope.value === "done" ? ["done"] : undefined,
           open: scope.value === "open" || undefined,
           search: query.value || undefined,
           sort: scope.value === "open" ? "due_at" : "updated_at",
@@ -65,6 +67,7 @@ async function load(): Promise<void> {
 
 const groups = computed(() => {
   if (scope.value === "done") return [{ key: "done", title: t("analytics.done"), tasks: tasks.value }];
+  if (scope.value === "shared") return tasks.value.length ? [{ key: "shared", title: t("tasks.sharedWithMe"), tasks: tasks.value }] : [];
   const today = dayjs().endOf("day");
   const week = dayjs().add(7, "day").endOf("day");
   const bucket = (fn: (t: Task) => boolean) => tasks.value.filter(fn);
@@ -110,6 +113,7 @@ taskUi.onChanged(() => void load());
         :options="[
           { value: 'open', label: $t('analytics.open') },
           { value: 'done', label: $t('analytics.done') },
+          { value: 'shared', label: $t('tasks.sharedWithMe') },
         ]"
       />
     </header>
@@ -124,7 +128,7 @@ taskUi.onChanged(() => void load());
     </div>
 
     <div v-if="loading" class="flex flex-col gap-3"><PtSkeleton v-for="i in 5" :key="i" class="h-14" /></div>
-    <PtEmpty v-else-if="!tasks.length" :icon="CheckListIcon" :title="$t('tasks.empty')" />
+    <PtEmpty v-else-if="!tasks.length" :icon="CheckListIcon" :title="scope === 'shared' ? $t('tasks.sharedEmpty') : $t('tasks.empty')" />
     <section v-for="group in groups" v-else :key="group.key" class="pt-card p-2">
       <h2 class="px-3 pt-2 pb-1 text-sm font-bold" :class="group.key === 'overdue' && 'text-danger'">
         {{ group.title }} <span class="text-muted">· {{ group.tasks.length }}</span>

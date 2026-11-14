@@ -199,7 +199,17 @@
     "markDone": "Mark as done",
     "reopen": "Reopen",
     "open": "Open",
-    "readOnly": "Read-only: this task is not assigned to you."
+    "readOnly": "Read-only: this task is not assigned to you.",
+    "observers": "Observers",
+    "observersHint": "These people see this task read-only, whatever their access.",
+    "noObservers": "Nobody",
+    "sharedBanner": "Shared with you, read-only",
+    "sharedBannerHint": "You see this task, its comments and history, without changing it.",
+    "leaveObserving": "Stop following",
+    "leftObserving": "You no longer follow this task.",
+    "observersSaved": "Read access updated",
+    "sharedWithMe": "Shared",
+    "sharedEmpty": "No task shared with you"
   },
   "calendar": {
     "title": "Calendar",
@@ -281,7 +291,9 @@
       "unassigned": "removed {name} from",
       "commented": "commented on",
       "completed": "completed",
-      "reopened": "reopened"
+      "reopened": "reopened",
+      "observer_added": "shared read-only with {name}",
+      "observer_removed": "removed {name}'s read access to"
     },
     "subjects": {
       "task": "task",
@@ -388,7 +400,8 @@
       "status_changed": "Status changed",
       "mentioned": "Mentioned in a comment",
       "commented": "New comment",
-      "item_changed": "Projects, tables and tasks changed (managers)"
+      "item_changed": "Projects, tables and tasks changed (managers)",
+      "observed": "Task shared with me (read-only)"
     },
     "security": "Security",
     "currentPassword": "Current password",

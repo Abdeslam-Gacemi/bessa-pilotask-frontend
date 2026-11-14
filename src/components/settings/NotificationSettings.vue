@@ -23,6 +23,7 @@ const { saveSoon } = useProfileSave();
 
 const TOPICS = computed<NotificationTopic[]>(() => [
   "task_assigned",
+  "observed",
   "mentioned",
   "deadline_approaching",
   "task_completed",

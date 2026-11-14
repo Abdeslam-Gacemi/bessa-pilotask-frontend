@@ -199,7 +199,17 @@
     "markDone": "تعليم كمنجزة",
     "reopen": "إعادة فتح",
     "open": "فتح",
-    "readOnly": "للقراءة فقط: هذه المهمة غير مسندة إليك."
+    "readOnly": "للقراءة فقط: هذه المهمة غير مسندة إليك.",
+    "observers": "المطّلعون",
+    "observersHint": "يرى هؤلاء الأشخاص هذه المهمة للاطلاع فقط، مهما كانت صلاحياتهم.",
+    "noObservers": "لا أحد",
+    "sharedBanner": "تمت مشاركتها معك للاطلاع فقط",
+    "sharedBannerHint": "ترى هذه المهمة وتعليقاتها وسجلها دون إمكانية تعديلها.",
+    "leaveObserving": "إلغاء المتابعة",
+    "leftObserving": "لم تعد تتابع هذه المهمة.",
+    "observersSaved": "تم تحديث حق الاطلاع",
+    "sharedWithMe": "المشتركة",
+    "sharedEmpty": "لا توجد مهام مشتركة معك"
   },
   "calendar": {
     "title": "التقويم",
@@ -281,7 +291,9 @@
       "unassigned": "أزال {name} من",
       "commented": "علّق على",
       "completed": "أنجز",
-      "reopened": "أعاد فتح"
+      "reopened": "أعاد فتح",
+      "observer_added": "شارك للاطلاع مع {name}",
+      "observer_removed": "سحب حق الاطلاع من {name} على"
     },
     "subjects": {
       "task": "المهمة",
@@ -388,7 +400,8 @@
       "status_changed": "تغيير الحالة",
       "mentioned": "إشارة في تعليق",
       "commented": "تعليق جديد",
-      "item_changed": "تغييرات المشاريع والجداول والمهام (المسؤولون)"
+      "item_changed": "تغييرات المشاريع والجداول والمهام (المسؤولون)",
+      "observed": "مهمة تمت مشاركتها معي للاطلاع"
     },
     "security": "الأمان",
     "currentPassword": "كلمة المرور الحالية",
