@@ -24,6 +24,10 @@ import MentionList from "./MentionList.vue";
 import { ImageNode, reportUploadProgress } from "./imageNode";
 import { uploadsApi, usersApi } from "@/api/endpoints";
 import { useApiError } from "@/composables/useApiError";
+import { useToast } from "@/composables/useToast";
+import { useMetaStore } from "@/stores/meta";
+import { useI18n } from "vue-i18n";
+import { DEFAULT_UPLOAD_RULES, acceptOf, classify, formatSize, prepareImage } from "@/services/uploads";
 import type { Icon } from "@/plugins/icons";
 import type { User } from "@/types/models";
 
@@ -98,7 +102,23 @@ const mention = Mention.configure({
   },
 });
 
-const imageFiles = (list: FileList | null | undefined) => [...(list ?? [])].filter((file) => file.type.startsWith("image/"));
+const meta = useMetaStore();
+const toast = useToast();
+const { t, locale } = useI18n();
+const uploadRules = () => meta.meta?.uploads ?? DEFAULT_UPLOAD_RULES;
+const imageAccept = acceptOf(DEFAULT_UPLOAD_RULES, ["image"]);
+
+/** Pictures among pasted, dropped or picked files; wrong type or too big is refused at once, with the reason. */
+function imageFiles(list: FileList | null | undefined): File[] {
+  const rules = uploadRules();
+  return [...(list ?? [])].filter((file) => {
+    const checked = classify(file, { ...rules, files: { ...rules.files, extensions: [] } });
+    if (checked.ok) return true;
+    const max = checked.max ? formatSize(checked.max, t("attachments.units").split(","), locale.value) : "";
+    toast.error(t(`attachments.errors.${checked.reason === "type" ? "imageType" : checked.reason}`, { name: file.name, max }));
+    return false;
+  });
+}
 
 /** Finds the image node of an upload and replaces its attributes (or removes it). */
 function patchUpload(uploadId: string, attrs: Record<string, unknown> | null): void {
@@ -127,7 +147,8 @@ async function insertImages(files: File[], position?: number): Promise<void> {
 
       uploading.value++;
       try {
-        const { url } = await uploadsApi.image(file, (percent) => reportUploadProgress(uploadId, percent));
+        const ready = await prepareImage(file, uploadRules().image_edge);
+        const { url } = await uploadsApi.image(ready, (percent) => reportUploadProgress(uploadId, percent));
         // Keep the preview on screen until the real file is ready, so it never flashes.
         await new Promise<void>((resolve) => {
           const probe = new Image();
@@ -316,7 +337,7 @@ defineExpose({ mentionIds, clear, focus: () => editor.value?.commands.focus() })
         >
           <PtIcon :icon="uploading ? Loading03Icon : Image01Icon" :size="16" :class="uploading && 'animate-spin'" />
         </button>
-        <input ref="fileInput" type="file" accept="image/*" multiple class="hidden" @change="pickImages" />
+        <input ref="fileInput" type="file" :accept="imageAccept" multiple class="hidden" @change="pickImages" />
       </template>
       <slot name="toolbar-end" />
     </div>
