@@ -15,7 +15,6 @@ import {
   ViewIcon,
 } from "@hugeicons/core-free-icons";
 import PtAvatar from "@/components/ui/PtAvatar.vue";
-import PtButton from "@/components/ui/PtButton.vue";
 import PtUserPicker from "@/components/ui/PtUserPicker.vue";
 import PtIcon from "@/components/ui/PtIcon.vue";
 import PtIconButton from "@/components/ui/PtIconButton.vue";
@@ -132,23 +131,6 @@ async function saveObservers(next: User[]): Promise<void> {
   }
 }
 
-const leaving = ref(false);
-async function leave(): Promise<void> {
-  if (!task.value) return;
-  const id = task.value.id;
-  leaving.value = true;
-  try {
-    await tasksApi.leaveObservers(id);
-    toast.show(t("tasks.leftObserving"));
-    emit("deleted", id); // gone from "Shared with me"
-    open.value = false;
-  } catch (error) {
-    errors.report(error);
-  } finally {
-    leaving.value = false;
-  }
-}
-
 async function remove(): Promise<void> {
   if (!task.value) return;
   const id = task.value.id;
@@ -186,7 +168,6 @@ async function remove(): Promise<void> {
           <p class="text-sm font-semibold text-primary">{{ $t("tasks.sharedBanner") }}</p>
           <p class="mt-0.5 text-xs text-muted">{{ $t("tasks.sharedBannerHint") }}</p>
         </div>
-        <PtButton size="sm" variant="secondary" :loading="leaving" @click="leave">{{ $t("tasks.leaveObserving") }}</PtButton>
       </div>
 
       <dl class="grid grid-cols-[auto_1fr] items-center gap-x-6 gap-y-3.5 text-sm">
