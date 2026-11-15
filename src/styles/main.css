@@ -172,6 +172,29 @@
   .pt-scroll-x::-webkit-scrollbar {
     display: none;
   }
+  /* Vertical side scroller: hidden bar until hover, soft fade at the bottom edge only. */
+  .pt-scroll-y {
+    @apply overflow-y-auto overscroll-contain;
+    scrollbar-width: none;
+    scrollbar-gutter: stable;
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 20px), transparent 100%);
+  }
+  .pt-scroll-y:hover {
+    scrollbar-width: thin;
+  }
+  .pt-scroll-y::-webkit-scrollbar {
+    width: 6px;
+  }
+  .pt-scroll-y::-webkit-scrollbar-button {
+    display: none;
+  }
+  .pt-scroll-y::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: transparent;
+  }
+  .pt-scroll-y:hover::-webkit-scrollbar-thumb {
+    background: var(--pt-border);
+  }
   .pt-mark-gradient {
     background: linear-gradient(135deg, #53aeff 0%, #326899 100%);
   }

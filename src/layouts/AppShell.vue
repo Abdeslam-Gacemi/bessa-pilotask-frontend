@@ -176,12 +176,14 @@ router.afterEach((to, from) => {
 <template>
   <div class="min-h-dvh md:flex">
     <!-- Desktop sidebar -->
-    <aside class="sticky top-0 hidden h-dvh w-68 shrink-0 flex-col gap-1 border-e border-line bg-surface/70 px-4 py-5 backdrop-blur md:flex">
-      <div class="mb-5 flex items-center justify-between gap-2 ps-2">
+    <aside class="sticky top-0 hidden h-dvh w-68 shrink-0 flex-col border-e border-line bg-surface/70 px-4 py-5 backdrop-blur md:flex">
+      <div class="mb-3 flex shrink-0 items-center justify-between gap-2 ps-2">
         <RouterLink to="/"><AppLogo :height="30" /></RouterLink>
         <PtIconButton v-if="session.canCreate" :icon="Add01Icon" variant="ink" :label="$t('create.title')" @click="openCreate" />
       </div>
 
+      <!-- One scroll area for nav, projects and admin: header and footer stay pinned. -->
+      <div class="pt-scroll-y -mx-2 min-h-0 flex-1 px-2 py-2">
       <nav class="flex flex-col gap-0.5">
         <RouterLink
           v-for="item in main"
@@ -196,7 +198,7 @@ router.afterEach((to, from) => {
         </RouterLink>
       </nav>
 
-      <div class="mt-5 min-h-0 flex-1 overflow-y-auto">
+      <div class="mt-5">
         <!-- Projects: the section and each project fold; the state is remembered on this device. -->
         <button
           type="button"
@@ -257,10 +259,11 @@ router.afterEach((to, from) => {
           </RouterLink>
         </template>
       </div>
+      </div>
 
-      <SidebarPreferences class="mt-3 border-t border-line pt-3" />
+      <SidebarPreferences class="shrink-0 border-t border-line pt-3" />
 
-      <div v-if="session.user" class="mt-2 flex items-center gap-2 rounded-2xl border border-line bg-surface p-2">
+      <div v-if="session.user" class="mt-2 flex shrink-0 items-center gap-2 rounded-2xl border border-line bg-surface p-2">
         <RouterLink to="/settings" class="flex min-w-0 flex-1 items-center gap-3 rounded-xl p-1 transition hover:bg-surface-2">
           <PtAvatar :name="session.user.name" :src="session.user.avatar_url" :size="38" />
           <span class="min-w-0 flex-1">
