@@ -25,7 +25,7 @@ export interface ProjectFilters {
   start: DayRange;
   end: DayRange;
   states: ProjectState[];
-  memberIds: number[];
+  managerIds: number[];
   entityIds: number[];
 }
 
@@ -46,7 +46,7 @@ export const emptyProjectFilters = (): ProjectFilters => ({
   start: emptyRange(),
   end: emptyRange(),
   states: [],
-  memberIds: [],
+  managerIds: [],
   entityIds: [],
 });
 
@@ -73,7 +73,7 @@ export function countTaskFilters(f: TaskFilters): number {
 }
 
 export function countProjectFilters(f: ProjectFilters): number {
-  return [f.archived, rangeSet(f.start), rangeSet(f.end), f.states.length, f.memberIds.length, f.entityIds.length].filter(Boolean).length;
+  return [f.archived, rangeSet(f.start), rangeSet(f.end), f.states.length, f.managerIds.length, f.entityIds.length].filter(Boolean).length;
 }
 
 /**
@@ -112,7 +112,7 @@ export function projectState(p: Project): ProjectState {
 export function matchProject(p: Project, f: ProjectFilters): boolean {
   if (!inRange(p.starts_on, f.start) || !inRange(p.ends_on, f.end)) return false;
   if (f.states.length && !f.states.includes(projectState(p))) return false;
-  if (f.memberIds.length && !p.members?.some((m) => f.memberIds.includes(m.id))) return false;
+  if (f.managerIds.length && !p.managers?.some((m) => f.managerIds.includes(m.id))) return false;
   if (f.entityIds.length && (p.entity_id == null || !f.entityIds.includes(p.entity_id))) return false;
   return true;
 }

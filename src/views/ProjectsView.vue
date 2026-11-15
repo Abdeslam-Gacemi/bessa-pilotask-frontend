@@ -31,8 +31,8 @@ const showFilters = ref(false);
 const filterCount = computed(() => countProjectFilters(filters));
 const visible = computed(() => projects.value.filter((p) => matchProject(p, filters)));
 const access = useAccess();
-// Members only mean something to managers; simple users reach projects through their tasks.
-const members = computed(() => (access.canManage.value ? uniqueUsers(projects.value.map((p) => p.members)) : []));
+// Filter by project manager (workspace managers only).
+const managers = computed(() => (access.canManage.value ? uniqueUsers(projects.value.map((p) => p.managers)) : []));
 const creating = ref(false);
 
 async function load(): Promise<void> {
@@ -102,7 +102,7 @@ onMounted(() => {
           </div>
           <PtProgress :value="progress(project)" :color="project.color ?? undefined" />
         </div>
-        <PtAvatarStack :users="project.members ?? []" :max="5" />
+        <PtAvatarStack v-if="project.managers?.length" :users="project.managers" :max="5" />
       </RouterLink>
     </div>
 
@@ -110,7 +110,7 @@ onMounted(() => {
     <ProjectFilterSheet
       v-model="showFilters"
       :filters="filters"
-      :users="members"
+      :users="managers"
       :entities="access.filtersByEntity.value ? access.entities.entities : []"
       :results="visible.length"
       @reset="reset"

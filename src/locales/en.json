@@ -98,7 +98,6 @@
     "description": "Description",
     "color": "Color",
     "icon": "Icon",
-    "members": "Members",
     "startsOn": "Start",
     "endsOn": "End",
     "empty": "No projects yet",
@@ -110,7 +109,6 @@
     "tables": "{n} table | {n} tables",
     "progress": "Progress",
     "showArchived": "Show archived",
-    "membersCount": "{n} member | {n} members",
     "managers": "Project managers",
     "managersHint": "Simple users who run this project: its tables, statuses and tasks. Only admins name them."
   },

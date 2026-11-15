@@ -98,7 +98,6 @@
     "description": "Description",
     "color": "Couleur",
     "icon": "Icône",
-    "members": "Membres",
     "startsOn": "Début",
     "endsOn": "Fin",
     "empty": "Aucun projet pour l'instant",
@@ -110,7 +109,6 @@
     "tables": "{n} tableau | {n} tableaux",
     "progress": "Avancement",
     "showArchived": "Afficher les archivés",
-    "membersCount": "{n} membre | {n} membres",
     "managers": "Chefs de projet",
     "managersHint": "Utilisateurs simples qui pilotent ce projet : ses tableaux, statuts et tâches. Seuls les admins les désignent."
   },

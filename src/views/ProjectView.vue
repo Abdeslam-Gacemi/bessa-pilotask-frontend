@@ -132,9 +132,9 @@ onMounted(load);
       </p>
       <p v-if="project.description" class="relative mt-3 max-w-3xl text-sm leading-relaxed text-muted">{{ project.description }}</p>
       <div class="relative mt-5 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-line/70 pt-4">
-        <div class="flex items-center gap-2.5">
-          <PtAvatarStack :users="project.members ?? []" :max="6" :size="30" />
-          <span class="text-xs font-semibold text-muted">{{ $t("projects.membersCount", project.members?.length ?? 0) }}</span>
+        <div v-if="project.managers?.length" class="flex items-center gap-2.5">
+          <PtAvatarStack :users="project.managers" :max="6" :size="30" />
+          <span class="text-xs font-semibold text-muted">{{ $t("projects.managers") }}</span>
         </div>
         <div class="flex min-w-48 flex-1 items-center gap-3">
           <span class="text-xs font-semibold text-muted">{{ $t("projects.progress") }}</span>
