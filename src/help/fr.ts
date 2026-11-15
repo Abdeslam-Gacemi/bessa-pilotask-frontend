@@ -91,7 +91,7 @@ const content: HelpContent = [
       {
         id: "tasks-create",
         title: "Créer une tâche",
-        audience: "managers",
+        audience: "projectManagers",
         blocks: [
           { type: "steps", items: ["Touchez **+** puis **Tâche**, ou le **+** en haut d'une colonne.", "Écrivez un titre clair, choisissez le tableau et le statut.", "Ajoutez si besoin une description, une priorité, des dates et des étiquettes.", "Assignez une ou plusieurs personnes : elles sont prévenues."] },
           { type: "tip", text: "Sur téléphone, **secouez l'appareil** pour ouvrir directement le menu de création." },
@@ -177,7 +177,7 @@ const content: HelpContent = [
       {
         id: "calendar-reports",
         title: "Rapports par e-mail",
-        audience: "managers",
+        audience: "workspace",
         blocks: [{ type: "p", text: "Les admins et lecteurs peuvent recevoir un rapport **quotidien**, **hebdomadaire** ou **mensuel** sur l'avancement de leurs entités, depuis **Paramètres → Rapports par e-mail**." }],
       },
     ],
@@ -191,7 +191,7 @@ const content: HelpContent = [
       {
         id: "analytics-read",
         title: "Lire les analyses",
-        audience: "managers",
+        audience: "overview",
         blocks: [
           { type: "p", text: "Les analyses montrent les tâches créées et terminées, la répartition par statut et priorité, la charge par personne et les échéances à venir, sur la période choisie." },
           { type: "p", text: "Changez de portée (tout, un projet, un tableau, une personne) et, si vous gérez plusieurs entités, filtrez par entité. Le rapport s'exporte en PDF pour être partagé." },
