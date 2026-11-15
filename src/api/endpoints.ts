@@ -111,8 +111,8 @@ export const entitiesApi = {
 export const projectsApi = {
   list: (archived = false, o: CallOptions = {}) => data(http.get<Project[]>("/projects", { params: { archived: archived ? 1 : 0 }, ...o })),
   get: (id: number, o: CallOptions = {}) => data(http.get<Project>(`/projects/${id}`, o)),
-  create: (payload: Partial<Project> & { member_ids?: number[] }) => data(http.post<Project>("/projects", payload)),
-  update: (id: number, payload: Partial<Project> & { member_ids?: number[]; archived?: boolean }) =>
+  create: (payload: Partial<Project> & { manager_ids?: number[] }) => data(http.post<Project>("/projects", payload)),
+  update: (id: number, payload: Partial<Project> & { manager_ids?: number[]; archived?: boolean }) =>
     data(http.patch<Project>(`/projects/${id}`, payload)),
   remove: (id: number) => http.delete(`/projects/${id}`),
 };

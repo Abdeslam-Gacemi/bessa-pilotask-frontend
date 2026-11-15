@@ -43,7 +43,7 @@ export interface User {
   entity_ids?: number[];
   entities?: Entity[];
   /** In a project's member list. */
-  project_role?: "member" | "manager";
+  project_role?: "manager";
   /** Signed-in person only: projects they manage as a simple user. */
   managed_project_ids?: number[];
   email?: string;
@@ -88,7 +88,7 @@ export interface Project {
   created_at: string;
   entity_id?: number | null;
   entity?: Entity | null;
-  members?: User[];
+  managers?: User[];
   boards?: Board[];
   tasks_count?: number;
   done_count?: number;
@@ -303,3 +303,4 @@ export interface TaskInput {
   assignee_ids?: number[];
   label_ids?: number[];
 }
+

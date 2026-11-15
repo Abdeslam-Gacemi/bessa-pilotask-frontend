@@ -11,7 +11,7 @@ import FilterSection from "./FilterSection.vue";
 import { countProjectFilters, type ProjectFilters, type ProjectState } from "@/domain/filters";
 import type { Entity, User } from "@/types/models";
 
-/** Project filters: archived, start / end ranges, progress state and members. */
+/** Project filters: archived, start / end ranges, progress state and managers. */
 const props = defineProps<{
   filters: ProjectFilters;
   users: Pick<User, "id" | "name" | "avatar_url">[];
@@ -53,8 +53,8 @@ const active = computed(() => countProjectFilters(f));
       <FilterSection v-if="entityOptions.length" :title="$t('entities.entity')" :icon="Building03Icon" :active="f.entityIds.length > 0" @clear="f.entityIds = []">
         <FilterChips v-model="f.entityIds" :options="entityOptions" />
       </FilterSection>
-      <FilterSection v-if="userOptions.length" :title="$t('projects.members')" :icon="UserMultipleIcon" :active="f.memberIds.length > 0" @clear="f.memberIds = []">
-        <FilterChips v-model="f.memberIds" :options="userOptions" />
+      <FilterSection v-if="userOptions.length" :title="$t('projects.managers')" :icon="UserMultipleIcon" :active="f.managerIds.length > 0" @clear="f.managerIds = []">
+        <FilterChips v-model="f.managerIds" :options="userOptions" />
       </FilterSection>
     </div>
     <template #footer>

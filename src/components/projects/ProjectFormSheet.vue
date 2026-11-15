@@ -28,7 +28,6 @@ const form = reactive({
   icon: null as string | null,
   starts_on: "",
   ends_on: "",
-  members: [] as User[],
   managers: [] as User[],
   entity_id: null as number | null,
 });
@@ -40,8 +39,6 @@ const managerChoices = computed(() => form.managers);
 function onManagers(next: User[]): void {
   const simple = next.filter((u) => u.role === "user");
   form.managers = simple;
-  // A manager is not listed twice.
-  form.members = form.members.filter((m) => !simple.some((u) => u.id === m.id));
 }
 
 // Global managers pick any entity (or none: global); managers of several entities pick one of theirs.
@@ -59,8 +56,7 @@ watch(open, (value) => {
     icon: p?.icon ?? "folder-01",
     starts_on: p?.starts_on ?? "",
     ends_on: p?.ends_on ?? "",
-    members: (p?.members ?? []).filter((u) => u.project_role !== "manager"),
-    managers: (p?.members ?? []).filter((u) => u.project_role === "manager"),
+    managers: p?.managers ?? [],
     entity_id: p?.entity_id ?? (session.isGlobal ? null : (entityStore.entities[0]?.id ?? null)),
   });
   void entityStore.load().catch(() => undefined);
@@ -81,7 +77,6 @@ async function submit(): Promise<void> {
     icon: form.icon,
     starts_on: form.starts_on || null,
     ends_on: form.ends_on || null,
-    member_ids: form.members.map((u) => u.id),
     ...(canNameManagers.value ? { manager_ids: form.managers.map((u) => u.id) } : {}),
     ...(pickEntity.value ? { entity_id: form.entity_id } : {}),
   };
@@ -121,7 +116,6 @@ async function submit(): Promise<void> {
       <PtField v-if="canNameManagers" :label="$t('projects.managers')" :hint="$t('projects.managersHint')" optional>
         <PtUserPicker :model-value="managerChoices" @update:model-value="onManagers" />
       </PtField>
-      <PtField :label="$t('projects.members')" optional><PtUserPicker v-model="form.members" /></PtField>
       <button type="submit" class="hidden" />
     </form>
     <template #footer>
