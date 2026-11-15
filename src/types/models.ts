@@ -304,3 +304,161 @@ export interface TaskInput {
   label_ids?: number[];
 }
 
+// ─── Objectives (OKRs) ──────────────────────────────────────────────
+
+export type Health = "on_track" | "at_risk" | "off_track";
+export type KeyResultType = "tasks" | "metric" | "milestone";
+export type KeyResultLinkType = "project" | "board" | "label" | "task";
+
+/** A person next to what they own: name and face only. */
+export type Person = Pick<User, "id" | "name" | "avatar_url">;
+
+/** Why a key result needs attention; the screens translate the code. */
+export interface Signal {
+  code: "no_work" | "milestone_late" | "behind" | "forecast" | "overdue" | "stalled" | "owner_at_risk" | "owner_off_track" | "stale";
+  value?: number;
+}
+
+/** Percentages 0–100. `expected`: where it should be today; `forecast`: where it lands at the current pace. */
+export interface KeyResultInsight {
+  progress: number;
+  expected: number;
+  forecast: number | null;
+  health: Health;
+  confidence: Health | null;
+  stale: boolean;
+  signals: Signal[];
+  tasks: { total: number; done: number; recent: number; overdue: number } | null;
+}
+
+export interface ObjectiveInsight {
+  progress: number;
+  expected: number;
+  forecast: number | null;
+  health: Health;
+  health_counts: Record<Health, number>;
+  stale: number;
+  days_left: number;
+}
+
+export interface KeyResultLink {
+  type: KeyResultLinkType;
+  id: number;
+  name?: string | null;
+  color?: string | null;
+  context?: string | null;
+}
+
+export interface CheckIn {
+  id: number;
+  key_result_id: number;
+  value: number | null;
+  progress: number;
+  confidence: Health;
+  note: string | null;
+  user?: Person | null;
+  created_at: string;
+}
+
+export interface KeyResult {
+  id: number;
+  objective_id: number;
+  title: string;
+  type: KeyResultType;
+  unit: string | null;
+  start_value: number;
+  target_value: number | null;
+  current_value: number | null;
+  weight: number;
+  due_on: string | null;
+  owner?: Person | null;
+  links?: KeyResultLink[];
+  last_check_in?: CheckIn | null;
+  check_ins?: CheckIn[];
+  insight: KeyResultInsight | null;
+  can: { check_in: boolean };
+}
+
+export interface Objective {
+  id: number;
+  title: string;
+  description: string | null;
+  entity_id: number | null;
+  entity?: Pick<Entity, "id" | "name" | "color"> | null;
+  parent_id: number | null;
+  owner?: Person | null;
+  starts_on: string;
+  ends_on: string;
+  closed_at: string | null;
+  insight: ObjectiveInsight | null;
+  key_results?: KeyResult[];
+  can: { update: boolean; delete: boolean };
+}
+
+export interface AttentionItem extends KeyResultInsight {
+  objective_id: number;
+  objective_title: string;
+  key_result_id: number;
+  title: string;
+  owner: Person | null;
+}
+
+export interface ObjectivesOverview {
+  data: Objective[];
+  summary: {
+    objectives: number;
+    key_results: number;
+    progress: number;
+    expected: number;
+    health_counts: Record<Health, number>;
+    stale: number;
+    attention: AttentionItem[];
+  };
+}
+
+export interface ObjectiveDetail {
+  data: Objective;
+  timeline: {
+    points: { date: string; actual: number | null; plan: number }[];
+    forecast: { date: string; value: number } | null;
+  };
+}
+
+export interface LinkedTask {
+  id: number;
+  title: string;
+  due_at: string | null;
+  completed_at: string | null;
+  board: { id: number; name: string };
+  status: { name: string; color: string; category: StatusCategory };
+  assignees: Person[];
+}
+
+export interface ObjectiveInput {
+  title: string;
+  description: string | null;
+  entity_id: number | null;
+  owner_id: number | null;
+  starts_on: string;
+  ends_on: string;
+  closed?: boolean;
+}
+
+export interface KeyResultInput {
+  title: string;
+  type: KeyResultType;
+  owner_id: number | null;
+  unit: string | null;
+  start_value: number;
+  target_value: number | null;
+  weight: number;
+  due_on: string | null;
+  links: { type: KeyResultLinkType; id: number }[];
+}
+
+export interface CheckInInput {
+  confidence: Health;
+  note: string | null;
+  value?: number | null;
+  done?: boolean;
+}

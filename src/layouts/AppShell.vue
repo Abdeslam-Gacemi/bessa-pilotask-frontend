@@ -9,6 +9,7 @@ import {
   Add01Icon,
   Analytics01Icon,
   Calendar03Icon,
+  Target02Icon,
   CheckListIcon,
   Folder01Icon,
   Home09Icon,
@@ -85,6 +86,7 @@ const main = computed<NavItem[]>(() => [
   { to: "/my-tasks", label: t("nav.myTasks"), icon: CheckListIcon },
   { to: "/projects", label: t("nav.projects"), icon: Folder01Icon },
   { to: "/calendar", label: t("nav.calendar"), icon: Calendar03Icon },
+  ...(session.hasOverview ? [{ to: "/objectives", label: t("nav.objectives"), icon: Target02Icon }] : []),
   { to: "/notifications", label: t("nav.notifications"), icon: Notification03Icon, badge: inbox.unread },
 ]);
 

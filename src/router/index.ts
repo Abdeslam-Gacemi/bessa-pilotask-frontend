@@ -24,6 +24,8 @@ const routes: RouteRecordRaw[] = [
       { path: "tasks/:id(\\d+)", name: "task", component: () => import("@/views/TaskView.vue"), props: (r) => ({ id: Number(r.params.id) }) },
       { path: "my-tasks", name: "my-tasks", component: () => import("@/views/MyTasksView.vue"), meta: { title: "nav.myTasks" } },
       { path: "calendar", name: "calendar", component: () => import("@/views/CalendarView.vue"), meta: { title: "nav.calendar" } },
+      { path: "objectives", name: "objectives", component: () => import("@/views/ObjectivesView.vue"), meta: { title: "nav.objectives" } },
+      { path: "objectives/:id(\\d+)", name: "objective", component: () => import("@/views/ObjectiveView.vue"), props: (r) => ({ id: Number(r.params.id) }), meta: { title: "nav.objectives" } },
       { path: "analytics", name: "analytics", component: () => import("@/views/AnalyticsView.vue"), meta: { workspace: true, title: "nav.analytics" } },
       { path: "activity", name: "activity", component: () => import("@/views/ActivityView.vue"), meta: { superAdmin: true, title: "nav.activity" } },
       { path: "users", name: "users", component: () => import("@/views/UsersView.vue"), meta: { manager: true, title: "nav.users" } },

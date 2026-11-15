@@ -15,7 +15,8 @@
     "notifications": "Notifications",
     "myTasks": "Mes tâches",
     "admin": "Administration",
-    "entities": "Entités"
+    "entities": "Entités",
+    "objectives": "Objectifs"
   },
   "common": {
     "save": "Enregistrer",
@@ -680,6 +681,134 @@
       "imageTooLarge": "« {name} » dépasse {max} (taille maximale d'une image).",
       "fileTooLarge": "« {name} » dépasse {max} (taille maximale d'un document).",
       "empty": "« {name} » est vide."
+    }
+  },
+  "objectives": {
+    "title": "Objectifs",
+    "subtitle": "Ce que l'organisation veut atteindre, et si elle est en bonne voie.",
+    "companyWide": "Toute l'entreprise",
+    "allEntities": "Toutes les entités",
+    "previousYear": "Année précédente",
+    "nextYear": "Année suivante",
+    "empty": "Aucun objectif sur cette période",
+    "emptyHint": "Fixez 3 à 5 objectifs, puis mesurez-les par des résultats clés liés au travail réel.",
+    "noKeyResults": "Aucun résultat clé : ajoutez-en pour mesurer l'objectif.",
+    "keyResults": "Résultats clés",
+    "attention": "Points d'attention",
+    "attentionHint": "Les résultats clés à regarder en premier, avec la raison.",
+    "allGood": "Rien à signaler : tout est en bonne voie.",
+    "ahead": "En avance de {n} pts",
+    "behind": "En retard de {n} pts",
+    "daysLeft": "Terminé | 1 jour restant | {n} jours restants",
+    "forecastShort": "projection {n} %",
+    "expectedToday": "Prévu aujourd'hui",
+    "forecastEnd": "Projection à l'échéance",
+    "checkIn": "Point d'avancement",
+    "lastCheckIn": "Dernier point {when}",
+    "details": "Détails",
+    "countedTasks": "Tâches comptées",
+    "noTasks": "Aucune tâche visible pour vous.",
+    "history": "Historique des points",
+    "deleteKeyResult": "Supprimer le résultat clé « {name} » ?",
+    "deleteObjective": "Supprimer l'objectif « {name} » et ses résultats clés ?",
+    "paceAria": "Avancement {progress} %, prévu {expected} %, projection {forecast} %",
+    "health": {
+      "on_track": "En bonne voie",
+      "at_risk": "À risque",
+      "off_track": "Hors trajectoire"
+    },
+    "types": {
+      "tasks": "Tâches",
+      "metric": "Indicateur",
+      "milestone": "Jalon"
+    },
+    "typeHints": {
+      "tasks": "Avance tout seul : part des tâches liées terminées (projets, tableaux, étiquettes ou tâches isolées).",
+      "metric": "Un chiffre mis à jour à chaque point : budget, incidents, satisfaction… Monte ou descend vers la cible.",
+      "milestone": "Fait ou pas fait, avant une date."
+    },
+    "periods": {
+      "q1": "T1",
+      "q2": "T2",
+      "q3": "T3",
+      "q4": "T4",
+      "s1": "S1",
+      "s2": "S2",
+      "year": "Année"
+    },
+    "measure": {
+      "tasks": "{done} / {total} tâches",
+      "done": "Fait",
+      "pending": "À faire"
+    },
+    "kpi": {
+      "progress": "Avancement",
+      "expected": "Prévu à ce jour : {n} %",
+      "ofObjectives": "sur {n} objectifs",
+      "watch": "À surveiller",
+      "offTrack": "aucun hors trajectoire | 1 hors trajectoire | {n} hors trajectoire",
+      "stale": "Points en retard",
+      "staleHint": "Résultats clés sans point depuis 7 jours"
+    },
+    "verdict": {
+      "done": "Objectif atteint.",
+      "notStarted": "La période n'a pas commencé.",
+      "withForecast": "{pace} · au rythme actuel : {n} % à l'échéance."
+    },
+    "signals": {
+      "no_work": "Aucun travail lié",
+      "milestone_late": "Jalon dépassé",
+      "behind": "{n} pts de retard sur le plan",
+      "forecast": "Projection : {n} % à l'échéance",
+      "overdue": "{n} tâche(s) en retard",
+      "stalled": "Rien terminé depuis {n} jours",
+      "owner_at_risk": "Le responsable signale un risque",
+      "owner_off_track": "Le responsable le juge hors trajectoire",
+      "stale": "Pas de point depuis 7 jours"
+    },
+    "links": {
+      "add": "Lier du travail",
+      "project": "Projets",
+      "board": "Tableaux",
+      "label": "Étiquettes",
+      "task": "Tâches"
+    },
+    "chart": {
+      "title": "Avancement réel vs plan",
+      "plan": "Plan",
+      "actual": "Réel",
+      "forecast": "Projection",
+      "today": "Aujourd'hui"
+    },
+    "form": {
+      "new": "Nouvel objectif",
+      "edit": "Modifier l'objectif",
+      "title": "Objectif",
+      "titleHint": "Un résultat à atteindre, pas une activité.",
+      "titlePlaceholder": "Livrer la Résidence Les Oliviers à temps",
+      "why": "Pourquoi c'est important",
+      "period": "Période",
+      "owner": "Responsable",
+      "ownerHint": "Fait les points d'avancement.",
+      "newKeyResult": "Résultat clé",
+      "editKeyResult": "Modifier le résultat clé",
+      "krTitle": "Résultat clé",
+      "krTitlePlaceholder": "Gros œuvre terminé",
+      "measuredBy": "Mesuré par",
+      "linkedWork": "Travail lié",
+      "linkedWorkHint": "Mélangez projets, tableaux, étiquettes et tâches : une tâche comptée deux fois ne compte qu'une fois.",
+      "start": "Départ",
+      "target": "Cible",
+      "unit": "Unité",
+      "dueOn": "Échéance",
+      "weight": "Poids",
+      "weightHint": "Importance dans l'objectif.",
+      "currentValue": "Valeur actuelle",
+      "milestoneDone": "Jalon atteint",
+      "tasksMoveThemselves": "L'avancement suit les tâches liées : donnez simplement votre confiance.",
+      "confidence": "Confiance",
+      "note": "Commentaire",
+      "notePlaceholder": "Ce qui a avancé, ce qui bloque, ce qu'il faut décider…"
     }
   }
 }

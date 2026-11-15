@@ -18,6 +18,13 @@ import type {
   TaskInput,
   User,
   Attachment,
+  CheckIn,
+  CheckInInput,
+  KeyResultInput,
+  LinkedTask,
+  ObjectiveDetail,
+  ObjectiveInput,
+  ObjectivesOverview,
 } from "@/types/models";
 
 const data = <T>(promise: Promise<{ data: T }>) => promise.then((response) => response.data);
@@ -232,4 +239,21 @@ export const notificationsApi = {
   test: () => data(http.post<{ devices: number; mail: string }>("/notifications/test")),
   registerDevice: (token: string, platform: "web" | "android" | "ios") => http.post("/device-tokens", { token, platform }),
   unregisterDevice: (token: string) => http.delete("/device-tokens", { data: { token } }),
+};
+
+export const objectivesApi = {
+  list: (params: { from: string; to: string; entity_id?: number | null }, o: CallOptions = {}) =>
+    data(http.get<ObjectivesOverview>("/objectives", { params, ...o })),
+  get: (id: number, o: CallOptions = {}) => data(http.get<ObjectiveDetail>(`/objectives/${id}`, o)),
+  create: (payload: ObjectiveInput) => data(http.post<ObjectiveDetail>("/objectives", payload)),
+  update: (id: number, payload: Partial<ObjectiveInput>) => data(http.patch<ObjectiveDetail>(`/objectives/${id}`, payload)),
+  remove: (id: number) => http.delete(`/objectives/${id}`),
+};
+
+export const keyResultsApi = {
+  create: (objectiveId: number, payload: KeyResultInput) => data(http.post<{ id: number }>(`/objectives/${objectiveId}/key-results`, payload)),
+  update: (id: number, payload: Partial<KeyResultInput>) => data(http.patch<{ id: number }>(`/key-results/${id}`, payload)),
+  remove: (id: number) => http.delete(`/key-results/${id}`),
+  checkIn: (id: number, payload: CheckInInput) => data(http.post<CheckIn>(`/key-results/${id}/check-ins`, payload)),
+  tasks: (id: number, o: CallOptions = {}) => data(http.get<LinkedTask[]>(`/key-results/${id}/tasks`, o)),
 };
