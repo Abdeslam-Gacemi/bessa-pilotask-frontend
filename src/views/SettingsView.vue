@@ -9,6 +9,7 @@ import {
   Activity01Icon,
   ComputerIcon,
   EyeIcon,
+  HelpCircleIcon,
   Logout01Icon,
   Moon02Icon,
   Notification03Icon,
@@ -55,6 +56,7 @@ const LANGUAGES: { value: Locale; label: string }[] = [
 ];
 
 const sections = computed<{ key: string; icon: Icon; title: string; tone: string; external?: string }[]>(() => [
+  { key: "help", icon: HelpCircleIcon, title: t("help.title"), tone: "bg-primary-soft text-primary", external: "/help" },
   { key: "notifications", icon: Notification03Icon, title: t("settings.notifications"), tone: "bg-warning-soft text-warning" },
   { key: "security", icon: SquareLock02Icon, title: t("settings.security"), tone: "bg-danger-soft text-danger" },
   ...(session.seesWorkspace

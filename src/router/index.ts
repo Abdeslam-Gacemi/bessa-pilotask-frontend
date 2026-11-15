@@ -30,6 +30,7 @@ const routes: RouteRecordRaw[] = [
       { path: "entities", name: "entities", component: () => import("@/views/EntitiesView.vue"), meta: { superAdmin: true, title: "nav.entities" } },
       { path: "labels", name: "labels", component: () => import("@/views/LabelsView.vue"), meta: { manager: true, title: "nav.labels" } },
       { path: "notifications", name: "notifications", component: () => import("@/views/NotificationsView.vue"), meta: { title: "nav.notifications" } },
+      { path: "help", name: "help", component: () => import("@/views/HelpView.vue"), meta: { title: "help.title" } },
       { path: "settings", name: "settings", component: () => import("@/views/SettingsView.vue"), meta: { title: "nav.settings" } },
       {
         path: "settings/:section(notifications|security|reports|access)",

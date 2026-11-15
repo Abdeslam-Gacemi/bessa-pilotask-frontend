@@ -681,5 +681,28 @@
       "fileTooLarge": "« {name} » dépasse {max} (taille maximale d'un document).",
       "empty": "« {name} » est vide."
     }
+  },
+  "help": {
+    "title": "Aide et guide",
+    "subtitle": "Tout pour bien utiliser Pilotask : rôles, projets, tâches, fichiers, notifications.",
+    "search": "Rechercher dans l'aide",
+    "searchPlaceholder": "Rechercher : assigner, fichier, notification…",
+    "clear": "Effacer la recherche",
+    "results": "Aucun article | 1 article | {n} articles",
+    "noResults": "Aucun article ne correspond",
+    "noResultsHint": "Essayez un autre mot, plus court ou sans accent.",
+    "index": "Sommaire",
+    "collapseIndex": "Replier le sommaire",
+    "expandIndex": "Déplier le sommaire",
+    "copyLink": "Copier le lien de l'article",
+    "copied": "Lien copié",
+    "backToTop": "Revenir en haut",
+    "stillStuck": "Vous n'avez pas trouvé votre réponse ?",
+    "stillStuckHint": "Votre administrateur ou votre chef de projet peut vous aider.",
+    "audience": {
+      "managers": "Admins",
+      "superAdmin": "Super admin",
+      "projectManagers": "Chefs de projet et admins"
+    }
   }
 }
