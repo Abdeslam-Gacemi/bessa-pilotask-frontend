@@ -702,7 +702,13 @@
     "audience": {
       "managers": "Admins",
       "superAdmin": "Super admin",
-      "projectManagers": "Chefs de projet et admins"
-    }
+      "projectManagers": "Chefs de projet et admins",
+      "workspace": "Admins et lecteurs",
+      "overview": "Admins, lecteurs et chefs de projet"
+    },
+    "forYou": "Rubriques pour votre rôle : {role}",
+    "showAll": "Tout afficher",
+    "hidden": "Aucune rubrique masquée | 1 rubrique d'autres rôles masquée | {n} rubriques d'autres rôles masquées",
+    "projectManager": "chef de projet"
   }
 }

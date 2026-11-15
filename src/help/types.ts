@@ -4,8 +4,16 @@
  * is the only markup (rendered without v-html).
  */
 
-/** Who an article mostly concerns; shown as a badge, never hidden. */
-export type HelpAudience = "managers" | "superAdmin" | "projectManagers";
+/**
+ * Who an article is for. Readers see the articles of their role (and the
+ * untagged ones); "show everything" lifts the filter.
+ * - managers: admins and super admins;
+ * - superAdmin: super admins only;
+ * - projectManagers: admins and project managers (people who create and run tasks);
+ * - workspace: admins and viewers (whole-entity readers);
+ * - overview: anyone with analytics (admins, viewers, project managers).
+ */
+export type HelpAudience = "managers" | "superAdmin" | "projectManagers" | "workspace" | "overview";
 
 export type HelpIconKey =
   | "start"

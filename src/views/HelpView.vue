@@ -20,23 +20,42 @@ import PtEmpty from "@/components/ui/PtEmpty.vue";
 import PtIcon from "@/components/ui/PtIcon.vue";
 import PtIconButton from "@/components/ui/PtIconButton.vue";
 import PtSkeleton from "@/components/ui/PtSkeleton.vue";
-import { loadHelp, searchHelp } from "@/help";
+import PtSwitch from "@/components/ui/PtSwitch.vue";
+import { articleCount, forReader, loadHelp, searchHelp, type HelpReader } from "@/help";
+import { useSessionStore } from "@/stores/session";
 import type { HelpContent } from "@/help/types";
 import type { Locale } from "@/types/models";
 
 /**
- * The user guide, in the reader's language. A search narrows it to matching
- * articles; the index follows the reading (scroll-spy), folds to a rail on
- * large screens and to a bar on phones; every article has a shareable link.
+ * The user guide, in the reader's language and for their role. A search
+ * narrows it to matching articles; the index follows the reading
+ * (scroll-spy), folds to a rail on large screens and to a bar on phones;
+ * every article has a shareable link.
  */
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 const route = useRoute();
+const session = useSessionStore();
 
 const content = shallowRef<HelpContent | null>(null);
 const query = ref(typeof route.query.q === "string" ? route.query.q : "");
 const debounced = refDebounced(query, 150);
-const sections = computed(() => (content.value ? searchHelp(content.value, debounced.value) : []));
-const matches = computed(() => sections.value.reduce((n, s) => n + s.articles.length, 0));
+
+// ── Role: each reader sees the articles for their role; "show everything" lifts the filter.
+const reader = computed<HelpReader>(() => ({
+  managers: session.canManage,
+  superAdmin: session.isSuperAdmin,
+  projectManagers: session.canCreate,
+  workspace: session.seesWorkspace,
+  overview: session.hasOverview,
+}));
+const showAll = useLocalStorage("pt.help.showAll", false);
+const roleLabel = computed(() =>
+  session.user?.role === "user" && session.isProjectManager ? t("help.projectManager") : session.user ? t(`users.roles.${session.user.role}`) : "",
+);
+const mine = computed(() => (content.value ? forReader(content.value, reader.value) : []));
+const hidden = computed(() => (content.value ? articleCount(content.value) - articleCount(mine.value) : 0));
+const sections = computed(() => searchHelp(showAll.value ? (content.value ?? []) : mine.value, debounced.value));
+const matches = computed(() => articleCount(sections.value));
 
 const collapsed = useLocalStorage("pt.help.indexCollapsed", false);
 const mobileOpen = ref(false);
@@ -60,11 +79,11 @@ watch(
 );
 
 /** Scrolls to a section or article, and keeps its link in the address bar (without a router navigation, which would scroll to the top). */
-function go(id: string): void {
+function go(id: string, smooth = true): void {
   mobileOpen.value = false;
   const target = document.getElementById(id);
   if (!target) return;
-  target.scrollIntoView({ behavior: reducedMotion() ? "auto" : "smooth", block: "start" });
+  target.scrollIntoView({ behavior: smooth && !reducedMotion() ? "smooth" : "auto", block: "start" });
   history.replaceState(history.state, "", `#${id}`);
   activeArticle.value = target.dataset.helpArticle ?? target.querySelector<HTMLElement>("[data-help-article]")?.dataset.helpArticle ?? null;
   // The smooth scroll crosses other articles: keep the index on the chosen one meanwhile.
@@ -114,8 +133,14 @@ onMounted(async () => {
       content,
       async (value) => {
         if (!value) return;
+        const id = decodeURIComponent(hash);
+        // A link to an article of another role still opens it.
+        if (!mine.value.some((s) => s.id === id || s.articles.some((a) => a.id === id)) && value.some((s) => s.id === id || s.articles.some((a) => a.id === id))) {
+          showAll.value = true;
+        }
+        // Once the (possibly widened) list is rendered; land on it, no long scroll on arrival.
         await nextTick();
-        go(decodeURIComponent(hash));
+        go(id, false);
         stop();
       },
       { immediate: true },
@@ -175,6 +200,15 @@ useEventListener(window, "keydown", (event: KeyboardEvent) => {
         <p v-if="debounced && content" class="mt-2 text-xs opacity-75" aria-live="polite">{{ $t("help.results", matches) }}</p>
       </div>
     </header>
+
+    <!-- Role filter: only shown when it hides something -->
+    <div v-if="content && hidden > 0" class="-mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-2xl border border-line bg-surface px-4 py-3">
+      <div class="min-w-0 flex-1">
+        <p class="text-sm font-semibold">{{ $t("help.forYou", { role: roleLabel }) }}</p>
+        <p class="text-xs text-muted">{{ showAll ? $t("help.results", articleCount(content)) : $t("help.hidden", hidden) }}</p>
+      </div>
+      <PtSwitch v-model="showAll" :label="$t('help.showAll')" />
+    </div>
 
     <!-- Loading -->
     <div v-if="!content" class="grid gap-6 lg:grid-cols-[16rem_minmax(0,1fr)]">

@@ -91,7 +91,7 @@ const content: HelpContent = [
       {
         id: "tasks-create",
         title: "Create a task",
-        audience: "managers",
+        audience: "projectManagers",
         blocks: [
           { type: "steps", items: ["Tap **+**, then **Task**, or the **+** at the top of a column.", "Write a clear title, pick the table and the status.", "Add a description, a priority, dates and labels if needed.", "Assign one or more people: they are notified."] },
           { type: "tip", text: "On a phone, **shake the device** to open the create menu straight away." },
@@ -177,7 +177,7 @@ const content: HelpContent = [
       {
         id: "calendar-reports",
         title: "E-mail reports",
-        audience: "managers",
+        audience: "workspace",
         blocks: [{ type: "p", text: "Admins and viewers can receive a **daily**, **weekly** or **monthly** report on their entities' progress, from **Settings → E-mail reports**." }],
       },
     ],
@@ -191,7 +191,7 @@ const content: HelpContent = [
       {
         id: "analytics-read",
         title: "Read the analytics",
-        audience: "managers",
+        audience: "overview",
         blocks: [
           { type: "p", text: "Analytics show tasks created and completed, the split by status and priority, workload per person and upcoming due dates, over the chosen period." },
           { type: "p", text: "Change the scope (everything, a project, a table, a person) and, if you manage several entities, filter by entity. The report exports to PDF for sharing." },

@@ -1,5 +1,5 @@
 import type { Locale } from "@/types/models";
-import type { HelpBlock, HelpContent, HelpSection } from "./types";
+import type { HelpAudience, HelpBlock, HelpContent, HelpSection } from "./types";
 
 /** Each language is its own chunk, loaded when the help page opens in it. */
 const loaders: Record<Locale, () => Promise<{ default: HelpContent }>> = {
@@ -23,6 +23,20 @@ export function normalize(text: string): string {
 
 function blockText(block: HelpBlock): string {
   return "text" in block ? block.text : block.items.join(" ");
+}
+
+/** Which audiences the reader belongs to (from their role and the projects they manage). */
+export type HelpReader = Record<HelpAudience, boolean>;
+
+/** Articles for everyone plus those of the reader's audiences; sections left empty go. */
+export function forReader(content: HelpContent, reader: HelpReader): HelpSection[] {
+  return content
+    .map((section) => ({ ...section, articles: section.articles.filter((a) => !a.audience || reader[a.audience]) }))
+    .filter((section) => section.articles.length > 0);
+}
+
+export function articleCount(sections: HelpSection[]): number {
+  return sections.reduce((n, s) => n + s.articles.length, 0);
 }
 
 /** Sections keeping only the articles matching every word of the query (all of them when it is empty). */

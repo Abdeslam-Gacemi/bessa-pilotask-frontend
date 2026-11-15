@@ -702,7 +702,13 @@
     "audience": {
       "managers": "Admins",
       "superAdmin": "Super admin",
-      "projectManagers": "Project managers and admins"
-    }
+      "projectManagers": "Project managers and admins",
+      "workspace": "Admins and viewers",
+      "overview": "Admins, viewers and project managers"
+    },
+    "forYou": "Articles for your role: {role}",
+    "showAll": "Show everything",
+    "hidden": "No article hidden | 1 article for other roles hidden | {n} articles for other roles hidden",
+    "projectManager": "project manager"
   }
 }
