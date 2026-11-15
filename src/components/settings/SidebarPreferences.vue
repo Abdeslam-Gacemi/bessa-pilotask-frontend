@@ -19,16 +19,18 @@ const themes = computed(() => [
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
-    <RouterLink
-      to="/settings"
-      class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-muted transition hover:bg-surface-3 hover:text-fg"
-      active-class="!bg-ink !text-on-ink"
-    >
-      <PtIcon :icon="Settings02Icon" :size="19" />
-      {{ $t("nav.settings") }}
-    </RouterLink>
+  <div>
+    <!-- One row: settings, theme, language (saves vertical room for the nav above). -->
     <div class="flex items-center gap-2 px-1">
+      <RouterLink
+        to="/settings"
+        :aria-label="$t('nav.settings')"
+        :title="$t('nav.settings')"
+        class="grid size-9 shrink-0 place-items-center rounded-full border border-line bg-surface-2 text-muted transition hover:text-fg"
+        active-class="!bg-ink !text-on-ink !border-transparent"
+      >
+        <PtIcon :icon="Settings02Icon" :size="18" />
+      </RouterLink>
       <div class="flex flex-1 rounded-full border border-line bg-surface-2 p-0.5" role="radiogroup" :aria-label="$t('settings.theme')">
         <button
           v-for="theme in themes"
