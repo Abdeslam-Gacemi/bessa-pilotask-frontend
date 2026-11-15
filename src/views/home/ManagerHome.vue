@@ -137,8 +137,9 @@ taskUi.onChanged(() => void load());
           <span v-if="!data" class="pt-skeleton-dark grid size-24 shrink-0 place-items-center rounded-full"><span class="size-[76px] rounded-full bg-ink" /></span>
           <PtRing v-else :value="data.health.on_track" :size="96" :stroke="10" :color="healthColor" track="rgb(255 255 255 / 0.14)">
             <span class="text-center">
-              <span class="block text-xl font-bold">{{ data.health.on_track }}%</span>
-              <span class="block text-[9px] font-semibold uppercase opacity-60">{{ $t("manager.onTrack") }}</span>
+              <span class="block text-xl leading-tight font-bold">{{ data.health.on_track }}%</span>
+              <!-- Kept inside the ring's 76px opening: wraps to two lines rather than running over the stroke. -->
+              <span class="mx-auto block max-w-[3.75rem] text-[9px] leading-[1.15] font-semibold text-balance uppercase opacity-60">{{ $t("manager.onTrack") }}</span>
             </span>
           </PtRing>
           <dl class="grid grid-cols-1 gap-1.5 text-sm">
