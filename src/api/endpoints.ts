@@ -82,7 +82,7 @@ export const metaApi = {
 
 export const usersApi = {
   list: (params: { search?: string; role?: string; page?: number; entity_id?: number } = {}, o: CallOptions = {}) => data(http.get<Paginated<User>>("/users", { params, ...o })),
-  directory: (params: { search?: string; project_id?: number; everyone?: boolean } = {}, o: CallOptions = {}) => data(http.get<User[]>("/users/directory", { params, ...o })),
+  directory: (params: { search?: string; task_id?: number; everyone?: boolean } = {}, o: CallOptions = {}) => data(http.get<User[]>("/users/directory", { params, ...o })),
   create: (payload: Partial<User> & { password: string; password_confirmation: string }) => data(http.post<User>("/users", payload)),
   update: (id: number, payload: Partial<User> & { password?: string; password_confirmation?: string }) => data(http.patch<User>(`/users/${id}`, payload)),
   remove: (id: number) => http.delete(`/users/${id}`),

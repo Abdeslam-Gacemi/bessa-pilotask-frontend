@@ -34,10 +34,10 @@ import type { User } from "@/types/models";
 /**
  * WYSIWYG editor for descriptions and comments: formatting, links and images
  * (picked, pasted or dropped; uploaded to the API). With `mentions`, typing @
- * suggests people (scoped to a project when given). HTML in, HTML out.
+ * suggests the people who can see the task. HTML in, HTML out.
  */
 const props = withDefaults(
-  defineProps<{ placeholder?: string; mentions?: boolean; projectId?: number; minHeight?: string; compact?: boolean; images?: boolean }>(),
+  defineProps<{ placeholder?: string; mentions?: boolean; taskId?: number; minHeight?: string; compact?: boolean; images?: boolean }>(),
   { minHeight: "7rem", images: true },
 );
 const model = defineModel<string>({ default: "" });
@@ -61,7 +61,7 @@ async function fetchMentions(query: string): Promise<void> {
   const ticket = ++mentionQuery;
   mentionRenderer?.updateProps({ loading: true });
   try {
-    const found = (await usersApi.directory({ search: query || undefined, project_id: props.projectId })).slice(0, 6);
+    const found = (await usersApi.directory({ search: query || undefined, task_id: props.taskId })).slice(0, 6);
     if (ticket !== mentionQuery) return;
     mentionCache = found;
     mentionRenderer?.updateProps({ items: found, loading: false });

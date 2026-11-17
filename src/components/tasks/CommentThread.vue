@@ -180,7 +180,7 @@ async function remove(comment: Comment): Promise<void> {
           v-model="draft"
           mentions
           compact
-          :project-id="task.board?.project_id"
+          :task-id="task.id"
           :placeholder="$t('tasks.commentPlaceholder')"
           min-height="3.5rem"
           @submit="send"
@@ -235,7 +235,7 @@ async function remove(comment: Comment): Promise<void> {
             </div>
           </div>
           <div v-if="editingId === comment.id" class="mt-2">
-            <RichEditor :ref="bindEditEditor" v-model="editDraft" mentions compact :project-id="task.board?.project_id" min-height="3rem" />
+            <RichEditor :ref="bindEditEditor" v-model="editDraft" mentions compact :task-id="task.id" min-height="3rem" />
             <AttachmentTray class="mt-2" :items="editUploads.items.value" :size="editUploads.size" @remove="editUploads.remove" @retry="editUploads.retry" />
             <div class="mt-2 flex items-center gap-2">
               <input :ref="bindEditInput" type="file" multiple :accept="accept" class="hidden" @change="pickForEdit" />
