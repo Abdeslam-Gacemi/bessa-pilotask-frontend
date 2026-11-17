@@ -12,7 +12,7 @@ import type { User } from "@/types/models";
 
 /** Multi-select of people, searchable, shown as removable avatar chips. */
 /** `everyone`: people of every entity, viewers included (sharing a task read-only). */
-const props = defineProps<{ projectId?: number; disabled?: boolean; everyone?: boolean }>();
+const props = defineProps<{ disabled?: boolean; everyone?: boolean }>();
 const model = defineModel<User[]>({ default: () => [] });
 
 const open = ref(false);
@@ -25,7 +25,7 @@ const loading = request.loading;
 watch([open, debounced], async ([isOpen]) => {
   if (!isOpen) return;
   const found = await request
-    .run((signal) => usersApi.directory({ search: debounced.value || undefined, project_id: props.projectId, everyone: props.everyone || undefined }, { signal }))
+    .run((signal) => usersApi.directory({ search: debounced.value || undefined, everyone: props.everyone || undefined }, { signal }))
     .catch(() => undefined);
   if (found) results.value = found;
 });
