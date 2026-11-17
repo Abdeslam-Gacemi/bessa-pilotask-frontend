@@ -110,7 +110,7 @@
     "progress": "Avancement",
     "showArchived": "Afficher les archivés",
     "managers": "Chefs de projet",
-    "managersHint": "Utilisateurs simples qui pilotent ce projet : ses tableaux, statuts et tâches. Seuls les admins les désignent."
+    "managersHint": "Utilisateurs simples qui pilotent ce projet : ses tableaux, statuts et tâches. Seuls les managers les désignent."
   },
   "boards": {
     "title": "Tableaux",
@@ -347,13 +347,13 @@
     "lastLogin": "Dernière connexion",
     "never": "Jamais",
     "roles": {
-      "super_admin": "Super admin",
-      "admin": "Admin",
+      "super_admin": "Super manager",
+      "admin": "Manager",
       "user": "Utilisateur",
       "viewer": "Lecteur"
     },
     "passwordMismatch": "Les deux mots de passe ne correspondent pas.",
-    "readOnly": "Les personnes sont gérées par les super admins. Vous pouvez les consulter ici.",
+    "readOnly": "Les personnes sont gérées par les super managers. Vous pouvez les consulter ici.",
     "entityImpact": {
       "title": "Retrait de {entities}",
       "body": "À l'enregistrement, la personne sera retirée de {projects} projet(s) et désassignée de {tasks} tâche(s) ouverte(s) dans {boards} tableau(x) de ces entités, et perdra tout accès à celles-ci.",
@@ -361,6 +361,7 @@
     }
   },
   "labels": {
+    "createNamed": "Créer « {name} »",
     "title": "Étiquettes",
     "subtitle": "Classez les tâches transversalement.",
     "new": "Nouvelle étiquette",
@@ -544,7 +545,7 @@
   },
   "entities": {
     "title": "Entités",
-    "subtitle": "Sociétés, agences ou directions. Leurs admins et utilisateurs ne voient et ne sont notifiés que de leurs propres projets.",
+    "subtitle": "Sociétés, agences ou directions. Leurs managers et utilisateurs ne voient et ne sont notifiés que de leurs propres projets.",
     "new": "Nouvelle entité",
     "edit": "Modifier l'entité",
     "name": "Nom",
@@ -558,7 +559,7 @@
     "entity": "Entité",
     "global": "Globale (toutes les entités)",
     "userHint": "La personne n’accède qu’aux projets de ces entités.",
-    "projectHint": "Seuls les admins et utilisateurs de cette entité y accèdent.",
+    "projectHint": "Seuls les managers et utilisateurs de cette entité y accèdent.",
     "entities": "Entités",
     "allShort": "Toutes les entités",
     "allHint": "Aucune entité choisie : la personne accède à toutes les entités."
@@ -594,6 +595,7 @@
       "noOwnerDue": "Sans responsable · échéance {when}",
       "idle": "Immobile depuis {n} jour | Immobile depuis {n} jours"
     },
+    "loadMore": "Charger plus ({n} restantes)",
     "showing": "{shown} sur {total}",
     "nothing": "Rien ici ✿",
     "atRisk": "Projets à risque",
@@ -698,13 +700,13 @@
     "copied": "Lien copié",
     "backToTop": "Revenir en haut",
     "stillStuck": "Vous n'avez pas trouvé votre réponse ?",
-    "stillStuckHint": "Votre administrateur ou votre chef de projet peut vous aider.",
+    "stillStuckHint": "Votre manager ou votre chef de projet peut vous aider.",
     "audience": {
-      "managers": "Admins",
-      "superAdmin": "Super admin",
-      "projectManagers": "Chefs de projet et admins",
-      "workspace": "Admins et lecteurs",
-      "overview": "Admins, lecteurs et chefs de projet"
+      "managers": "Managers",
+      "superAdmin": "Super manager",
+      "projectManagers": "Managers et chefs de projet",
+      "workspace": "Managers et lecteurs",
+      "overview": "Managers, lecteurs et chefs de projet"
     },
     "forYou": "Rubriques pour votre rôle : {role}",
     "showAll": "Tout afficher",

@@ -13,7 +13,7 @@ withDefaults(defineProps<{ icon: Icon; label: string; variant?: "plain" | "surfa
     type="button"
     :aria-label="label"
     :title="label"
-    class="relative inline-grid size-10 shrink-0 place-items-center rounded-full transition active:scale-95"
+    class="relative inline-grid size-10 shrink-0 place-items-center rounded-full transition active:scale-95 disabled:pointer-events-none disabled:opacity-40"
     :class="{
       'text-fg hover:bg-surface-3': variant === 'plain',
       'border border-line bg-surface text-fg shadow-soft hover:bg-surface-2': variant === 'surface',

@@ -13,6 +13,7 @@ import { useApiError } from "@/composables/useApiError";
 import { useConfirm } from "@/composables/useConfirm";
 import { useMetaStore } from "@/stores/meta";
 import type { Label } from "@/types/models";
+import PtBackButton from "@/components/ui/PtBackButton.vue";
 
 const { t } = useI18n();
 const meta = useMetaStore();
@@ -59,7 +60,10 @@ onMounted(() => meta.reloadLabels());
   <div class="flex flex-col gap-6">
     <header class="flex flex-wrap items-end gap-3">
       <div class="me-auto">
-        <h1 class="text-3xl font-bold">{{ $t("labels.title") }}</h1>
+        <div class="flex items-center gap-3">
+          <PtBackButton />
+          <h1 class="text-3xl font-bold">{{ $t("labels.title") }}</h1>
+        </div>
         <p class="mt-1 text-sm text-muted">{{ $t("labels.subtitle") }}</p>
       </div>
       <PtIconButton :icon="Add01Icon" variant="ink" :label="$t('labels.new')" @click="edit(null)" />

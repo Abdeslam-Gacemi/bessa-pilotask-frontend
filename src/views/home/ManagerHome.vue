@@ -10,14 +10,14 @@ import {
   PauseIcon,
   UserRemove01Icon,
 } from "@hugeicons/core-free-icons";
-import PtAvatarStack from "@/components/ui/PtAvatarStack.vue";
 import PtIcon from "@/components/ui/PtIcon.vue";
 import PtProgress from "@/components/ui/PtProgress.vue";
 import PtRing from "@/components/ui/PtRing.vue";
 import TeamLoadList from "@/components/analytics/TeamLoadList.vue";
 import PtSkeleton from "@/components/ui/PtSkeleton.vue";
-import PriorityChip from "@/components/tasks/PriorityChip.vue";
-import { dashboardApi, type DashboardOverview } from "@/api/endpoints";
+import { dashboardApi, type DashboardBucket, type DashboardOverview } from "@/api/endpoints";
+import DecisionListSheet from "@/components/home/DecisionListSheet.vue";
+import DecisionTaskRow from "@/components/home/DecisionTaskRow.vue";
 import { useApiError } from "@/composables/useApiError";
 import { useRequest } from "@/composables/useRequest";
 import { useTaskUi } from "@/composables/useTaskUi";
@@ -32,7 +32,7 @@ import type { Task } from "@/types/models";
  * week; the list below shows the most pressing ones of the chosen tile.
  * On the side: projects at risk and who is overloaded.
  */
-type Bucket = "overdue" | "due_soon" | "unassigned" | "stalled";
+type Bucket = DashboardBucket;
 
 const { t } = useI18n();
 const session = useSessionStore();
@@ -52,13 +52,14 @@ const greeting = computed(() => {
 });
 const firstName = computed(() => session.user?.name.split(" ")[0] ?? "");
 
-// Each tile wears its colour: a tinted card, a solid icon bubble, a ring when picked.
+// Each tile wears its colour; the picked one turns into a rich gradient widget (see the styles below).
 const TILES: { key: Bucket; icon: Icon; color: string }[] = [
   { key: "overdue", icon: Alert02Icon, color: "#E04047" },
   { key: "due_soon", icon: Clock01Icon, color: "#E8962E" },
   { key: "unassigned", icon: UserRemove01Icon, color: "#2F7FD0" },
   { key: "stalled", icon: PauseIcon, color: "#8B6CF0" },
 ];
+
 
 // Two-week trend as small paired bars (completed solid, created faint).
 const trendMax = computed(() => Math.max(1, ...(data.value?.trend ?? []).flatMap((d) => [d.created, d.completed])));
@@ -71,30 +72,8 @@ const items = computed<Task[]>(() => data.value?.lists[bucket.value] ?? []);
 const count = (key: Bucket) => data.value?.counts[key] ?? 0;
 const needsAction = computed(() => (data.value ? count("overdue") + count("due_soon") + count("unassigned") + count("stalled") : 0));
 
-/** Why this task is in the list, in a few words. */
-function reason(task: Task): string {
-  const days = (iso: string | null | undefined) => Math.max(1, Math.abs(dayjs(now.value).diff(dayjs(iso), "day")));
-  switch (bucket.value) {
-    case "overdue":
-      return t("manager.reasons.late", { n: days(task.due_at) }, days(task.due_at));
-    case "due_soon":
-      return dayjs(task.due_at).from(dayjs(now.value));
-    case "unassigned":
-      return task.due_at ? t("manager.reasons.noOwnerDue", { when: dayjs(task.due_at).fromNow() }) : t("manager.reasons.noOwner");
-    default:
-      return t("manager.reasons.idle", { n: days(task.updated_at) }, days(task.updated_at));
-  }
-}
-
-const reasonTone = computed(
-  () =>
-    ({
-      overdue: "bg-danger-soft text-danger",
-      due_soon: "bg-warning-soft text-warning",
-      unassigned: "bg-primary-soft text-primary",
-      stalled: "bg-surface-3 text-muted",
-    })[bucket.value],
-);
+// "See all": the chosen tile's tasks in full, in a side sheet.
+const showAll = ref(false);
 
 const RISK_TONE = { late: "bg-danger text-white", overdue: "bg-danger-soft text-danger", tight: "bg-warning-soft text-warning" } as const;
 
@@ -188,22 +167,23 @@ taskUi.onChanged(() => void load());
         type="button"
         role="tab"
         :aria-selected="bucket === tile.key"
-        class="relative flex flex-col gap-2 overflow-hidden rounded-(--radius-card) border p-4 text-start transition duration-200 hover:-translate-y-0.5 hover:shadow-float active:scale-[0.98]"
-        :style="{
-          background: `color-mix(in oklab, ${tile.color} ${bucket === tile.key ? 16 : 8}%, var(--pt-surface))`,
-          borderColor: bucket === tile.key ? tile.color : `color-mix(in oklab, ${tile.color} 22%, var(--pt-border))`,
-          boxShadow: bucket === tile.key ? `0 10px 28px -14px ${tile.color}` : undefined,
-        }"
+        class="tile relative isolate flex flex-col gap-1.5 overflow-hidden rounded-[1.5rem] p-4 text-start"
+        :class="bucket === tile.key && 'tile-on'"
+        :style="{ '--tile': tile.color }"
         @click="bucket = tile.key"
       >
-        <span class="pointer-events-none absolute -end-6 -top-6 size-20 rounded-full opacity-20 blur-xl" :style="{ background: tile.color }" />
-        <span class="relative flex items-center justify-between gap-2">
-          <span class="grid size-9 place-items-center rounded-xl text-white shadow-soft" :style="{ background: tile.color }"><PtIcon :icon="tile.icon" :size="17" /></span>
+        <span class="tile-glow pointer-events-none absolute inset-0 -z-10" aria-hidden="true" />
+        <span class="flex items-center justify-between gap-2">
+          <span class="tile-icon grid size-9 shrink-0 place-items-center rounded-xl">
+            <PtIcon :icon="tile.icon" :size="17" />
+          </span>
           <PtSkeleton v-if="!data" class="h-8 w-10 rounded-lg" />
-          <span v-else class="text-3xl font-bold tracking-tight tabular-nums" :style="{ color: count(tile.key) ? tile.color : 'var(--pt-subtle)' }">{{ count(tile.key) }}</span>
+          <span v-else class="tile-count text-3xl leading-none font-bold tracking-tight tabular-nums" :class="!count(tile.key) && 'is-zero'">
+            {{ count(tile.key) }}
+          </span>
         </span>
-        <span class="relative mt-1 text-sm font-bold">{{ $t(`manager.buckets.${tile.key}`) }}</span>
-        <span class="relative line-clamp-2 text-[11px] leading-snug text-muted">
+        <span class="tile-name mt-1.5 text-sm font-bold">{{ $t(`manager.buckets.${tile.key}`) }}</span>
+        <span class="tile-hint line-clamp-2 text-[11px] leading-snug">
           {{ $t(`manager.hints.${tile.key}`, data?.thresholds ? { days: data.thresholds.stall_days, hours: data.thresholds.soon_hours } : { days: 7, hours: 48 }) }}
         </span>
       </button>
@@ -215,9 +195,16 @@ taskUi.onChanged(() => void load());
         <span v-if="loading && data" class="pt-bar-loading absolute inset-x-0 top-0 h-0.5" />
         <h2 class="flex items-center justify-between gap-2 px-3 pt-2 pb-1">
           <span class="text-base font-bold">{{ $t(`manager.buckets.${bucket}`) }}</span>
-          <span v-if="data && count(bucket) > items.length" class="text-xs font-semibold text-muted">
-            {{ $t("manager.showing", { shown: items.length, total: count(bucket) }) }}
-          </span>
+          <button
+            v-if="data && count(bucket) > items.length"
+            type="button"
+            class="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold text-primary transition hover:bg-primary-soft"
+            @click="showAll = true"
+          >
+            {{ $t("common.seeAll") }}
+            <span class="text-muted tabular-nums">{{ count(bucket) }}</span>
+            <PtIcon :icon="ArrowRight01Icon" :size="14" class="rtl:rotate-180" />
+          </button>
         </h2>
 
         <div v-if="!data" class="flex flex-col gap-1 p-1">
@@ -229,19 +216,7 @@ taskUi.onChanged(() => void load());
         <p v-else-if="!items.length" class="pt-hand px-3 py-10 text-center text-2xl text-muted">{{ $t("manager.nothing") }}</p>
         <ul v-else :key="bucket" class="divide-y divide-line/60">
           <li v-for="(task, i) in items" :key="task.id" v-stagger="i">
-            <button type="button" class="flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-start transition hover:bg-surface-2" @click="taskUi.openTask(task.id)">
-              <span class="size-2.5 shrink-0 rounded-full" :style="{ background: task.board?.color ?? 'var(--pt-subtle)' }" />
-              <span class="min-w-0 flex-1">
-                <span class="block truncate text-sm font-semibold">{{ task.title }}</span>
-                <span class="mt-0.5 flex items-center gap-1.5 truncate text-xs text-muted">
-                  {{ task.board?.name }}
-                  <PriorityChip v-if="task.priority === 'urgent' || task.priority === 'high'" :priority="task.priority" compact />
-                </span>
-              </span>
-              <span class="shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold whitespace-nowrap" :class="reasonTone">{{ reason(task) }}</span>
-              <PtAvatarStack v-if="task.assignees?.length" class="max-sm:hidden" :users="task.assignees" :size="24" />
-              <PtIcon :icon="ArrowRight01Icon" :size="16" class="shrink-0 text-subtle rtl:rotate-180" />
-            </button>
+            <DecisionTaskRow :task="task" :bucket="bucket" :now="now" @open="taskUi.openTask" />
           </li>
         </ul>
       </section>
@@ -286,5 +261,110 @@ taskUi.onChanged(() => void load());
         </section>
       </div>
     </div>
+
+    <DecisionListSheet v-model="showAll" :bucket="bucket" :total="count(bucket)" @open-task="taskUi.openTask" />
   </div>
 </template>
+
+<style scoped>
+/*
+ * Decision tiles, Apple-widget style. At rest: a light card softly lit by two
+ * radial washes of its colour. Picked: a rich layered gradient of that colour
+ * fades and swells in behind it (a separate layer, since gradients can't
+ * transition), the card lifts with a coloured glow, its icon turns to glass
+ * and the light inside slowly drifts.
+ */
+.tile {
+  background:
+    radial-gradient(120% 90% at 100% 0%, color-mix(in oklab, var(--tile) 16%, transparent), transparent 62%),
+    radial-gradient(90% 80% at 0% 100%, color-mix(in oklab, var(--tile) 7%, transparent), transparent 70%),
+    var(--pt-surface);
+  box-shadow: var(--pt-shadow), inset 0 0 0 1px color-mix(in oklab, var(--tile) 6%, transparent);
+  transition:
+    transform 0.5s var(--ease-spring),
+    box-shadow 0.5s var(--ease-spring);
+}
+.tile:hover:not(.tile-on) {
+  transform: translateY(-2px);
+}
+.tile:active {
+  transform: scale(0.97);
+}
+.tile-glow {
+  opacity: 0;
+  transform: scale(1.15);
+  background:
+    radial-gradient(130% 110% at 100% 0%, color-mix(in oklab, var(--tile) 55%, white) 0%, transparent 55%),
+    radial-gradient(120% 120% at 0% 100%, color-mix(in oklab, var(--tile) 70%, black) 0%, transparent 62%),
+    radial-gradient(70% 60% at 30% 20%, color-mix(in oklab, var(--tile) 80%, white) 0%, transparent 70%),
+    var(--tile);
+  background-size: 140% 140%;
+  background-position: 0% 0%;
+  transition:
+    opacity 0.4s ease,
+    transform 0.6s var(--ease-spring);
+}
+.tile-icon {
+  color: var(--tile);
+  background: color-mix(in oklab, var(--tile) 14%, var(--pt-surface));
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+.tile-count.is-zero {
+  color: var(--pt-subtle);
+}
+.tile-hint {
+  color: var(--pt-muted);
+  transition: color 0.3s ease;
+}
+.tile-name,
+.tile-count {
+  transition: color 0.3s ease;
+}
+
+/* Picked */
+.tile-on {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow:
+    0 22px 40px -20px color-mix(in oklab, var(--tile) 90%, transparent),
+    0 6px 14px -6px color-mix(in oklab, var(--tile) 45%, transparent),
+    inset 0 1px 0 rgb(255 255 255 / 0.35);
+}
+.tile-on .tile-glow {
+  opacity: 1;
+  transform: scale(1);
+  animation: tile-drift 9s ease-in-out infinite alternate;
+}
+.tile-on .tile-name,
+.tile-on .tile-count,
+.tile-on .tile-count.is-zero {
+  color: #fff;
+}
+.tile-on .tile-hint {
+  color: rgb(255 255 255 / 0.78);
+}
+.tile-on .tile-icon {
+  color: #fff;
+  background: rgb(255 255 255 / 0.2);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), 0 4px 12px -4px rgb(0 0 0 / 0.25);
+  backdrop-filter: blur(8px);
+  animation: tile-pop 0.55s var(--ease-spring);
+}
+.tile-on .tile-count {
+  animation: tile-pop 0.5s var(--ease-spring);
+}
+@keyframes tile-pop {
+  0% { transform: scale(0.8); }
+  60% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+@keyframes tile-drift {
+  to { background-position: 100% 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tile,
+  .tile-on { transform: none; }
+  .tile-on .tile-glow,
+  .tile-on .tile-icon,
+  .tile-on .tile-count { animation: none; }
+}
+</style>

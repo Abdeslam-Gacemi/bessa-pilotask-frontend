@@ -165,11 +165,20 @@ function onSaved(task: Task): void {
   taskUi.notifySaved(task);
   toast.success(t("common.saved"));
 }
+/** Back to the top of the content area. */
+function resetScroll(): void {
+  const el = document.getElementById("pt-content-scroll");
+  if (el) el.scrollTop = 0;
+}
+
+// A new screen starts at the top, but only once the old one has faded out (the
+// transition's before-enter), so the leaving screen never visibly jumps up.
+// When the same view is reused (e.g. one project to another), no transition
+// plays, so reset straight away.
 router.afterEach((to, from) => {
-  if (to.path !== from.path) {
-    const el = document.getElementById("pt-content-scroll");
-    if (el) el.scrollTop = 0;
-  }
+  if (to.path === from.path) return;
+  const view = (route: typeof to) => route.matched[route.matched.length - 1]?.components?.default;
+  if (view(to) === view(from)) resetScroll();
 });
 </script>
 
@@ -289,7 +298,7 @@ router.afterEach((to, from) => {
       <!-- Bottom padding keeps the last item clear of the floating bottom bar on phones. -->
       <main class="mx-auto w-full max-w-7xl px-4 pt-2 pb-[calc(9rem+env(safe-area-inset-bottom))] md:px-8 md:pt-8 md:pb-12">
         <RouterView v-slot="{ Component }">
-          <Transition name="pt-fade" mode="out-in">
+          <Transition name="pt-fade" mode="out-in" @before-enter="resetScroll">
             <component :is="Component" />
           </Transition>
         </RouterView>

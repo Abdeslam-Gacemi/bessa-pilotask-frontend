@@ -21,6 +21,7 @@ import { useToast } from "@/composables/useToast";
 import { tableIcon } from "@/plugins/icons";
 import { useEntitiesStore } from "@/stores/entities";
 import type { Entity } from "@/types/models";
+import PtBackButton from "@/components/ui/PtBackButton.vue";
 
 /**
  * Super admins split the workspace into entities (companies, branches,
@@ -108,7 +109,10 @@ onMounted(() => void store.load(true).catch((error) => errors.report(error)));
   <div class="flex flex-col gap-6">
     <header class="flex flex-wrap items-end gap-3">
       <div v-stagger="0" class="me-auto">
-        <h1 class="text-3xl font-bold">{{ $t("entities.title") }}</h1>
+        <div class="flex items-center gap-3">
+          <PtBackButton />
+          <h1 class="text-3xl font-bold">{{ $t("entities.title") }}</h1>
+        </div>
         <p class="mt-1 max-w-xl text-sm text-muted">{{ $t("entities.subtitle") }}</p>
       </div>
       <PtIconButton :icon="Add01Icon" variant="ink" :label="$t('entities.new')" @click="edit(null)" />

@@ -47,12 +47,9 @@ const routes: RouteRecordRaw[] = [
 export const router = createRouter({
   history: createWebHistory(),
   routes,
-  scrollBehavior: (to, from) => {
-    if (to.fullPath === from.fullPath) return false;
-    const scrollContainer = document.getElementById("pt-content-scroll") ?? document.querySelector(".overflow-y-auto");
-    if (scrollContainer) scrollContainer.scrollTop = 0;
-    return { top: 0 };
-  },
+  // The app scrolls inside #pt-content-scroll, not the window. AppShell resets it once the
+  // old screen has faded out; resetting here would jump the old screen to the top first.
+  scrollBehavior: () => false,
 });
 
 router.beforeEach(async (to) => {

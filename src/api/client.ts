@@ -1,4 +1,5 @@
 import axios, { AxiosError } from "axios";
+import { beginWrite } from "@/services/pendingWrites";
 import { tokenStore } from "@/services/tokenStore";
 
 /**
@@ -15,8 +16,14 @@ http.interceptors.request.use((config) => {
   const token = tokenStore.get();
   if (token) config.headers.Authorization = `Bearer ${token}`;
   config.headers["Accept-Language"] = document.documentElement.lang || "fr";
+  // Writes keep open sheets and dialogs from being dismissed until they settle.
+  if (!["get", "head", "options"].includes((config.method ?? "get").toLowerCase())) {
+    (config as WriteConfig).ptRelease = beginWrite();
+  }
   return config;
 });
+
+type WriteConfig = { ptRelease?: () => void };
 
 export class ApiError extends Error {
   constructor(
@@ -44,8 +51,12 @@ export function onUnauthorized(listener: Listener): () => void {
 }
 
 http.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    (response.config as WriteConfig).ptRelease?.();
+    return response;
+  },
   (error: AxiosError<{ message?: string; errors?: Record<string, string[]> }>) => {
+    (error.config as WriteConfig | undefined)?.ptRelease?.();
     if (axios.isCancel(error)) return Promise.reject(new ApiError("cancelled", 0, {}, true));
     const status = error.response?.status ?? 0;
     const apiError = new ApiError(error.response?.data?.message ?? error.message, status, error.response?.data?.errors ?? {});

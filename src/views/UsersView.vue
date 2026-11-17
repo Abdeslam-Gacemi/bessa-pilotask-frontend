@@ -26,6 +26,7 @@ import { useDates } from "@/composables/useDates";
 import { useToast } from "@/composables/useToast";
 import { useSessionStore } from "@/stores/session";
 import type { Locale, Role, User } from "@/types/models";
+import PtBackButton from "@/components/ui/PtBackButton.vue";
 
 const { t } = useI18n();
 const session = useSessionStore();
@@ -162,7 +163,10 @@ onMounted(() => {
   <div class="flex flex-col gap-6">
     <header class="flex flex-wrap items-end gap-3">
       <div class="me-auto">
-        <h1 class="text-3xl font-bold">{{ $t("users.title") }}</h1>
+        <div class="flex items-center gap-3">
+          <PtBackButton />
+          <h1 class="text-3xl font-bold">{{ $t("users.title") }}</h1>
+        </div>
         <p class="mt-1 text-sm text-muted">{{ canManagePeople ? $t("users.subtitle") : $t("users.readOnly") }}</p>
       </div>
       <PtIconButton v-if="canManagePeople" :icon="Add01Icon" variant="ink" :label="$t('users.new')" @click="edit(null)" />

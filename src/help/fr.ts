@@ -20,8 +20,8 @@ const content: HelpContent = [
         title: "Qui voit et fait quoi",
         blocks: [
           { type: "list", items: [
-            "**Super admin** : gère les personnes, les entités, les réglages et le journal ; voit tout.",
-            "**Admin** : crée et pilote les projets, tableaux et tâches de ses entités ; voit les analyses.",
+            "**Super manager** : gère les personnes, les entités, les réglages et le journal ; voit tout.",
+            "**Manager** : crée et pilote les projets, tableaux et tâches de ses entités ; voit les analyses.",
             "**Chef de projet** : un utilisateur désigné sur un projet ; il en gère les tableaux, statuts et tâches, sans pouvoir l'archiver ni le supprimer.",
             "**Utilisateur** : voit ses tâches et les tableaux qui les contiennent ; fait avancer son travail et commente.",
             "**Lecteur** : consulte les projets et analyses de ses entités, sans rien modifier.",
@@ -69,7 +69,7 @@ const content: HelpContent = [
         blocks: [
           { type: "p", text: "Un chef de projet est un utilisateur qui pilote un projet précis : il voit toutes ses tâches, crée des tableaux et des tâches, assigne, commente et suit les analyses du projet." },
           { type: "steps", items: ["Ouvrez le projet puis **Modifier**.", "Dans **Chefs de projet**, ajoutez une ou plusieurs personnes.", "Enregistrez : l'accès est immédiat, et retiré aussitôt si vous l'enlevez."] },
-          { type: "tip", text: "Seuls les utilisateurs simples de l'entité du projet peuvent être nommés. Les admins gèrent déjà les projets de leurs entités." },
+          { type: "tip", text: "Seuls les utilisateurs simples de l'entité du projet peuvent être nommés. Les managers gèrent déjà les projets de leurs entités." },
         ],
       },
       {
@@ -77,7 +77,7 @@ const content: HelpContent = [
         title: "Archiver ou supprimer",
         audience: "managers",
         blocks: [
-          { type: "p", text: "Archivez un projet terminé : il disparaît des listes mais reste consultable via le filtre **Archivés**. La suppression est définitive et réservée aux admins." },
+          { type: "p", text: "Archivez un projet terminé : il disparaît des listes mais reste consultable via le filtre **Archivés**. La suppression est définitive et réservée aux managers." },
         ],
       },
     ],
@@ -178,7 +178,7 @@ const content: HelpContent = [
         id: "calendar-reports",
         title: "Rapports par e-mail",
         audience: "workspace",
-        blocks: [{ type: "p", text: "Les admins et lecteurs peuvent recevoir un rapport **quotidien**, **hebdomadaire** ou **mensuel** sur l'avancement de leurs entités, depuis **Paramètres → Rapports par e-mail**." }],
+        blocks: [{ type: "p", text: "Les managers et lecteurs peuvent recevoir un rapport **quotidien**, **hebdomadaire** ou **mensuel** sur l'avancement de leurs entités, depuis **Paramètres → Rapports par e-mail**." }],
       },
     ],
   },
@@ -219,7 +219,7 @@ const content: HelpContent = [
         id: "admin-labels",
         title: "Étiquettes",
         audience: "managers",
-        blocks: [{ type: "p", text: "Les étiquettes (« Urgent », « Client »…) sont communes à tous les projets. Les admins les créent et les renomment dans **Étiquettes**." }],
+        blocks: [{ type: "p", text: "Les étiquettes (« Urgent », « Client »…) sont communes à tous les projets. Les managers les créent et les renomment dans **Étiquettes**." }],
       },
       {
         id: "admin-journal",
@@ -238,7 +238,7 @@ const content: HelpContent = [
       {
         id: "account-profile",
         title: "Profil",
-        blocks: [{ type: "p", text: "Votre carte, en haut des **Paramètres**, montre votre nom, votre rôle et vos entités. Ils sont tenus à jour par un super admin, dans **Utilisateurs** : demandez-lui une correction." }],
+        blocks: [{ type: "p", text: "Votre carte, en haut des **Paramètres**, montre votre nom, votre rôle et vos entités. Ils sont tenus à jour par un super manager, dans **Utilisateurs** : demandez-lui une correction." }],
       },
       {
         id: "account-security",
@@ -273,7 +273,7 @@ const content: HelpContent = [
       {
         id: "faq-cannot-edit",
         title: "Je ne peux pas modifier une tâche",
-        blocks: [{ type: "p", text: "Les tâches des autres sont en lecture seule pour les utilisateurs. Vous pouvez toujours faire avancer et commenter les vôtres ; pour le reste, demandez à un admin ou au chef de projet." }],
+        blocks: [{ type: "p", text: "Les tâches des autres sont en lecture seule pour les utilisateurs. Vous pouvez toujours faire avancer et commenter les vôtres ; pour le reste, demandez à un manager ou au chef de projet." }],
       },
     ],
   },
