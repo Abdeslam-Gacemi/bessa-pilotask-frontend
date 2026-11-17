@@ -1,16 +1,21 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watch } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { useScrollLock } from "@vueuse/core";
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
 import PtIconButton from "./PtIconButton.vue";
 import { hasOpenOverlay, useOverlay } from "@/composables/useOverlay";
+import { writesPending } from "@/services/pendingWrites";
 
 /**
  * Dialog container: a centred card (or an end-side panel) on large screens,
  * a bottom sheet on phones. Joins the overlay stack, so sheets opened from a
  * sheet sit above it and Back / Escape close the top one first.
+ *
+ * It can't be dismissed (backdrop, ×, Escape, pull-down, Back) while `busy`
+ * or while any create / update / delete request is in flight; closing it
+ * from code (after a successful save) still works.
  */
-const props = withDefaults(defineProps<{ title?: string; side?: "center" | "end"; width?: string }>(), {
+const props = withDefaults(defineProps<{ title?: string; side?: "center" | "end"; width?: string; busy?: boolean }>(), {
   side: "center",
   width: "34rem",
 });
@@ -18,6 +23,11 @@ const open = defineModel<boolean>({ required: true });
 const emit = defineEmits<{ closed: [] }>();
 
 const panel = ref<HTMLElement | null>(null);
+const locked = computed(() => props.busy || writesPending.value);
+
+function dismiss(): void {
+  if (!locked.value) open.value = false;
+}
 
 // Pull-down to close on phones: drag the handle or header; past 110px (or a quick flick) closes.
 const pull = ref(0);
@@ -26,7 +36,7 @@ let startY = 0;
 let startTime = 0;
 
 function onPullStart(event: PointerEvent): void {
-  if (window.matchMedia("(min-width: 48rem)").matches || (event.target as HTMLElement).closest("button")) return;
+  if (locked.value || window.matchMedia("(min-width: 48rem)").matches || (event.target as HTMLElement).closest("button")) return;
   pulling.value = true;
   startY = event.clientY;
   startTime = performance.now();
@@ -41,22 +51,22 @@ function onPullEnd(): void {
   if (!pulling.value) return;
   const speed = pull.value / Math.max(1, performance.now() - startTime);
   pulling.value = false;
-  if (pull.value > 110 || speed > 0.6) open.value = false;
+  if (pull.value > 110 || speed > 0.6) dismiss();
   pull.value = 0;
 }
 const { zIndex, isTop } = useOverlay(open);
-const locked = useScrollLock(typeof document !== "undefined" ? document.body : null);
+const scrollLocked = useScrollLock(typeof document !== "undefined" ? document.body : null);
 
 watch(open, (value) => {
   pull.value = 0;
   if (value) requestAnimationFrame(() => panel.value?.focus({ preventScroll: true }));
 });
-watch(hasOpenOverlay, (any) => (locked.value = any), { immediate: true });
+watch(hasOpenOverlay, (any) => (scrollLocked.value = any), { immediate: true });
 
 function onKey(event: KeyboardEvent): void {
   if (event.key === "Escape" && open.value && isTop.value) {
     event.stopPropagation();
-    open.value = false;
+    dismiss();
   }
 }
 
@@ -76,7 +86,7 @@ const hiddenFrom = props.side === "end"
       enter-from-class="opacity-0"
       leave-to-class="opacity-0"
     >
-      <div v-if="open" class="fixed inset-0 bg-ink/40 backdrop-blur-[2px]" :style="{ zIndex }" @click="open = false" />
+      <div v-if="open" class="fixed inset-0 bg-ink/40 backdrop-blur-[2px]" :style="{ zIndex }" @click="dismiss" />
     </Transition>
     <Transition
       enter-active-class="transition duration-300 ease-(--ease-spring)"
@@ -117,7 +127,7 @@ const hiddenFrom = props.side === "end"
             <slot name="header">
               <h2 class="flex-1 truncate text-lg font-bold">{{ title }}</h2>
             </slot>
-            <PtIconButton :icon="Cancel01Icon" :label="$t('common.close')" @click="open = false" />
+            <PtIconButton :icon="Cancel01Icon" :label="$t('common.close')" :disabled="locked" @click="dismiss" />
           </header>
           <div v-else class="h-3" />
         </div>

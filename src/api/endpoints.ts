@@ -192,9 +192,12 @@ export const activityApi = {
 };
 
 /** Managers' and viewers' home: what needs a decision (GET /dashboard). */
+/** The four decision tiles of the managers' home. */
+export type DashboardBucket = "overdue" | "due_soon" | "unassigned" | "stalled";
+
 export interface DashboardOverview {
   counts: { overdue: number; due_soon: number; unassigned: number; stalled: number; open: number; done_today: number };
-  lists: Record<"overdue" | "due_soon" | "unassigned" | "stalled", Task[]>;
+  lists: Record<DashboardBucket, Task[]>;
   projects: {
     id: number;
     name: string;
@@ -216,6 +219,9 @@ export interface DashboardOverview {
 
 export const dashboardApi = {
   overview: (o: CallOptions = {}) => data(http.get<DashboardOverview>("/dashboard", o)),
+  /** One tile's tasks in full, 20 per page. */
+  bucket: (bucket: DashboardBucket, page = 1, o: CallOptions = {}) =>
+    data(http.get<Paginated<Task>>(`/dashboard/${bucket}`, { params: { page }, ...o })),
 };
 
 export const analyticsApi = {

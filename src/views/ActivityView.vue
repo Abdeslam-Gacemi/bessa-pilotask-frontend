@@ -3,6 +3,7 @@ import { computed, onMounted, reactive, ref } from "vue";
 import ActivityFeed from "@/components/activity/ActivityFeed.vue";
 import { activityApi, usersApi, type ActivityQuery } from "@/api/endpoints";
 import type { ActivityEvent, User } from "@/types/models";
+import PtBackButton from "@/components/ui/PtBackButton.vue";
 
 /** The full audit log for super admins: sign-ins, views and every change. */
 const EVENTS: ActivityEvent[] = [
@@ -32,7 +33,10 @@ onMounted(async () => {
 <template>
   <div class="flex flex-col gap-6">
     <header>
-      <h1 class="text-3xl font-bold">{{ $t("activity.title") }}</h1>
+      <div class="flex items-center gap-3">
+        <PtBackButton />
+        <h1 class="text-3xl font-bold">{{ $t("activity.title") }}</h1>
+      </div>
       <p class="mt-1 text-sm text-muted">{{ $t("activity.subtitle") }}</p>
     </header>
 

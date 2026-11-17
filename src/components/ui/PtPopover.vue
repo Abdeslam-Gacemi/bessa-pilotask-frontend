@@ -3,6 +3,7 @@ import { nextTick, ref, watch } from "vue";
 import { onClickOutside, useEventListener } from "@vueuse/core";
 import { useOverlay } from "@/composables/useOverlay";
 import { usePreferencesStore } from "@/stores/preferences";
+import { writesPending } from "@/services/pendingWrites";
 
 /**
  * A floating panel anchored to its trigger (menus, pickers). It renders in
@@ -44,9 +45,10 @@ watch(open, async (value) => {
 useEventListener(window, "resize", () => open.value && place());
 useEventListener(window, "scroll", () => open.value && place(), { capture: true, passive: true });
 useEventListener(window, "keydown", (event: KeyboardEvent) => {
-  if (event.key === "Escape" && open.value && isTop.value) open.value = false;
+  if (event.key === "Escape" && open.value && isTop.value && !writesPending.value) open.value = false;
 });
-onClickOutside(panel, () => (open.value = false), { ignore: [trigger] });
+// Stays open while a write it started (e.g. creating a label) is in flight.
+onClickOutside(panel, () => !writesPending.value && (open.value = false), { ignore: [trigger] });
 
 const toggle = () => (open.value = !open.value);
 const close = () => (open.value = false);

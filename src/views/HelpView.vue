@@ -20,7 +20,6 @@ import PtEmpty from "@/components/ui/PtEmpty.vue";
 import PtIcon from "@/components/ui/PtIcon.vue";
 import PtIconButton from "@/components/ui/PtIconButton.vue";
 import PtSkeleton from "@/components/ui/PtSkeleton.vue";
-import PtSwitch from "@/components/ui/PtSwitch.vue";
 import { articleCount, forReader, loadHelp, searchHelp, type HelpReader } from "@/help";
 import { useSessionStore } from "@/stores/session";
 import type { HelpContent } from "@/help/types";
@@ -32,7 +31,7 @@ import type { Locale } from "@/types/models";
  * (scroll-spy), folds to a rail on large screens and to a bar on phones;
  * every article has a shareable link.
  */
-const { locale, t } = useI18n();
+const { locale } = useI18n();
 const route = useRoute();
 const session = useSessionStore();
 
@@ -48,12 +47,9 @@ const reader = computed<HelpReader>(() => ({
   workspace: session.seesWorkspace,
   overview: session.hasOverview,
 }));
-const showAll = useLocalStorage("pt.help.showAll", false);
-const roleLabel = computed(() =>
-  session.user?.role === "user" && session.isProjectManager ? t("help.projectManager") : session.user ? t(`users.roles.${session.user.role}`) : "",
-);
+// Only the reader's role is shown; a shared link to another role's article widens it for this visit.
+const showAll = ref(false);
 const mine = computed(() => (content.value ? forReader(content.value, reader.value) : []));
-const hidden = computed(() => (content.value ? articleCount(content.value) - articleCount(mine.value) : 0));
 const sections = computed(() => searchHelp(showAll.value ? (content.value ?? []) : mine.value, debounced.value));
 const matches = computed(() => articleCount(sections.value));
 
@@ -200,15 +196,6 @@ useEventListener(window, "keydown", (event: KeyboardEvent) => {
         <p v-if="debounced && content" class="mt-2 text-xs opacity-75" aria-live="polite">{{ $t("help.results", matches) }}</p>
       </div>
     </header>
-
-    <!-- Role filter: only shown when it hides something -->
-    <div v-if="content && hidden > 0" class="-mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-2xl border border-line bg-surface px-4 py-3">
-      <div class="min-w-0 flex-1">
-        <p class="text-sm font-semibold">{{ $t("help.forYou", { role: roleLabel }) }}</p>
-        <p class="text-xs text-muted">{{ showAll ? $t("help.results", articleCount(content)) : $t("help.hidden", hidden) }}</p>
-      </div>
-      <PtSwitch v-model="showAll" :label="$t('help.showAll')" />
-    </div>
 
     <!-- Loading -->
     <div v-if="!content" class="grid gap-6 lg:grid-cols-[16rem_minmax(0,1fr)]">

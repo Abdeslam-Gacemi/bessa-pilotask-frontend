@@ -1,6 +1,7 @@
 import { computed, ref, shallowRef, watch, type Ref } from "vue";
 import { tryOnScopeDispose } from "@vueuse/core";
 import { Capacitor } from "@capacitor/core";
+import { writesPending } from "@/services/pendingWrites";
 
 /**
  * One stack for every sheet, dialog and popover.
@@ -10,6 +11,8 @@ import { Capacitor } from "@capacitor/core";
  * - Back (Android button or browser back) closes the top overlay instead of
  *   leaving the screen. In browsers each open overlay adds a history entry;
  *   closing it another way consumes that entry again.
+ * - While a create / update / delete request runs, Back does nothing: the
+ *   overlay that started it stays open until it settles.
  */
 interface Entry {
   id: number;
@@ -36,6 +39,11 @@ function listen(): void {
     }
     const top = stack.value[stack.value.length - 1];
     if (top && (window.history.state as { ptOverlay?: number } | null)?.ptOverlay !== top.id) {
+      if (writesPending.value) {
+        // Saving: put back the entry Back just consumed, and stay open.
+        window.history.pushState({ ...(window.history.state ?? {}), ptOverlay: top.id }, "");
+        return;
+      }
       top.pushed = false;
       top.close();
     }
@@ -85,6 +93,8 @@ export function useOverlay(open: Ref<boolean>, close: () => void = () => (open.v
 export function closeTopmostOverlay(): boolean {
   const top = stack.value[stack.value.length - 1];
   if (!top) return false;
+  // Saving: swallow Back so the app doesn't leave the screen, but keep the overlay open.
+  if (writesPending.value) return true;
   top.close();
   // Never keep a dead entry: if close() did not flip the open ref, back must still move on next time.
   stack.value = stack.value.filter((e) => e.id !== top.id);

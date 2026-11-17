@@ -20,8 +20,8 @@ const content: HelpContent = [
         title: "Who sees and does what",
         blocks: [
           { type: "list", items: [
-            "**Super admin**: manages people, entities, settings and the activity log; sees everything.",
-            "**Admin**: creates and runs the projects, tables and tasks of their entities; sees analytics.",
+            "**Super manager**: manages people, entities, settings and the activity log; sees everything.",
+            "**Manager**: creates and runs the projects, tables and tasks of their entities; sees analytics.",
             "**Project manager**: a user named on one project; runs its tables, statuses and tasks, but cannot archive or delete it.",
             "**User**: sees their tasks and the tables holding them; moves their work along and comments.",
             "**Viewer**: reads the projects and analytics of their entities, changes nothing.",
@@ -69,7 +69,7 @@ const content: HelpContent = [
         blocks: [
           { type: "p", text: "A project manager is a user who runs one project: they see all its tasks, create tables and tasks, assign, comment and follow the project's analytics." },
           { type: "steps", items: ["Open the project, then **Edit**.", "Under **Project managers**, add one or more people.", "Save: access is immediate, and removed at once if you take them off."] },
-          { type: "tip", text: "Only simple users of the project's entity can be named. Admins already manage their entities' projects." },
+          { type: "tip", text: "Only simple users of the project's entity can be named. Managers already manage their entities' projects." },
         ],
       },
       {
@@ -77,7 +77,7 @@ const content: HelpContent = [
         title: "Archive or delete",
         audience: "managers",
         blocks: [
-          { type: "p", text: "Archive a finished project: it leaves the lists but stays available through the **Archived** filter. Deleting is permanent and reserved for admins." },
+          { type: "p", text: "Archive a finished project: it leaves the lists but stays available through the **Archived** filter. Deleting is permanent and reserved for managers." },
         ],
       },
     ],
@@ -178,7 +178,7 @@ const content: HelpContent = [
         id: "calendar-reports",
         title: "E-mail reports",
         audience: "workspace",
-        blocks: [{ type: "p", text: "Admins and viewers can receive a **daily**, **weekly** or **monthly** report on their entities' progress, from **Settings → E-mail reports**." }],
+        blocks: [{ type: "p", text: "Managers and viewers can receive a **daily**, **weekly** or **monthly** report on their entities' progress, from **Settings → E-mail reports**." }],
       },
     ],
   },
@@ -219,7 +219,7 @@ const content: HelpContent = [
         id: "admin-labels",
         title: "Labels",
         audience: "managers",
-        blocks: [{ type: "p", text: "Labels (“Urgent”, “Client”…) are shared by all projects. Admins create and rename them in **Labels**." }],
+        blocks: [{ type: "p", text: "Labels (“Urgent”, “Client”…) are shared by all projects. Managers create and rename them in **Labels**." }],
       },
       {
         id: "admin-journal",
@@ -238,7 +238,7 @@ const content: HelpContent = [
       {
         id: "account-profile",
         title: "Profile",
-        blocks: [{ type: "p", text: "Your card at the top of **Settings** shows your name, role and entities. A super admin keeps them up to date in **Users**: ask them for any correction." }],
+        blocks: [{ type: "p", text: "Your card at the top of **Settings** shows your name, role and entities. A super manager keeps them up to date in **Users**: ask them for any correction." }],
       },
       {
         id: "account-security",
@@ -273,7 +273,7 @@ const content: HelpContent = [
       {
         id: "faq-cannot-edit",
         title: "I cannot edit a task",
-        blocks: [{ type: "p", text: "Other people's tasks are read-only for users. You can always move and comment on your own; for the rest, ask an admin or the project manager." }],
+        blocks: [{ type: "p", text: "Other people's tasks are read-only for users. You can always move and comment on your own; for the rest, ask a manager or the project manager." }],
       },
     ],
   },

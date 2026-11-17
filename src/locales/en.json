@@ -110,7 +110,7 @@
     "progress": "Progress",
     "showArchived": "Show archived",
     "managers": "Project managers",
-    "managersHint": "Simple users who run this project: its tables, statuses and tasks. Only admins name them."
+    "managersHint": "Simple users who run this project: its tables, statuses and tasks. Only managers name them."
   },
   "boards": {
     "title": "Tables",
@@ -347,13 +347,13 @@
     "lastLogin": "Last sign-in",
     "never": "Never",
     "roles": {
-      "super_admin": "Super admin",
-      "admin": "Admin",
+      "super_admin": "Super manager",
+      "admin": "Manager",
       "user": "User",
       "viewer": "Viewer"
     },
     "passwordMismatch": "The two passwords do not match.",
-    "readOnly": "People are managed by super admins. You can look them up here.",
+    "readOnly": "People are managed by super managers. You can look them up here.",
     "entityImpact": {
       "title": "Leaving {entities}",
       "body": "On save, they will be removed from {projects} project(s) and unassigned from {tasks} open task(s) in {boards} table(s) of these entities, and lose all access to them.",
@@ -361,6 +361,7 @@
     }
   },
   "labels": {
+    "createNamed": "Create “{name}”",
     "title": "Labels",
     "subtitle": "Group tasks across tables.",
     "new": "New label",
@@ -544,7 +545,7 @@
   },
   "entities": {
     "title": "Entities",
-    "subtitle": "Companies, branches or departments. Their admins and users only see and hear about their own projects.",
+    "subtitle": "Companies, branches or departments. Their managers and users only see and hear about their own projects.",
     "new": "New entity",
     "edit": "Edit entity",
     "name": "Name",
@@ -558,7 +559,7 @@
     "entity": "Entity",
     "global": "Global (all entities)",
     "userHint": "The person only reaches the projects of these entities.",
-    "projectHint": "Only this entity’s admins and users can reach the project.",
+    "projectHint": "Only this entity’s managers and users can reach the project.",
     "entities": "Entities",
     "allShort": "All entities",
     "allHint": "No entity selected: the person reaches all entities."
@@ -594,6 +595,7 @@
       "noOwnerDue": "No owner · due {when}",
       "idle": "Idle {n} day | Idle {n} days"
     },
+    "loadMore": "Load more ({n} left)",
     "showing": "{shown} of {total}",
     "nothing": "Nothing here ✿",
     "atRisk": "Projects at risk",
@@ -698,13 +700,13 @@
     "copied": "Link copied",
     "backToTop": "Back to top",
     "stillStuck": "Didn't find your answer?",
-    "stillStuckHint": "Your administrator or project manager can help.",
+    "stillStuckHint": "Your manager or project manager can help.",
     "audience": {
-      "managers": "Admins",
-      "superAdmin": "Super admin",
-      "projectManagers": "Project managers and admins",
-      "workspace": "Admins and viewers",
-      "overview": "Admins, viewers and project managers"
+      "managers": "Managers",
+      "superAdmin": "Super manager",
+      "projectManagers": "Managers and project managers",
+      "workspace": "Managers and viewers",
+      "overview": "Managers, viewers and project managers"
     },
     "forYou": "Articles for your role: {role}",
     "showAll": "Show everything",

@@ -172,15 +172,22 @@
   .pt-scroll-x::-webkit-scrollbar {
     display: none;
   }
-  /* Vertical side scroller: hidden bar until hover, soft fade at the bottom edge only. */
+  /*
+   * Vertical side scroller: soft fade at the bottom edge only, and a bar that
+   * only shows on hover. The bar's space is always reserved (thin + stable
+   * gutter) and only its colour changes: switching scrollbar-width from none
+   * to thin on hover narrowed the content and made the items jump.
+   */
   .pt-scroll-y {
     @apply overflow-y-auto overscroll-contain;
-    scrollbar-width: none;
+    scrollbar-width: thin;
     scrollbar-gutter: stable;
+    scrollbar-color: transparent transparent;
+    transition: scrollbar-color 0.2s ease;
     mask-image: linear-gradient(to bottom, #000 calc(100% - 20px), transparent 100%);
   }
   .pt-scroll-y:hover {
-    scrollbar-width: thin;
+    scrollbar-color: var(--pt-border) transparent;
   }
   .pt-scroll-y::-webkit-scrollbar {
     width: 6px;
