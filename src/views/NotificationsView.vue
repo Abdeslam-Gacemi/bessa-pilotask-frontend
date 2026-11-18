@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isOffline } from "@/offline/connectivity";
 import { onMounted } from "vue";
 import { Notification03Icon, CheckmarkCircle02Icon } from "@hugeicons/core-free-icons";
 import PtAvatar from "@/components/ui/PtAvatar.vue";
@@ -50,7 +51,7 @@ onMounted(() => inbox.refresh());
         <h1 class="text-3xl font-bold">{{ $t("notifications.title") }}</h1>
         <p v-if="inbox.unread" class="mt-1 text-sm text-muted">{{ inbox.unread }} {{ $t("notifications.unread").toLowerCase() }}</p>
       </div>
-      <PtButton v-if="inbox.unread" variant="secondary" size="sm" :icon="CheckmarkCircle02Icon" @click="markAllRead">
+      <PtButton v-if="inbox.unread && !isOffline" variant="secondary" size="sm" :icon="CheckmarkCircle02Icon" @click="markAllRead">
         {{ $t("notifications.markAllRead") }}
       </PtButton>
     </header>

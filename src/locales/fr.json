@@ -722,12 +722,12 @@
     "readOnly": "Hors ligne : cette action a besoin du réseau.",
     "notKept": "Hors ligne : cette information n'est pas enregistrée sur le téléphone.",
     "unavailable": "Pas disponible hors ligne",
-    "unavailableHint": "Vos tâches et celles partagées avec vous restent consultables.",
+    "unavailableHint": "Vos tâches et vos notifications restent consultables.",
     "unavailableWebHint": "Vérifiez votre connexion, la page se rechargera d'elle-même.",
     "retry": "Réessayer",
     "settingsTitle": "Hors ligne",
     "copyTitle": "Données hors ligne",
-    "copyHint": "Vos tâches et celles partagées avec vous, avec leurs derniers commentaires, restent consultables sans réseau. Mise à jour automatique environ toutes les 30 minutes.",
+    "copyHint": "Vos tâches, celles partagées avec vous, leurs derniers commentaires et vos notifications restent consultables sans réseau. Mise à jour automatique environ toutes les 30 minutes.",
     "syncing": "Synchronisation…",
     "synced": "Données hors ligne à jour",
     "syncedAgo": "Synchronisé {when}",
@@ -745,6 +745,9 @@
     "cleared": "Données hors ligne effacées",
     "titleWeb": "Hors ligne",
     "reconnecting": "Reconnexion automatique dès que le réseau revient.",
-    "noCopyYet": "Pas encore de données enregistrées sur ce téléphone."
+    "noCopyYet": "Pas encore de données enregistrées sur ce téléphone.",
+    "settingsReadOnly": "Hors ligne : les paramètres sont en lecture seule.",
+    "connecting": "Connexion au serveur…",
+    "applying": "{done} sur {total} éléments"
   }
 }

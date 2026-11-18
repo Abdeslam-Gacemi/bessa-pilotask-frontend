@@ -44,6 +44,8 @@ final class OfflineSyncEngine {
 
     static final int COMMENTS_PER_TASK = 20;
 
+    /** How often progress reaches the notification and the screen, at most. */
+    private static final long PROGRESS_EVERY_MS = 400;
     private static final int CONNECT_TIMEOUT_MS = 15_000;
     private static final int READ_TIMEOUT_MS = 60_000;
     private static final ReentrantLock LOCK = new ReentrantLock();
@@ -78,15 +80,20 @@ final class OfflineSyncEngine {
             state.markAttempt();
             SyncEvents.emit(context);
 
+            SyncNotifier notifier = new SyncNotifier(context, credentials.language);
+            SyncProgress progress = new SyncProgress(PROGRESS_EVERY_MS);
+            notifier.started();
+
             Outcome outcome;
             try {
-                outcome = exchange(context, credentials);
+                outcome = exchange(context, credentials, new Progress(context, progress, notifier));
             } catch (IOException | RuntimeException e) {
                 outcome = Outcome.FAILED;
                 state.markError(e.getClass().getSimpleName());
             }
             if (outcome == Outcome.SYNCED) state.markSuccess();
             else if (outcome == Outcome.UNAUTHORIZED) state.markError("unauthorized");
+            notifier.finished(outcome, Math.max(0, progress.total()));
             return outcome;
         } finally {
             LOCK.unlock();
@@ -94,7 +101,7 @@ final class OfflineSyncEngine {
         }
     }
 
-    private static Outcome exchange(Context context, Credentials credentials) throws IOException {
+    private static Outcome exchange(Context context, Credentials credentials, Progress progress) throws IOException {
         SQLiteDatabase db = OfflineDatabase.get(context).getWritableDatabase();
         SyncState state = new SyncState(db);
 
@@ -123,7 +130,7 @@ final class OfflineSyncEngine {
             }
 
             try (JsonReader reader = new JsonReader(new InputStreamReader(new BufferedInputStream(connection.getInputStream()), StandardCharsets.UTF_8))) {
-                new Applier(db).apply(reader);
+                new Applier(db, progress).apply(reader);
             }
             return Outcome.SYNCED;
         } finally {
@@ -151,10 +158,37 @@ final class OfflineSyncEngine {
         writer.flush();
     }
 
+    /** Tells the notification and the open app how far the sync got. */
+    private static final class Progress {
+
+        private final Context context;
+        private final SyncProgress counter;
+        private final SyncNotifier notifier;
+
+        Progress(Context context, SyncProgress counter, SyncNotifier notifier) {
+            this.context = context;
+            this.counter = counter;
+            this.notifier = notifier;
+        }
+
+        void total(int total) {
+            counter.setTotal(total);
+            notifier.totalKnown(counter.total());
+            SyncEvents.progress(context, 0, counter.total());
+        }
+
+        void step() {
+            if (!counter.step(System.currentTimeMillis())) return;
+            notifier.progress(counter.done(), counter.total());
+            SyncEvents.progress(context, counter.done(), counter.total());
+        }
+    }
+
     /** Applies the answer while it streams in (see OfflineSnapshot on the API side for its shape). */
     private static final class Applier {
 
         private final SQLiteDatabase db;
+        private final Progress progress;
         /** Comments written by this run; a reset only drops the older ones, whatever the order of the answer. */
         private final long run = System.currentTimeMillis();
 
@@ -165,8 +199,9 @@ final class OfflineSyncEngine {
         private final SQLiteStatement removeComment;
         private final SQLiteStatement resetComments;
 
-        Applier(SQLiteDatabase db) {
+        Applier(SQLiteDatabase db, Progress progress) {
             this.db = db;
+            this.progress = progress;
             upsertEntry = db.compileStatement(
                 "INSERT OR REPLACE INTO entries (key, hash, json, task_id, assigned, observed, category, due_at, updated_at, search)"
                     + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
@@ -185,6 +220,7 @@ final class OfflineSyncEngine {
                 reader.beginObject();
                 while (reader.hasNext()) {
                     switch (reader.nextName()) {
+                        case "total" -> progress.total(reader.nextInt());
                         case "cursor" -> cursor = reader.nextString();
                         case "upsert" -> forEachObject(reader, this::entry);
                         case "remove" -> forEachString(reader, this::removeEntry);
@@ -235,6 +271,7 @@ final class OfflineSyncEngine {
             bindNullable(upsertEntry, 9, index.updatedAt);
             bindNullable(upsertEntry, 10, index.search);
             upsertEntry.executeInsert();
+            progress.step();
         }
 
         private void removeEntry(String key) {
@@ -245,6 +282,7 @@ final class OfflineSyncEngine {
                 removeTaskComments.bindLong(1, taskId);
                 removeTaskComments.executeUpdateDelete();
             }
+            progress.step();
         }
 
         private void comments(JsonReader reader) throws IOException {
@@ -260,6 +298,7 @@ final class OfflineSyncEngine {
                     case "remove" -> forEachLong(reader, id -> {
                         removeComment.bindLong(1, id);
                         removeComment.executeUpdateDelete();
+                        progress.step();
                     });
                     default -> reader.skipValue();
                 }
@@ -291,6 +330,7 @@ final class OfflineSyncEngine {
             upsertComment.bindString(4, json);
             upsertComment.bindLong(5, run);
             upsertComment.executeInsert();
+            progress.step();
         }
 
         /** Keeps the latest comments of each task the phone still holds, nothing else. */

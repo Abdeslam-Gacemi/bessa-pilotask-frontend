@@ -24,6 +24,11 @@ const { confirmAction } = useConfirm();
 onMounted(() => void offline.loadStatus());
 
 const status = computed(() => offline.status);
+/** Null while the server has not said how much is coming (the bar then just moves). */
+const percent = computed(() => {
+  const progress = offline.progress;
+  return progress && progress.total > 0 ? Math.min(100, Math.round((progress.done / progress.total) * 100)) : null;
+});
 const size = computed(() => formatSize(status.value?.bytes ?? 0, t("attachments.units").split(","), locale.value));
 const state = computed<{ text: string; tone: string }>(() => {
   if (offline.syncing) return { text: t("offline.syncing"), tone: "text-primary" };
@@ -94,6 +99,23 @@ async function clear(): Promise<void> {
           <dd class="mt-0.5 text-lg font-bold tabular-nums">{{ size }}</dd>
         </div>
       </dl>
+
+      <div v-if="offline.syncing" class="flex flex-col gap-1.5" aria-live="polite">
+        <div
+          class="h-2 overflow-hidden rounded-full bg-surface-3"
+          role="progressbar"
+          :aria-valuenow="percent ?? undefined"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          :aria-label="$t('offline.syncing')"
+        >
+          <span v-if="percent !== null" class="block h-full rounded-full bg-primary transition-[width] duration-300" :style="{ width: `${percent}%` }" />
+          <span v-else class="pt-bar-loading block h-full" />
+        </div>
+        <p class="text-xs text-muted tabular-nums">
+          {{ offline.progress?.total ? $t("offline.applying", { done: offline.progress.done, total: offline.progress.total }) : $t("offline.connecting") }}
+        </p>
+      </div>
 
       <PtButton block variant="soft" :icon="RefreshIcon" :loading="offline.syncing" :disabled="isOffline" @click="syncNow">
         {{ $t("offline.syncNow") }}

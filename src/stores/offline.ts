@@ -4,7 +4,7 @@ import { App } from "@capacitor/app";
 import type { PluginListenerHandle } from "@capacitor/core";
 import { http } from "@/api/client";
 import { isOffline, keepsOfflineCopy } from "@/offline/connectivity";
-import { OfflineSync, type OfflineStatus } from "@/offline/OfflineSync";
+import { OfflineSync, type OfflineStatus, type SyncProgress } from "@/offline/OfflineSync";
 import { tokenStore } from "@/services/tokenStore";
 import type { User } from "@/types/models";
 
@@ -18,6 +18,8 @@ const FRESH_MS = 5 * 60_000;
  */
 export const useOfflineStore = defineStore("offline", () => {
   const status = ref<OfflineStatus | null>(null);
+  /** Items applied by the running sync (null when none runs). */
+  const progress = ref<SyncProgress | null>(null);
   const available = keepsOfflineCopy;
   const lastSyncAt = computed(() => (status.value?.lastSuccessAt ? new Date(status.value.lastSuccessAt) : null));
   const syncing = computed(() => status.value?.syncing ?? false);
@@ -37,7 +39,11 @@ export const useOfflineStore = defineStore("offline", () => {
     });
     if (!handles.length) {
       handles = await Promise.all([
-        OfflineSync.addListener("stateChange", (next) => (status.value = next)),
+        OfflineSync.addListener("stateChange", (next) => {
+          status.value = next;
+          if (!next.syncing) progress.value = null;
+        }),
+        OfflineSync.addListener("progress", (next) => (progress.value = next)),
         App.addListener("resume", () => void refresh()),
       ]);
       // Back online: catch up with what changed meanwhile.
@@ -79,5 +85,5 @@ export const useOfflineStore = defineStore("offline", () => {
     if (available) status.value = await OfflineSync.getStatus();
   }
 
-  return { status, available, lastSyncAt, syncing, start, refresh, syncNow, setWifiOnly, stop, loadStatus };
+  return { status, progress, available, lastSyncAt, syncing, start, refresh, syncNow, setWifiOnly, stop, loadStatus };
 });

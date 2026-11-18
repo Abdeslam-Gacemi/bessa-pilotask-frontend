@@ -23,6 +23,7 @@ public class OfflineSyncPlugin extends Plugin implements SyncEvents.Listener {
     @Override
     public void load() {
         SyncEvents.add(this);
+        NetworkMonitor.start(getContext());
     }
 
     @Override
@@ -34,6 +35,14 @@ public class OfflineSyncPlugin extends Plugin implements SyncEvents.Listener {
     @Override
     public void onSyncStateChanged(Context context) {
         notifyListeners("stateChange", status());
+    }
+
+    @Override
+    public void onSyncProgress(int done, int total) {
+        JSObject progress = new JSObject();
+        progress.put("done", done);
+        progress.put("total", total);
+        notifyListeners("progress", progress);
     }
 
     /** Signed in: keeps what the background sync needs and starts it. Another person → the old copy goes. */
@@ -52,6 +61,7 @@ public class OfflineSyncPlugin extends Plugin implements SyncEvents.Listener {
 
         Credentials.save(context, baseUrl, token, userId, call.getString("language", "fr"));
         OfflineSyncScheduler.schedule(context, Credentials.wifiOnly(context));
+        NetworkMonitor.refresh(context);
         call.resolve(status());
     }
 
@@ -61,6 +71,8 @@ public class OfflineSyncPlugin extends Plugin implements SyncEvents.Listener {
         Context context = getContext();
         OfflineSyncScheduler.cancel(context);
         Credentials.clear(context);
+        new SyncNotifier(context, "fr").cancelAll();
+        NetworkMonitor.refresh(context);
         syncs.execute(() -> {
             OfflineSyncEngine.wipe(context);
             call.resolve(status());

@@ -7,6 +7,7 @@ import ReportSettings from "@/components/settings/ReportSettings.vue";
 import AccessSettings from "@/components/settings/AccessSettings.vue";
 import OfflineSettings from "@/components/settings/OfflineSettings.vue";
 import PtBackButton from "@/components/ui/PtBackButton.vue";
+import OfflineReadOnly from "@/components/offline/OfflineReadOnly.vue";
 
 export type SettingsSection = "notifications" | "security" | "reports" | "access" | "offline";
 
@@ -38,6 +39,10 @@ const title = computed(() => t(TITLES[props.section]));
       <PtBackButton />
       <h1 class="text-2xl font-bold">{{ title }}</h1>
     </header>
-    <component :is="VIEWS[section]" />
+    <!-- The offline section is the phone's own: it stays usable without network. -->
+    <component :is="VIEWS[section]" v-if="section === 'offline'" />
+    <OfflineReadOnly v-else note class="flex flex-col gap-6">
+      <component :is="VIEWS[section]" />
+    </OfflineReadOnly>
   </div>
 </template>

@@ -3,7 +3,7 @@ import { ApiError } from "@/api/client";
 import { i18n } from "@/plugins/i18n";
 import type { Comment, Task } from "@/types/models";
 import { isOffline, keepsOfflineCopy, markUnreachable } from "./connectivity";
-import { OfflineSync, type OfflineScope } from "./OfflineSync";
+import { OfflineSync, type OfflineDocument, type OfflineScope } from "./OfflineSync";
 
 /** True once a screen shows data from the phone's copy instead of the API. */
 export const servedFromCopy = ref(false);
@@ -50,7 +50,7 @@ export const offlineCopy = {
     // A task the copy holds always has a (maybe empty) comment list.
     return (parse<Comment[]>(await OfflineSync.listComments({ taskId })) ?? []).map(readOnlyComment);
   },
-  async document<T>(key: "me" | "meta" | "labels" | "projects"): Promise<T | null> {
+  async document<T>(key: OfflineDocument): Promise<T | null> {
     return parse<T>(await OfflineSync.getDocument({ key }));
   },
 };

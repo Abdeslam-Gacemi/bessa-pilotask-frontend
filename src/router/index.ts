@@ -34,7 +34,7 @@ const routes: RouteRecordRaw[] = [
       { path: "users", name: "users", component: () => import("@/views/UsersView.vue"), meta: { manager: true, title: "nav.users" } },
       { path: "entities", name: "entities", component: () => import("@/views/EntitiesView.vue"), meta: { superAdmin: true, title: "nav.entities" } },
       { path: "labels", name: "labels", component: () => import("@/views/LabelsView.vue"), meta: { manager: true, title: "nav.labels" } },
-      { path: "notifications", name: "notifications", component: () => import("@/views/NotificationsView.vue"), meta: { title: "nav.notifications" } },
+      { path: "notifications", name: "notifications", component: () => import("@/views/NotificationsView.vue"), meta: { title: "nav.notifications", offline: "copy" } },
       { path: "help", name: "help", component: () => import("@/views/HelpView.vue"), meta: { title: "help.title", offline: "always" } },
       { path: "settings", name: "settings", component: () => import("@/views/SettingsView.vue"), meta: { title: "nav.settings", offline: "always" } },
       {

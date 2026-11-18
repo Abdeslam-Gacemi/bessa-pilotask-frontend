@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { useIntervalFn } from "@vueuse/core";
 import { notificationsApi } from "@/api/endpoints";
 import type { AppNotification } from "@/types/models";
+import { isOffline } from "@/offline/connectivity";
 
 /** The inbox: polled every minute and refreshed when a push arrives. */
 export const useNotificationsStore = defineStore("notifications", () => {
@@ -33,7 +34,8 @@ export const useNotificationsStore = defineStore("notifications", () => {
   }
 
   async function markRead(notification: AppNotification): Promise<void> {
-    if (notification.read_at) return;
+    // Offline the inbox is read-only: it stays as the server last said.
+    if (notification.read_at || isOffline.value) return;
     notification.read_at = new Date().toISOString();
     unread.value = Math.max(0, unread.value - 1);
     await notificationsApi.read(notification.id);

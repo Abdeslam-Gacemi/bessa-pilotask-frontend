@@ -8,6 +8,9 @@ final class SyncEvents {
 
     interface Listener {
         void onSyncStateChanged(Context context);
+
+        /** Throttled by the engine: a few times a second at most. */
+        default void onSyncProgress(int done, int total) {}
     }
 
     private static final CopyOnWriteArraySet<Listener> LISTENERS = new CopyOnWriteArraySet<>();
@@ -24,5 +27,9 @@ final class SyncEvents {
 
     static void emit(Context context) {
         for (Listener listener : LISTENERS) listener.onSyncStateChanged(context);
+    }
+
+    static void progress(Context context, int done, int total) {
+        for (Listener listener : LISTENERS) listener.onSyncProgress(done, total);
     }
 }

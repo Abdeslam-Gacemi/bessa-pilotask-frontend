@@ -251,9 +251,19 @@ export const analyticsApi = {
     data(http.get<AnalyticsReport>("/analytics", { params, ...o })),
 };
 
+type InboxPage = Paginated<AppNotification> & { meta: { unread: number; last_page: number } };
+
 export const notificationsApi = {
   list: (page = 1, unread = false) =>
-    data(http.get<Paginated<AppNotification> & { meta: { unread: number; last_page: number } }>("/notifications", { params: { page, unread: unread ? 1 : 0 } })),
+    readThrough(
+      () => data(http.get<InboxPage>("/notifications", { params: { page, unread: unread ? 1 : 0 } })),
+      async () => {
+        // The phone keeps the first page only: offline, it is the whole inbox.
+        if (page !== 1 || unread) return null;
+        const inbox = await offlineCopy.document<InboxPage>("notifications");
+        return inbox && { ...inbox, meta: { ...inbox.meta, last_page: 1 } };
+      },
+    ),
   read: (id: string) => http.post(`/notifications/${id}/read`),
   readAll: () => http.post("/notifications/read-all"),
   /** Sends the signed-in person a test alert on every channel (inbox, e-mail, push). */

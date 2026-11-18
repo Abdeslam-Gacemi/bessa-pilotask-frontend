@@ -722,12 +722,12 @@
     "readOnly": "Offline: this action needs the network.",
     "notKept": "Offline: this information is not saved on the phone.",
     "unavailable": "Not available offline",
-    "unavailableHint": "Your tasks and those shared with you can still be viewed.",
+    "unavailableHint": "Your tasks and notifications can still be viewed.",
     "unavailableWebHint": "Check your connection; the page will reload by itself.",
     "retry": "Try again",
     "settingsTitle": "Offline",
     "copyTitle": "Offline data",
-    "copyHint": "Your tasks and those shared with you, with their latest comments, stay available without network. Updated automatically about every 30 minutes.",
+    "copyHint": "Your tasks, those shared with you, their latest comments and your notifications stay available without network. Updated automatically about every 30 minutes.",
     "syncing": "Syncing…",
     "synced": "Offline data up to date",
     "syncedAgo": "Synced {when}",
@@ -745,6 +745,9 @@
     "cleared": "Offline data cleared",
     "titleWeb": "Offline",
     "reconnecting": "Reconnects automatically when the network is back.",
-    "noCopyYet": "No data saved on this phone yet."
+    "noCopyYet": "No data saved on this phone yet.",
+    "settingsReadOnly": "Offline: settings are read-only.",
+    "connecting": "Connecting to the server…",
+    "applying": "{done} of {total} items"
   }
 }

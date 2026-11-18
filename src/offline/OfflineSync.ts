@@ -23,6 +23,14 @@ interface JsonResult {
 
 export type OfflineScope = "open" | "done" | "shared";
 
+/** Lists kept beside the tasks: profile, app settings, labels, projects, the inbox's first page. */
+export type OfflineDocument = "me" | "meta" | "labels" | "projects" | "notifications";
+
+export interface SyncProgress {
+  done: number;
+  total: number;
+}
+
 interface OfflineSyncPlugin {
   configure(options: { baseUrl: string; token: string; userId: number; language: string }): Promise<OfflineStatus>;
   clear(): Promise<OfflineStatus>;
@@ -32,8 +40,10 @@ interface OfflineSyncPlugin {
   listTasks(options: { scope: OfflineScope; search?: string }): Promise<JsonResult>;
   getTask(options: { id: number }): Promise<JsonResult>;
   listComments(options: { taskId: number }): Promise<JsonResult>;
-  getDocument(options: { key: "me" | "meta" | "labels" | "projects" }): Promise<JsonResult>;
+  getDocument(options: { key: OfflineDocument }): Promise<JsonResult>;
   addListener(event: "stateChange", listener: (status: OfflineStatus) => void): Promise<PluginListenerHandle>;
+  /** While a sync applies its changes, a few times a second at most. */
+  addListener(event: "progress", listener: (progress: SyncProgress) => void): Promise<PluginListenerHandle>;
 }
 
 export const OfflineSync = registerPlugin<OfflineSyncPlugin>("OfflineSync");

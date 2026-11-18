@@ -19,6 +19,8 @@ public final class OfflineSyncWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
+        // The process may have been started just for this job: keep watching the network while it lives.
+        NetworkMonitor.start(getApplicationContext());
         return switch (OfflineSyncEngine.run(getApplicationContext())) {
             case SYNCED, BUSY -> Result.success();
             // Signed out, or the token was refused: nothing to do until the app signs in again.

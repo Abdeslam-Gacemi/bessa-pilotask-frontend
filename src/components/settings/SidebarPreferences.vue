@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 import { ComputerIcon, Moon02Icon, Settings02Icon, Sun03Icon } from "@hugeicons/core-free-icons";
 import LocaleSwitch from "@/components/brand/LocaleSwitch.vue";
 import PtIcon from "@/components/ui/PtIcon.vue";
+import OfflineReadOnly from "@/components/offline/OfflineReadOnly.vue";
 import { usePreferencesStore } from "@/stores/preferences";
 import type { ThemePreference } from "@/types/models";
 
@@ -31,6 +32,7 @@ const themes = computed(() => [
       >
         <PtIcon :icon="Settings02Icon" :size="18" />
       </RouterLink>
+      <OfflineReadOnly class="flex min-w-0 flex-1 items-center gap-2">
       <div class="flex flex-1 rounded-full border border-line bg-surface-2 p-0.5" role="radiogroup" :aria-label="$t('settings.theme')">
         <button
           v-for="theme in themes"
@@ -48,6 +50,7 @@ const themes = computed(() => [
         </button>
       </div>
       <LocaleSwitch compact />
+      </OfflineReadOnly>
     </div>
   </div>
 </template>
