@@ -1,4 +1,6 @@
 import { http } from "./client";
+import { offlineCopy, readThrough } from "@/offline/reads";
+import type { OfflineScope } from "@/offline/OfflineSync";
 import type {
   ActivityLog,
   AnalyticsReport,
@@ -21,6 +23,14 @@ import type {
 } from "@/types/models";
 
 const data = <T>(promise: Promise<{ data: T }>) => promise.then((response) => response.data);
+
+/** "My tasks" tabs, the only task lists the phone keeps offline. */
+function offlineScope(params: TaskQuery): OfflineScope | null {
+  if (params.observed) return "shared";
+  if (params.assignee_id !== "me") return null;
+  if (params.category?.length === 1 && params.category[0] === "done") return "done";
+  return params.open ? "open" : null;
+}
 
 /** Optional per-call settings; `signal` lets a view abort the request (see useRequest). */
 export interface CallOptions {
@@ -57,7 +67,7 @@ export const authApi = {
   challenge: (o: CallOptions = {}) => data(http.get<{ token: string | null; salt: string | null; difficulty: number }>("/auth/challenge", o)),
   login: (email: string, password: string, proof: CaptchaProof = {}, device_name = "web") =>
     data(http.post<{ token: string; user: User }>("/auth/login", { email, password, device_name, ...proof })),
-  me: () => data(http.get<User>("/auth/me")),
+  me: () => readThrough(() => data(http.get<User>("/auth/me")), () => offlineCopy.document<User>("me")),
   logout: () => http.post("/auth/logout"),
   updateProfile: (payload: FormData | Record<string, unknown>) => data(http.post<User>("/profile", payload)),
 };
@@ -77,7 +87,7 @@ export const uploadsApi = {
 };
 
 export const metaApi = {
-  get: (o: CallOptions = {}) => data(http.get<Meta>("/meta", o)),
+  get: (o: CallOptions = {}) => readThrough(() => data(http.get<Meta>("/meta", o)), () => offlineCopy.document<Meta>("meta")),
 };
 
 export const usersApi = {
@@ -109,7 +119,11 @@ export const entitiesApi = {
 };
 
 export const projectsApi = {
-  list: (archived = false, o: CallOptions = {}) => data(http.get<Project[]>("/projects", { params: { archived: archived ? 1 : 0 }, ...o })),
+  list: (archived = false, o: CallOptions = {}) =>
+    readThrough(
+      () => data(http.get<Project[]>("/projects", { params: { archived: archived ? 1 : 0 }, ...o })),
+      async () => (archived ? null : offlineCopy.document<Project[]>("projects")),
+    ),
   get: (id: number, o: CallOptions = {}) => data(http.get<Project>(`/projects/${id}`, o)),
   create: (payload: Partial<Project> & { manager_ids?: number[] }) => data(http.post<Project>("/projects", payload)),
   update: (id: number, payload: Partial<Project> & { manager_ids?: number[]; archived?: boolean }) =>
@@ -132,8 +146,15 @@ export const boardsApi = {
 };
 
 export const tasksApi = {
-  list: (params: TaskQuery, o: CallOptions = {}) => data(http.get<Task[]>("/tasks", { params, ...o })),
-  get: (id: number, o: CallOptions = {}) => data(http.get<Task>(`/tasks/${id}`, o)),
+  list: (params: TaskQuery, o: CallOptions = {}) =>
+    readThrough(
+      () => data(http.get<Task[]>("/tasks", { params, ...o })),
+      async () => {
+        const scope = offlineScope(params);
+        return scope ? offlineCopy.tasks(scope, params.search) : null;
+      },
+    ),
+  get: (id: number, o: CallOptions = {}) => readThrough(() => data(http.get<Task>(`/tasks/${id}`, o)), () => offlineCopy.task(id)),
   create: (boardId: number, payload: TaskInput) => data(http.post<Task>(`/boards/${boardId}/tasks`, payload)),
   update: (id: number, payload: Partial<TaskInput>) => data(http.patch<Task>(`/tasks/${id}`, payload)),
   move: (id: number, statusId: number, position?: number) =>
@@ -145,7 +166,8 @@ export const tasksApi = {
 };
 
 export const commentsApi = {
-  list: (taskId: number, o: CallOptions = {}) => data(http.get<Comment[]>(`/tasks/${taskId}/comments`, o)),
+  list: (taskId: number, o: CallOptions = {}) =>
+    readThrough(() => data(http.get<Comment[]>(`/tasks/${taskId}/comments`, o)), () => offlineCopy.comments(taskId)),
   create: (taskId: number, body: string, mention_ids: number[], attachment_ids: string[] = []) =>
     data(http.post<Comment>(`/tasks/${taskId}/comments`, { body, mention_ids, attachment_ids })),
   update: (id: number, body: string, mention_ids: number[], attachment_ids?: string[]) =>
@@ -170,7 +192,7 @@ export const attachmentsApi = {
 };
 
 export const labelsApi = {
-  list: () => data(http.get<Label[]>("/labels")),
+  list: () => readThrough(() => data(http.get<Label[]>("/labels")), () => offlineCopy.document<Label[]>("labels")),
   create: (payload: Pick<Label, "name" | "color">) => data(http.post<Label>("/labels", payload)),
   update: (id: number, payload: Partial<Pick<Label, "name" | "color">>) => data(http.patch<Label>(`/labels/${id}`, payload)),
   remove: (id: number) => http.delete(`/labels/${id}`),

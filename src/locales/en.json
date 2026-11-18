@@ -478,7 +478,8 @@
       "status": "this status",
       "comment": "this comment",
       "password": "your password",
-      "entity": "entity"
+      "entity": "entity",
+      "offlineCopy": "the offline data"
     },
     "create": {
       "title": "Create {entity}?",
@@ -712,5 +713,38 @@
     "showAll": "Show everything",
     "hidden": "No article hidden | 1 article for other roles hidden | {n} articles for other roles hidden",
     "projectManager": "project manager"
+  },
+  "offline": {
+    "title": "Offline · read-only",
+    "dataFrom": "Data from {date}",
+    "readOnlyHint": "Offline: viewing only, nothing can be changed.",
+    "back": "Back online",
+    "readOnly": "Offline: this action needs the network.",
+    "notKept": "Offline: this information is not saved on the phone.",
+    "unavailable": "Not available offline",
+    "unavailableHint": "Your tasks and those shared with you can still be viewed.",
+    "unavailableWebHint": "Check your connection; the page will reload by itself.",
+    "retry": "Try again",
+    "settingsTitle": "Offline",
+    "copyTitle": "Offline data",
+    "copyHint": "Your tasks and those shared with you, with their latest comments, stay available without network. Updated automatically about every 30 minutes.",
+    "syncing": "Syncing…",
+    "synced": "Offline data up to date",
+    "syncedAgo": "Synced {when}",
+    "failed": "Last sync failed",
+    "never": "Never synced",
+    "tasks": "Tasks",
+    "comments": "Comments",
+    "space": "Space",
+    "syncNow": "Sync now",
+    "wifiOnly": "Wi-Fi only",
+    "wifiOnlyHint": "Automatic updates wait for Wi-Fi, to save mobile data.",
+    "clear": "Clear offline data",
+    "clearHint": "It will be downloaded again at the next sync.",
+    "clearAction": "Clear",
+    "cleared": "Offline data cleared",
+    "titleWeb": "Offline",
+    "reconnecting": "Reconnects automatically when the network is back.",
+    "noCopyYet": "No data saved on this phone yet."
   }
 }

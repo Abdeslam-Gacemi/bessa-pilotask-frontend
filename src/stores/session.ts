@@ -1,7 +1,8 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { authApi, type CaptchaProof } from "@/api/endpoints";
-import { onUnauthorized } from "@/api/client";
+import { ApiError, onUnauthorized } from "@/api/client";
+import { useOfflineStore } from "@/stores/offline";
 import { tokenStore } from "@/services/tokenStore";
 import { cancelAllRequests } from "@/services/requests";
 import type { User } from "@/types/models";
@@ -34,8 +35,9 @@ export const useSessionStore = defineStore("session", () => {
     if (ready.value) return;
     try {
       if (await tokenStore.load()) user.value = await authApi.me();
-    } catch {
-      await tokenStore.set(null);
+    } catch (error) {
+      // Only a refused token signs out; no network keeps the session for later.
+      if (error instanceof ApiError && error.status === 401) await tokenStore.set(null);
     } finally {
       ready.value = true;
     }
@@ -59,6 +61,7 @@ export const useSessionStore = defineStore("session", () => {
 
   async function clear(): Promise<void> {
     cancelAllRequests();
+    await useOfflineStore().stop().catch(() => undefined);
     await tokenStore.set(null);
     user.value = null;
   }

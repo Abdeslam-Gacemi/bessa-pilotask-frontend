@@ -15,6 +15,7 @@ import { useConfirm } from "@/composables/useConfirm";
 import { useDates } from "@/composables/useDates";
 import { acceptOf } from "@/services/uploads";
 import { useSessionStore } from "@/stores/session";
+import { isOffline } from "@/offline/connectivity";
 import type { Comment, Task } from "@/types/models";
 
 /** Discussion on a task, with @mentions that notify the people tagged, and files (pictures, PDF, Office). */
@@ -171,7 +172,9 @@ async function remove(comment: Comment): Promise<void> {
 
 <template>
   <div class="flex flex-col gap-4">
-    <p v-if="task.can && !task.can.comment" class="rounded-2xl bg-surface-2 px-4 py-3 text-sm text-muted">{{ $t("tasks.readOnly") }}</p>
+    <p v-if="task.can && !task.can.comment" class="rounded-2xl bg-surface-2 px-4 py-3 text-sm text-muted">
+      {{ isOffline ? $t("offline.readOnlyHint") : $t("tasks.readOnly") }}
+    </p>
     <div v-else class="flex gap-3">
       <PtAvatar v-if="session.user" :name="session.user.name" :src="session.user.avatar_url" :size="34" class="mt-1 max-sm:hidden" />
       <div class="relative min-w-0 flex-1" @dragenter.prevent="onDragEnter" @dragover.prevent @dragleave="onDragLeave" @drop.capture="onDrop">

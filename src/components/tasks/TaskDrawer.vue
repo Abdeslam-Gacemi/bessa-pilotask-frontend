@@ -23,6 +23,8 @@ import PtSheet from "@/components/ui/PtSheet.vue";
 import PtSkeleton from "@/components/ui/PtSkeleton.vue";
 import ActivityFeed from "@/components/activity/ActivityFeed.vue";
 import CommentThread from "./CommentThread.vue";
+import OfflineUnavailable from "@/components/offline/OfflineUnavailable.vue";
+import { isOffline } from "@/offline/connectivity";
 import PriorityChip from "./PriorityChip.vue";
 import TaskFormSheet from "./TaskFormSheet.vue";
 import { tasksApi } from "@/api/endpoints";
@@ -256,6 +258,7 @@ async function remove(): Promise<void> {
           ]"
         />
         <CommentThread v-if="tab === 'comments'" :task="task" @changed="(n) => task && (task.comments_count = n)" />
+        <OfflineUnavailable v-else-if="isOffline" />
         <ActivityFeed v-else :loader="activityLoader" />
       </section>
     </article>

@@ -1,5 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { beginWrite } from "@/services/pendingWrites";
+import { markReachable, markUnreachable } from "@/offline/connectivity";
+import { i18n } from "@/plugins/i18n";
 import { tokenStore } from "@/services/tokenStore";
 
 /**
@@ -13,11 +15,16 @@ export const http = axios.create({
 });
 
 http.interceptors.request.use((config) => {
+  const write = !["get", "head", "options"].includes((config.method ?? "get").toLowerCase());
+  // No network at all: say so at once instead of waiting for a timeout.
+  if (write && typeof navigator !== "undefined" && !navigator.onLine) {
+    return Promise.reject(new ApiError(i18n.global.t("offline.readOnly"), 0));
+  }
   const token = tokenStore.get();
   if (token) config.headers.Authorization = `Bearer ${token}`;
   config.headers["Accept-Language"] = document.documentElement.lang || "fr";
   // Writes keep open sheets and dialogs from being dismissed until they settle.
-  if (!["get", "head", "options"].includes((config.method ?? "get").toLowerCase())) {
+  if (write) {
     (config as WriteConfig).ptRelease = beginWrite();
   }
   return config;
@@ -53,12 +60,16 @@ export function onUnauthorized(listener: Listener): () => void {
 http.interceptors.response.use(
   (response) => {
     (response.config as WriteConfig).ptRelease?.();
+    markReachable();
     return response;
   },
   (error: AxiosError<{ message?: string; errors?: Record<string, string[]> }>) => {
     (error.config as WriteConfig | undefined)?.ptRelease?.();
     if (axios.isCancel(error)) return Promise.reject(new ApiError("cancelled", 0, {}, true));
     const status = error.response?.status ?? 0;
+    // No answer at all (not even an error page): the network, not the API.
+    if (status === 0) markUnreachable();
+    else markReachable();
     const apiError = new ApiError(error.response?.data?.message ?? error.message, status, error.response?.data?.errors ?? {});
     if (status === 401) unauthorizedListeners.forEach((listener) => listener(apiError));
     return Promise.reject(apiError);

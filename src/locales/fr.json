@@ -478,7 +478,8 @@
       "status": "ce statut",
       "comment": "ce commentaire",
       "password": "le mot de passe",
-      "entity": "l'entité"
+      "entity": "l'entité",
+      "offlineCopy": "les données hors ligne"
     },
     "create": {
       "title": "Créer {entity} ?",
@@ -712,5 +713,38 @@
     "showAll": "Tout afficher",
     "hidden": "Aucune rubrique masquée | 1 rubrique d'autres rôles masquée | {n} rubriques d'autres rôles masquées",
     "projectManager": "chef de projet"
+  },
+  "offline": {
+    "title": "Hors ligne · lecture seule",
+    "dataFrom": "Données du {date}",
+    "readOnlyHint": "Hors ligne : consultation seulement, rien ne peut être modifié.",
+    "back": "De nouveau en ligne",
+    "readOnly": "Hors ligne : cette action a besoin du réseau.",
+    "notKept": "Hors ligne : cette information n'est pas enregistrée sur le téléphone.",
+    "unavailable": "Pas disponible hors ligne",
+    "unavailableHint": "Vos tâches et celles partagées avec vous restent consultables.",
+    "unavailableWebHint": "Vérifiez votre connexion, la page se rechargera d'elle-même.",
+    "retry": "Réessayer",
+    "settingsTitle": "Hors ligne",
+    "copyTitle": "Données hors ligne",
+    "copyHint": "Vos tâches et celles partagées avec vous, avec leurs derniers commentaires, restent consultables sans réseau. Mise à jour automatique environ toutes les 30 minutes.",
+    "syncing": "Synchronisation…",
+    "synced": "Données hors ligne à jour",
+    "syncedAgo": "Synchronisé {when}",
+    "failed": "Échec de la dernière synchronisation",
+    "never": "Jamais synchronisé",
+    "tasks": "Tâches",
+    "comments": "Commentaires",
+    "space": "Espace",
+    "syncNow": "Synchroniser maintenant",
+    "wifiOnly": "Wi-Fi uniquement",
+    "wifiOnlyHint": "La mise à jour automatique attend le Wi-Fi, pour économiser les données mobiles.",
+    "clear": "Effacer les données hors ligne",
+    "clearHint": "Elles seront retéléchargées à la prochaine synchronisation.",
+    "clearAction": "Effacer",
+    "cleared": "Données hors ligne effacées",
+    "titleWeb": "Hors ligne",
+    "reconnecting": "Reconnexion automatique dès que le réseau revient.",
+    "noCopyYet": "Pas encore de données enregistrées sur ce téléphone."
   }
 }

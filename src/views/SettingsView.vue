@@ -19,6 +19,7 @@ import {
   Tag01Icon,
   TranslateIcon,
   UserMultipleIcon,
+  SmartPhone01Icon,
 } from "@hugeicons/core-free-icons";
 import FlagIcon from "@/components/brand/FlagIcon.vue";
 import InstallAppCard from "@/components/settings/InstallAppCard.vue";
@@ -30,6 +31,7 @@ import { stopPush } from "@/services/push";
 import { useNotificationsStore } from "@/stores/notifications";
 import { usePreferencesStore } from "@/stores/preferences";
 import { useSessionStore } from "@/stores/session";
+import { keepsOfflineCopy } from "@/offline/connectivity";
 import type { Icon } from "@/plugins/icons";
 import type { Locale, ThemePreference } from "@/types/models";
 
@@ -59,6 +61,7 @@ const sections = computed<{ key: string; icon: Icon; title: string; tone: string
   { key: "help", icon: HelpCircleIcon, title: t("help.title"), tone: "bg-primary-soft text-primary", external: "/help" },
   { key: "notifications", icon: Notification03Icon, title: t("settings.notifications"), tone: "bg-warning-soft text-warning" },
   { key: "security", icon: SquareLock02Icon, title: t("settings.security"), tone: "bg-danger-soft text-danger" },
+  ...(keepsOfflineCopy ? [{ key: "offline", icon: SmartPhone01Icon, title: t("offline.settingsTitle"), tone: "bg-primary-soft text-primary" }] : []),
   ...(session.seesWorkspace
     ? [{ key: "reports", icon: ChartLineData01Icon, title: t("settings.reportsTitle"), tone: "bg-[#EFE8FD] text-[#6C4FD1] dark:bg-[#2A2340] dark:text-[#B9A6FF]" }]
     : []),

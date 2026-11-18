@@ -8,6 +8,11 @@ declare module "vue-router" {
     manager?: boolean;
     superAdmin?: boolean;
     title?: string;
+    /**
+     * Without network: "copy" screens read the phone's offline copy (Android
+     * app), "always" ones need no data; the others show an offline notice.
+     */
+    offline?: "copy" | "always";
   }
 }
 
@@ -21,8 +26,8 @@ const routes: RouteRecordRaw[] = [
       { path: "projects", name: "projects", component: () => import("@/views/ProjectsView.vue"), meta: { title: "nav.projects" } },
       { path: "projects/:id(\\d+)", name: "project", component: () => import("@/views/ProjectView.vue"), props: (r) => ({ id: Number(r.params.id) }) },
       { path: "boards/:id(\\d+)", name: "board", component: () => import("@/views/BoardView.vue"), props: (r) => ({ id: Number(r.params.id) }) },
-      { path: "tasks/:id(\\d+)", name: "task", component: () => import("@/views/TaskView.vue"), props: (r) => ({ id: Number(r.params.id) }) },
-      { path: "my-tasks", name: "my-tasks", component: () => import("@/views/MyTasksView.vue"), meta: { title: "nav.myTasks" } },
+      { path: "tasks/:id(\\d+)", name: "task", component: () => import("@/views/TaskView.vue"), props: (r) => ({ id: Number(r.params.id) }), meta: { offline: "copy" } },
+      { path: "my-tasks", name: "my-tasks", component: () => import("@/views/MyTasksView.vue"), meta: { title: "nav.myTasks", offline: "copy" } },
       { path: "calendar", name: "calendar", component: () => import("@/views/CalendarView.vue"), meta: { title: "nav.calendar" } },
       { path: "analytics", name: "analytics", component: () => import("@/views/AnalyticsView.vue"), meta: { workspace: true, title: "nav.analytics" } },
       { path: "activity", name: "activity", component: () => import("@/views/ActivityView.vue"), meta: { superAdmin: true, title: "nav.activity" } },
@@ -30,16 +35,16 @@ const routes: RouteRecordRaw[] = [
       { path: "entities", name: "entities", component: () => import("@/views/EntitiesView.vue"), meta: { superAdmin: true, title: "nav.entities" } },
       { path: "labels", name: "labels", component: () => import("@/views/LabelsView.vue"), meta: { manager: true, title: "nav.labels" } },
       { path: "notifications", name: "notifications", component: () => import("@/views/NotificationsView.vue"), meta: { title: "nav.notifications" } },
-      { path: "help", name: "help", component: () => import("@/views/HelpView.vue"), meta: { title: "help.title" } },
-      { path: "settings", name: "settings", component: () => import("@/views/SettingsView.vue"), meta: { title: "nav.settings" } },
+      { path: "help", name: "help", component: () => import("@/views/HelpView.vue"), meta: { title: "help.title", offline: "always" } },
+      { path: "settings", name: "settings", component: () => import("@/views/SettingsView.vue"), meta: { title: "nav.settings", offline: "always" } },
       {
-        path: "settings/:section(notifications|security|reports|access)",
+        path: "settings/:section(notifications|security|reports|access|offline)",
         name: "settings-section",
         component: () => import("@/views/SettingsSectionView.vue"),
         props: true,
-        meta: { title: "nav.settings" },
+        meta: { title: "nav.settings", offline: "always" },
       },
-      { path: ":pathMatch(.*)*", name: "not-found", component: () => import("@/views/NotFoundView.vue") },
+      { path: ":pathMatch(.*)*", name: "not-found", component: () => import("@/views/NotFoundView.vue"), meta: { offline: "always" } },
     ],
   },
 ];

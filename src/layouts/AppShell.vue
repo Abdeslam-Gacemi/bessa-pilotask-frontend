@@ -24,6 +24,11 @@ import PtIconButton from "@/components/ui/PtIconButton.vue";
 import TaskDrawer from "@/components/tasks/TaskDrawer.vue";
 import TaskFormSheet from "@/components/tasks/TaskFormSheet.vue";
 import CreateChooserSheet from "@/components/CreateChooserSheet.vue";
+import OfflineBanner from "@/components/offline/OfflineBanner.vue";
+import OfflineUnavailable from "@/components/offline/OfflineUnavailable.vue";
+import { isOffline, keepsOfflineCopy } from "@/offline/connectivity";
+import { watchReconnection } from "@/offline/reconnect";
+import { useOfflineStore } from "@/stores/offline";
 import BoardFormSheet from "@/components/projects/BoardFormSheet.vue";
 import ProjectFormSheet from "@/components/projects/ProjectFormSheet.vue";
 import SidebarPreferences from "@/components/settings/SidebarPreferences.vue";
@@ -53,6 +58,7 @@ const meta = useMetaStore();
 const projects = useProjectsStore();
 const inbox = useNotificationsStore();
 const taskUi = useTaskUi();
+const offline = useOfflineStore();
 const openTarget = useNotificationTarget();
 
 // Theme and language follow the account: saved wherever they are changed (sidebar or settings).
@@ -104,8 +110,16 @@ const mobile = computed<NavItem[]>(() => [
   session.hasOverview ? admin.value[0]! : main.value[1]!,
 ]);
 
+/** Without network, only screens that can work from the phone's copy (or need no data) are shown. */
+const screenWorks = computed(() => !isOffline.value || route.meta.offline === "always" || (route.meta.offline === "copy" && keepsOfflineCopy));
+/** Creating needs the network: the "+" becomes "My tasks" meanwhile. */
+const canCreateNow = computed(() => session.canCreate && !isOffline.value);
+let stopReconnection: (() => void) | undefined;
+
 onMounted(async () => {
-  await Promise.all([meta.load(), projects.load()]).catch(() => toast.error(t("errors.network")));
+  stopReconnection = watchReconnection();
+  if (session.user) void offline.start(session.user).catch(() => undefined);
+  await Promise.all([meta.load(), projects.load()]).catch(() => !isOffline.value && toast.error(t("errors.network")));
   inbox.start();
   void startPush({
     onMessage: () => void inbox.refresh(),
@@ -113,7 +127,10 @@ onMounted(async () => {
   });
 });
 
-onUnmounted(() => inbox.stop());
+onUnmounted(() => {
+  inbox.stop();
+  stopReconnection?.();
+});
 
 async function signOut(): Promise<void> {
   // The dialog keeps a spinner on its button until the sign-out is done.
@@ -157,7 +174,7 @@ useShake(
     haptics.bump();
     taskUi.openCreate();
   },
-  computed(() => session.canCreate),
+  canCreateNow,
 );
 
 function onSaved(task: Task): void {
@@ -188,7 +205,7 @@ router.afterEach((to, from) => {
     <aside class="sticky top-0 hidden h-dvh w-68 shrink-0 flex-col border-e border-line bg-surface/70 px-4 py-5 backdrop-blur md:flex">
       <div class="mb-3 flex shrink-0 items-center justify-between gap-2 ps-2">
         <RouterLink to="/"><AppLogo :height="30" /></RouterLink>
-        <PtIconButton v-if="session.canCreate" :icon="Add01Icon" variant="ink" :label="$t('create.title')" @click="openCreate" />
+        <PtIconButton v-if="canCreateNow" :icon="Add01Icon" variant="ink" :label="$t('create.title')" @click="openCreate" />
       </div>
 
       <!-- One scroll area for nav, projects and admin: header and footer stay pinned. -->
@@ -297,9 +314,11 @@ router.afterEach((to, from) => {
 
       <!-- Bottom padding keeps the last item clear of the floating bottom bar on phones. -->
       <main class="mx-auto w-full max-w-7xl px-4 pt-2 pb-[calc(9rem+env(safe-area-inset-bottom))] md:px-8 md:pt-8 md:pb-12">
+        <OfflineBanner />
         <RouterView v-slot="{ Component }">
           <Transition name="pt-fade" mode="out-in" @before-enter="resetScroll">
-            <component :is="Component" />
+            <component :is="Component" v-if="screenWorks" />
+            <OfflineUnavailable v-else />
           </Transition>
         </RouterView>
       </main>
@@ -322,10 +341,10 @@ router.afterEach((to, from) => {
       <button
         type="button"
         class="mb-0.5 grid size-15 shrink-0 place-items-center rounded-full bg-ink text-on-ink shadow-float transition active:scale-95"
-        :aria-label="session.canCreate ? $t('create.title') : $t('nav.myTasks')"
-        @click="session.canCreate ? openCreate() : router.push('/my-tasks')"
+        :aria-label="canCreateNow ? $t('create.title') : $t('nav.myTasks')"
+        @click="canCreateNow ? openCreate() : router.push('/my-tasks')"
       >
-        <PtIcon :icon="session.canCreate ? Add01Icon : CheckListIcon" :size="24" />
+        <PtIcon :icon="canCreateNow ? Add01Icon : CheckListIcon" :size="24" />
       </button>
     </nav>
 

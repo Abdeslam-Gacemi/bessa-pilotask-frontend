@@ -23,7 +23,7 @@ interface ConfirmRequest {
 }
 
 export type ConfirmAction = "create" | "update" | "delete" | "archive" | "unarchive" | "logout";
-export type ConfirmEntity = "task" | "project" | "board" | "user" | "label" | "status" | "comment" | "password" | "entity";
+export type ConfirmEntity = "task" | "project" | "board" | "user" | "label" | "status" | "comment" | "password" | "entity" | "offlineCopy";
 
 const TONES: Record<ConfirmAction, ConfirmTone> = {
   create: "primary",
