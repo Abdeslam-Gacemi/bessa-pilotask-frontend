@@ -23,7 +23,6 @@ import {
 } from "@hugeicons/core-free-icons";
 import FlagIcon from "@/components/brand/FlagIcon.vue";
 import InstallAppCard from "@/components/settings/InstallAppCard.vue";
-import OfflineReadOnly from "@/components/offline/OfflineReadOnly.vue";
 import PtAvatar from "@/components/ui/PtAvatar.vue";
 import PtIcon from "@/components/ui/PtIcon.vue";
 import PtSegmented from "@/components/ui/PtSegmented.vue";
@@ -117,7 +116,6 @@ async function signOut(): Promise<void> {
 
     <InstallAppCard v-stagger="2" />
 
-    <OfflineReadOnly note class="flex flex-col gap-6">
     <section v-stagger="2" class="pt-card flex flex-col gap-3 p-4">
       <h2 class="flex items-center gap-2.5 font-semibold">
         <span class="grid size-9 place-items-center rounded-xl bg-[#EFE8FD] text-[#6C4FD1] dark:bg-[#2A2340] dark:text-[#B9A6FF]">
@@ -149,7 +147,6 @@ async function signOut(): Promise<void> {
         </button>
       </div>
     </section>
-    </OfflineReadOnly>
 
     <nav class="pt-card divide-y divide-line/60 overflow-hidden p-1.5">
       <RouterLink
