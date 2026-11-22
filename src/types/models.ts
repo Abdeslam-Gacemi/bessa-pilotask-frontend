@@ -135,6 +135,8 @@ export interface Task {
   start_at: string | null;
   due_at: string | null;
   completed_at: string | null;
+  /** Optional self-reported progress, 0–100 (null = not tracked). */
+  progress: number | null;
   position: number;
   /** Set when the task is archived (kept, but out of the way). */
   archived_at?: string | null;
@@ -325,6 +327,7 @@ export interface TaskInput {
   status_id?: number | null;
   start_at?: string | null;
   due_at?: string | null;
+  progress?: number | null;
   assignee_ids?: number[];
   label_ids?: number[];
 }

@@ -4,9 +4,10 @@ import { Comment01Icon, Loading03Icon } from "@hugeicons/core-free-icons";
 import { isTaskBusy } from "@/composables/useTaskBusy";
 import PtAvatarStack from "@/components/ui/PtAvatarStack.vue";
 import PtIcon from "@/components/ui/PtIcon.vue";
+import PtProgress from "@/components/ui/PtProgress.vue";
 import DueChip from "./DueChip.vue";
 import PriorityChip from "./PriorityChip.vue";
-import { isClosed, taskAccent } from "@/domain/tasks";
+import { isClosed, taskAccent, taskProgress } from "@/domain/tasks";
 import type { Task } from "@/types/models";
 
 /** The task card of the kanban board. */
@@ -14,6 +15,7 @@ const props = defineProps<{ task: Task; showBoard?: boolean }>();
 defineEmits<{ open: [task: Task] }>();
 
 const closed = computed(() => isClosed(props.task.status?.category));
+const progress = computed(() => taskProgress(props.task));
 const busy = computed(() => isTaskBusy(props.task.id));
 </script>
 
@@ -49,6 +51,10 @@ const busy = computed(() => isTaskBusy(props.task.id));
       {{ task.title }}
     </h3>
     <p v-if="showBoard && task.board" class="mt-1 ps-1.5 text-xs text-muted">{{ task.board.name }}</p>
+    <div v-if="progress !== null" class="mt-2.5 flex items-center gap-2 ps-1.5">
+      <PtProgress :value="progress" :color="taskAccent(task)" :height="4" />
+      <span class="shrink-0 text-[11px] font-bold tabular-nums text-muted">{{ progress }}%</span>
+    </div>
     <footer class="mt-3 flex items-center gap-2 ps-1.5">
       <DueChip :due="task.due_at" :overdue="task.is_overdue" :done="closed" />
       <span v-if="task.comments_count" class="inline-flex items-center gap-1 text-[11px] font-semibold text-muted">

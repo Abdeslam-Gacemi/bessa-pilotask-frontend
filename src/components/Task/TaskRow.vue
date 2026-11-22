@@ -5,9 +5,10 @@ import { ArrowRight01Icon, Loading03Icon, Tick02Icon } from "@hugeicons/core-fre
 import { isTaskBusy } from "@/composables/useTaskBusy";
 import PtIcon from "@/components/ui/PtIcon.vue";
 import PtAvatarStack from "@/components/ui/PtAvatarStack.vue";
+import PtProgress from "@/components/ui/PtProgress.vue";
 import DueChip from "./DueChip.vue";
 import PriorityChip from "./PriorityChip.vue";
-import { isClosed } from "@/domain/tasks";
+import { isClosed, taskAccent, taskProgress } from "@/domain/tasks";
 import type { Task } from "@/types/models";
 
 /** One line of a task list, with a done checkbox (for people allowed to move it). */
@@ -16,6 +17,7 @@ defineEmits<{ open: [task: Task]; toggle: [task: Task] }>();
 
 const done = computed(() => props.task.status?.category === "done");
 const closed = computed(() => isClosed(props.task.status?.category));
+const progress = computed(() => taskProgress(props.task));
 const busy = computed(() => isTaskBusy(props.task.id));
 </script>
 
@@ -53,6 +55,10 @@ const busy = computed(() => isTaskBusy(props.task.id));
         <span v-if="showBoard && task.board && task.status">·</span>
         <span v-if="task.status">{{ statusName(task.status) }}</span>
       </p>
+      <div v-if="progress !== null" class="mt-1.5 flex items-center gap-2">
+        <PtProgress :value="progress" :color="taskAccent(task)" :height="3" class="max-w-44" />
+        <span class="text-[10px] font-bold tabular-nums text-subtle">{{ progress }}%</span>
+      </div>
     </button>
     <PriorityChip class="max-sm:hidden" :priority="task.priority" compact />
     <DueChip :due="task.due_at" :overdue="task.is_overdue" :done="closed" />

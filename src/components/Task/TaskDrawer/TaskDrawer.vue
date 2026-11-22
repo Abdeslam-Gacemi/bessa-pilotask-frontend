@@ -5,6 +5,7 @@ import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import {
   Archive01Icon,
+  BadgePercentIcon,
   Calendar03Icon,
   Flag02Icon,
   PencilEdit02Icon,
@@ -24,6 +25,7 @@ import PtSkeleton from "@/components/ui/PtSkeleton.vue";
 import ActivityFeed from "@/components/Activity/ActivityFeed/ActivityFeed.vue";
 import CommentThread from "./CommentThread.vue";
 import PriorityChip from "../PriorityChip.vue";
+import TaskProgress from "../TaskProgress.vue";
 import TaskFormSheet from "../TaskFormSheet.vue";
 import { tasksApi } from "@/api/endpoints";
 import { useApiError } from "@/composables/useApiError";
@@ -105,6 +107,11 @@ function onSaved(saved: Task): void {
   task.value = merge(saved);
   emit("updated", task.value);
   toast.success(t("common.saved"));
+}
+
+function onProgress(next: Task): void {
+  task.value = merge(next);
+  emit("updated", task.value);
 }
 
 // Observers: read-only access to this one task, for anyone. Saved as soon as it changes.
@@ -203,6 +210,9 @@ async function archive(): Promise<void> {
 
         <dt class="flex items-center gap-2 text-muted"><PtIcon :icon="Flag02Icon" :size="17" />{{ $t("priority.label") }}</dt>
         <dd><PriorityChip :priority="task.priority" /></dd>
+
+        <dt class="flex items-center gap-2 self-start pt-1 text-muted"><PtIcon :icon="BadgePercentIcon" :size="17" />{{ $t("tasks.progress") }}</dt>
+        <dd><TaskProgress :task="task" :editable="!!task.can?.update" @updated="onProgress" /></dd>
 
         <dt class="flex items-center gap-2 text-muted"><PtIcon :icon="Clock01Icon" :size="17" />{{ $t("tasks.start") }}</dt>
         <dd class="font-semibold">{{ task.start_at ? fmt.dateTime(task.start_at) : "—" }}</dd>

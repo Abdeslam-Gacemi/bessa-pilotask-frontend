@@ -1,0 +1,129 @@
+<script setup lang="ts">
+import { computed, ref, watch } from "vue";
+import { useDebounceFn } from "@vueuse/core";
+import PtProgress from "@/components/ui/PtProgress.vue";
+import { tasksApi } from "@/api/endpoints";
+import { useApiError } from "@/composables/useApiError";
+import type { Task } from "@/types/models";
+
+/** Optional self-reported progress: a slider, quick steps, and live save. */
+const props = defineProps<{ task: Task; editable: boolean }>();
+const emit = defineEmits<{ updated: [task: Task] }>();
+const errors = useApiError();
+
+const done = computed(() => !!props.task.completed_at);
+const value = ref(props.task.progress ?? 0);
+const tracked = ref(props.task.progress != null);
+watch(
+  () => props.task.progress,
+  (p) => {
+    value.value = p ?? 0;
+    tracked.value = p != null;
+  },
+);
+
+const shown = computed(() => (done.value ? 100 : value.value));
+const accent = computed(() => (shown.value >= 100 ? "#22A06B" : "#53AEFF"));
+const saving = ref(false);
+
+async function persist(next: number | null): Promise<void> {
+  saving.value = true;
+  try {
+    emit("updated", await tasksApi.update(props.task.id, { progress: next }));
+  } catch (error) {
+    errors.report(error);
+  } finally {
+    saving.value = false;
+  }
+}
+const persistSoon = useDebounceFn((v: number) => persist(v), 350);
+
+function onSlide(v: number): void {
+  value.value = v;
+  tracked.value = true;
+  persistSoon(v);
+}
+function setValue(v: number): void {
+  value.value = v;
+  tracked.value = true;
+  void persist(v);
+}
+const STEPS = [0, 25, 50, 75, 100];
+</script>
+
+<template>
+  <!-- Nothing to show when not tracked and we can't edit. -->
+  <div v-if="done || tracked || editable" class="flex w-full flex-col gap-2" :aria-busy="saving">
+    <!-- Offer to start tracking (only when editable and not yet set). -->
+    <button
+      v-if="!done && !tracked && editable"
+      type="button"
+      class="self-start rounded-full bg-surface-2 px-3 py-1.5 text-xs font-semibold text-muted transition hover:bg-surface-3 hover:text-fg"
+      @click="setValue(0)"
+    >
+      {{ $t("tasks.progressAdd") }}
+    </button>
+
+    <template v-else>
+      <div class="flex items-baseline justify-between">
+        <span class="text-2xl font-bold tabular-nums" :style="{ color: accent }">{{ shown }}%</span>
+        <span v-if="done" class="text-xs font-semibold text-success">{{ $t("tasks.completed") }}</span>
+        <button
+          v-else-if="editable"
+          type="button"
+          class="text-xs font-semibold text-subtle transition hover:text-danger"
+          @click="(tracked = false), persist(null)"
+        >
+          {{ $t("tasks.progressClear") }}
+        </button>
+      </div>
+
+      <input
+        v-if="editable && !done"
+        type="range"
+        min="0"
+        max="100"
+        step="5"
+        :value="value"
+        :aria-label="$t('tasks.progress')"
+        class="pt-range h-2 w-full cursor-pointer appearance-none rounded-full"
+        :style="{ color: accent, accentColor: accent, background: `linear-gradient(90deg, ${accent} ${value}%, var(--pt-surface-3) ${value}%)` }"
+        @input="onSlide(+($event.target as HTMLInputElement).value)"
+      />
+      <PtProgress v-else :value="shown" :color="accent" :height="8" />
+
+      <div v-if="editable && !done" class="flex gap-1.5">
+        <button
+          v-for="p in STEPS"
+          :key="p"
+          type="button"
+          class="h-7 flex-1 rounded-lg text-xs font-bold tabular-nums transition"
+          :class="value === p ? 'bg-ink text-on-ink' : 'bg-surface-2 text-muted hover:bg-surface-3'"
+          @click="setValue(p)"
+        >
+          {{ p }}
+        </button>
+      </div>
+    </template>
+  </div>
+</template>
+
+<style scoped>
+/* A clean track + thumb for the range, themed to the fill colour. */
+.pt-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 3px solid currentColor;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
+}
+.pt-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 3px solid currentColor;
+}
+</style>
