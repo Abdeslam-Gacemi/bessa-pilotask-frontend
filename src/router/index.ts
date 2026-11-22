@@ -7,6 +7,8 @@ declare module "vue-router" {
     guest?: boolean;
     manager?: boolean;
     superAdmin?: boolean;
+    workspace?: boolean;
+    decider?: boolean;
     title?: string;
   }
 }
@@ -26,6 +28,7 @@ const routes: RouteRecordRaw[] = [
       { path: "calendar", name: "calendar", component: () => import("@/views/Calendar/CalendarView.vue"), meta: { title: "nav.calendar" } },
       { path: "analytics", name: "analytics", component: () => import("@/views/Analytics/AnalyticsView.vue"), meta: { workspace: true, title: "nav.analytics" } },
       { path: "my-performance", name: "my-performance", component: () => import("@/views/Analytics/MyPerformanceView.vue"), meta: { title: "nav.myPerformance" } },
+      { path: "observer-requests", name: "observer-requests", component: () => import("@/views/Observer/ObserverRequestsView.vue"), meta: { decider: true, title: "observer.inbox" } },
       { path: "activity", name: "activity", component: () => import("@/views/Activity/ActivityView.vue"), meta: { superAdmin: true, title: "nav.activity" } },
       { path: "users", name: "users", component: () => import("@/views/User/UsersView.vue"), meta: { superAdmin: true, title: "nav.users" } },
       { path: "entities", name: "entities", component: () => import("@/views/Entity/EntitiesView.vue"), meta: { superAdmin: true, title: "nav.entities" } },
@@ -62,6 +65,7 @@ router.beforeEach(async (to) => {
   if (to.meta.superAdmin && !session.isSuperAdmin) return { name: "home" };
   if (to.meta.manager && !session.canManage) return { name: "home" };
   if (to.meta.workspace && !session.hasOverview) return { name: "home" };
+  if (to.meta.decider && !session.canCreate) return { name: "home" };
   return true;
 });
 

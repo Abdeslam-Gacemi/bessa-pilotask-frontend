@@ -10,6 +10,7 @@ import type {
   Entity,
   Label,
   Meta,
+  ObserverRequest,
   Paginated,
   Project,
   Status,
@@ -230,6 +231,16 @@ export const dashboardApi = {
 export const analyticsApi = {
   report: (params: { scope: AnalyticsScopeType; id?: number | null; from?: string; to?: string; entity_id?: number | null }, o: CallOptions = {}) =>
     data(http.get<AnalyticsReport>("/analytics", { params, ...o })),
+};
+
+export const observerRequestsApi = {
+  /** The signed-in person's own requests and their outcome. */
+  mine: (o: CallOptions = {}) => data(http.get<ObserverRequest[]>("/observer-requests/mine", o)),
+  /** Pending requests a decider may act on. */
+  pending: (o: CallOptions = {}) => data(http.get<ObserverRequest[]>("/observer-requests", o)),
+  create: (payload: { message: string; project_id?: number | null }) => data(http.post<ObserverRequest>("/observer-requests", payload)),
+  approve: (id: number, taskIds: number[]) => data(http.post<ObserverRequest>(`/observer-requests/${id}/approve`, { task_ids: taskIds })),
+  reject: (id: number, message: string) => data(http.post<ObserverRequest>(`/observer-requests/${id}/reject`, { message })),
 };
 
 export const notificationsApi = {

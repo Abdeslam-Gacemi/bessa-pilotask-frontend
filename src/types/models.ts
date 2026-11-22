@@ -153,6 +153,23 @@ export interface Task {
   can?: { update: boolean; move: boolean; delete: boolean; comment: boolean; observers?: boolean };
 }
 
+export type ObserverRequestStatus = "pending" | "approved" | "rejected";
+
+/** A person's ask to observe tasks they cannot see; a manager decides. */
+export interface ObserverRequest {
+  id: number;
+  message: string;
+  status: ObserverRequestStatus;
+  decision_message: string | null;
+  created_at: string;
+  decided_at: string | null;
+  project?: { id: number; name: string };
+  requester?: User;
+  decider?: User;
+  /** Tasks granted on approval (the kept request↔task link). */
+  tasks?: { id: number; title: string; board_id: number }[];
+}
+
 export interface Comment {
   id: number;
   task_id: number;

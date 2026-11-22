@@ -5,6 +5,7 @@ import { useLocalStorage } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import {
   Activity01Icon,
+  ViewIcon,
   ArrowDown01Icon,
   Add01Icon,
   Analytics01Icon,
@@ -93,6 +94,7 @@ const main = computed<NavItem[]>(() => [
 const admin = computed<NavItem[]>(() =>
   [
     session.hasOverview && { to: "/analytics", label: t("nav.analytics"), icon: Analytics01Icon },
+    session.canCreate && { to: "/observer-requests", label: t("observer.inbox"), icon: ViewIcon },
     session.isSuperAdmin && { to: "/activity", label: t("nav.activity"), icon: Activity01Icon },
     session.isSuperAdmin && { to: "/users", label: t("nav.users"), icon: UserMultipleIcon },
     session.canManage && { to: "/labels", label: t("nav.labels"), icon: Tag01Icon },
