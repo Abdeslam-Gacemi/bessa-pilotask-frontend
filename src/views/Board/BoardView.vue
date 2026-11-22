@@ -6,8 +6,8 @@ import { useI18n } from "vue-i18n";
 import {
   Add01Icon,
   Analytics01Icon,
+  Archive01Icon,
   ClipboardIcon,
-  Delete02Icon,
   KanbanIcon,
   LeftToRightListBulletIcon,
   MoreHorizontalIcon,
@@ -26,18 +26,18 @@ import PtPopover from "@/components/ui/PtPopover.vue";
 import PtSegmented from "@/components/ui/PtSegmented.vue";
 import PtSheet from "@/components/ui/PtSheet.vue";
 import PtSkeleton from "@/components/ui/PtSkeleton.vue";
-import ActivityFeed from "@/components/activity/ActivityFeed.vue";
-import KanbanBoard from "@/components/board/KanbanBoard.vue";
-import StatusManagerSheet from "@/components/board/StatusManagerSheet.vue";
-import TaskListView from "@/components/board/TaskListView.vue";
-import TimelineView from "@/components/board/TimelineView.vue";
-import BoardFormSheet from "@/components/projects/BoardFormSheet.vue";
-import FilterButton from "@/components/filters/FilterButton.vue";
-import SortButton from "@/components/filters/SortButton.vue";
-import SortSheet from "@/components/filters/SortSheet.vue";
+import ActivityFeed from "@/components/Activity/ActivityFeed/ActivityFeed.vue";
+import KanbanBoard from "@/components/Board/KanbanBoard.vue";
+import StatusManagerSheet from "@/components/Board/StatusManagerSheet.vue";
+import TaskListView from "@/components/Board/TaskListView.vue";
+import TimelineView from "@/components/Board/TimelineView.vue";
+import BoardFormSheet from "@/components/Project/BoardFormSheet.vue";
+import FilterButton from "@/components/Filter/FilterButton.vue";
+import SortButton from "@/components/Filter/SortButton.vue";
+import SortSheet from "@/components/Filter/SortSheet.vue";
 import { useTaskSort } from "@/composables/useTaskSort";
 import { sortTasks } from "@/domain/sort";
-import TaskFilterSheet from "@/components/filters/TaskFilterSheet.vue";
+import TaskFilterSheet from "@/components/Filter/TaskFilterSheet.vue";
 import { countTaskFilters, emptyTaskFilters, matchTask, uniqueUsers, useFilters } from "@/domain/filters";
 import { boardsApi, tasksApi } from "@/api/endpoints";
 import { useApiError } from "@/composables/useApiError";
@@ -67,7 +67,7 @@ const projects = useProjectsStore();
 const taskUi = useTaskUi();
 const toast = useToast();
 const errors = useApiError();
-const { confirm } = useConfirm();
+const { confirmAction } = useConfirm();
 
 const boardRequest = useRequest();
 const board = ref<Board | null>(null);
@@ -97,6 +97,8 @@ const managingStatuses = ref(false);
 const showHistory = ref(false);
 const menu = ref(false);
 const showDescription = ref(false);
+// Browse the table's archived tasks (hidden from the live board) to read or restore them.
+const showArchived = ref(false);
 
 const matches = (task: Task) =>
   (!search.value || task.title.toLowerCase().includes(search.value.toLowerCase())) &&
@@ -117,11 +119,16 @@ async function loadBoard(): Promise<void> {
     const result = await boardRequest.run((signal) => boardsApi.get(props.id, { signal }));
     if (!result) return;
     board.value = result;
-    await load();
+    await reloadTasks();
   } catch (error) {
     errors.report(error);
     await router.replace("/projects");
   }
+}
+
+/** The live board, or — when browsing archived — only the archived tasks. */
+function reloadTasks(): Promise<void> {
+  return load(showArchived.value ? { archived: 1 } : {});
 }
 
 const canDrag = (task: Task) => Boolean(task.can?.move) && !isTaskBusy(task.id);
@@ -153,17 +160,21 @@ async function toggle(task: Task): Promise<void> {
   }
 }
 
-async function removeBoard(): Promise<void> {
+/** Archiving (or restoring) keeps the table and everything in it instead of deleting it. */
+async function archiveBoard(): Promise<void> {
   if (!board.value) return;
   menu.value = false;
-  const id = board.value.id;
+  const current = board.value;
+  const archived = !!current.archived_at;
   const run = async () => {
-    await boardsApi.remove(id);
+    const saved = await boardsApi.update(current.id, { archived: !archived });
+    board.value = { ...current, ...saved };
     await projects.load(true);
   };
-  if (!(await confirm({ title: t("boards.deleteConfirm", { name: board.value.name }), danger: true, confirmLabel: t("common.delete"), run }))) return;
-  toast.show(t("common.deleted"));
-  await router.replace(`/projects/${board.value.project_id}`);
+  if (!(await confirmAction(archived ? "unarchive" : "archive", "board", current.name, run))) return;
+  toast.success(t(archived ? "boards.unarchived" : "boards.archived"));
+  // Archiving takes the table out of the project; restoring keeps you on it.
+  if (!archived) await router.replace(`/projects/${current.project_id}`);
 }
 
 function onBoardSaved(saved: Board): void {
@@ -182,6 +193,7 @@ taskUi.onChanged((event) => {
 });
 
 watch(() => props.id, loadBoard);
+watch(showArchived, reloadTasks);
 onMounted(loadBoard);
 </script>
 
@@ -208,9 +220,26 @@ onMounted(loadBoard);
         <PtMenuItem :icon="Clock01Icon" @click="(showHistory = true), (menu = false)">{{ $t("boards.activity") }}</PtMenuItem>
         <PtMenuItem :icon="Analytics01Icon" @click="router.push({ path: '/analytics', query: { scope: 'board', id: board.id } })">{{ $t("nav.analytics") }}</PtMenuItem>
         <PtMenuItem :icon="PencilEdit02Icon" @click="(editingBoard = true), (menu = false)">{{ $t("boards.edit") }}</PtMenuItem>
-        <PtMenuItem :icon="Delete02Icon" danger @click="removeBoard">{{ $t("common.delete") }}</PtMenuItem>
+        <PtMenuItem :icon="Archive01Icon" @click="(showArchived = !showArchived), (menu = false)">
+          {{ showArchived ? $t("boards.hideArchivedTasks") : $t("boards.showArchivedTasks") }}
+        </PtMenuItem>
+        <PtMenuItem :icon="Archive01Icon" :danger="!board.archived_at" @click="archiveBoard">
+          {{ board.archived_at ? $t("boards.unarchive") : $t("boards.archive") }}
+        </PtMenuItem>
       </PtPopover>
     </header>
+
+    <div
+      v-if="showArchived || board.archived_at"
+      class="flex flex-wrap items-center gap-2 rounded-(--radius-card) bg-warning-soft px-4 py-2.5 text-sm font-semibold text-warning"
+    >
+      <PtIcon :icon="Archive01Icon" :size="18" />
+      <span>{{ board.archived_at ? $t("boards.archivedBanner") : $t("boards.archivedTasksBanner") }}</span>
+      <button v-if="showArchived && !board.archived_at" type="button" class="ms-auto text-xs underline" @click="showArchived = false">
+        {{ $t("boards.backToBoard") }}
+      </button>
+      <PtButton v-if="board.archived_at && canRun" size="sm" variant="secondary" class="ms-auto" @click="archiveBoard">{{ $t("boards.unarchive") }}</PtButton>
+    </div>
 
     <section v-if="board.description" class="pt-card relative px-4 py-3">
       <!-- Sanitised server-side (HTMLPurifier) before storage. -->

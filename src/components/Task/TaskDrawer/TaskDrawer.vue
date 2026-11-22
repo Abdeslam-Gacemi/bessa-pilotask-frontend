@@ -4,8 +4,8 @@ import { statusName } from "@/domain/statusName";
 import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import {
+  Archive01Icon,
   Calendar03Icon,
-  Delete02Icon,
   Flag02Icon,
   PencilEdit02Icon,
   Tag01Icon,
@@ -21,10 +21,10 @@ import PtIconButton from "@/components/ui/PtIconButton.vue";
 import PtSegmented from "@/components/ui/PtSegmented.vue";
 import PtSheet from "@/components/ui/PtSheet.vue";
 import PtSkeleton from "@/components/ui/PtSkeleton.vue";
-import ActivityFeed from "@/components/activity/ActivityFeed.vue";
+import ActivityFeed from "@/components/Activity/ActivityFeed/ActivityFeed.vue";
 import CommentThread from "./CommentThread.vue";
-import PriorityChip from "./PriorityChip.vue";
-import TaskFormSheet from "./TaskFormSheet.vue";
+import PriorityChip from "../PriorityChip.vue";
+import TaskFormSheet from "../TaskFormSheet.vue";
 import { tasksApi } from "@/api/endpoints";
 import { useApiError } from "@/composables/useApiError";
 import { useConfirm } from "@/composables/useConfirm";
@@ -41,7 +41,7 @@ const emit = defineEmits<{ updated: [task: Task]; deleted: [id: number] }>();
 
 const { t } = useI18n();
 const { fmt, dueLabel } = useDates();
-const { confirm } = useConfirm();
+const { confirmAction } = useConfirm();
 const toast = useToast();
 const errors = useApiError();
 
@@ -131,13 +131,18 @@ async function saveObservers(next: User[]): Promise<void> {
   }
 }
 
-async function remove(): Promise<void> {
+/** Archiving (or restoring) keeps the task — its history, comments and authors — instead of deleting it. */
+async function archive(): Promise<void> {
   if (!task.value) return;
-  const id = task.value.id;
-  const ok = await confirm({ title: t("tasks.deleteConfirm", { name: task.value.title }), danger: true, confirmLabel: t("common.delete"), run: () => tasksApi.remove(id) });
+  const current = task.value;
+  const archived = !!current.archived_at;
+  const ok = await confirmAction(archived ? "unarchive" : "archive", "task", current.title, () =>
+    tasksApi.update(current.id, { archived: !archived }),
+  );
   if (!ok) return;
-  emit("deleted", id);
-  toast.show(t("common.deleted"));
+  // Either way the task leaves the list it was shown in (the live board, or the archived list).
+  emit("deleted", current.id);
+  toast.success(t(archived ? "tasks.unarchived" : "tasks.archived"));
   open.value = false;
 }
 </script>
@@ -145,12 +150,20 @@ async function remove(): Promise<void> {
 <template>
   <PtSheet v-model="open" side="end" width="40rem">
     <template #header>
-      <div class="flex flex-1 items-center gap-2">
-        <span v-if="task" class="size-3 rounded-full" :style="{ background: taskAccent(task) }" />
-        <span class="truncate text-sm font-semibold text-muted">{{ task?.board?.name }}</span>
+      <div class="flex min-w-0 flex-1 items-center gap-2">
+        <span v-if="task" class="size-3 shrink-0 rounded-full" :style="{ background: taskAccent(task) }" />
+        <span class="truncate text-sm font-semibold text-muted">
+          <span v-if="task?.board?.project?.name">{{ task.board.project.name }} <span class="text-subtle">·</span> </span>{{ task?.board?.name }}
+        </span>
       </div>
       <PtIconButton v-if="task?.can?.update" :icon="PencilEdit02Icon" :label="$t('common.edit')" @click="editing = true" />
-      <PtIconButton v-if="task?.can?.delete" :icon="Delete02Icon" :label="$t('common.delete')" class="text-danger" @click="remove" />
+      <PtIconButton
+        v-if="task?.can?.delete"
+        :icon="Archive01Icon"
+        :label="task.archived_at ? $t('common.unarchive') : $t('common.archive')"
+        :class="task.archived_at ? '' : 'text-warning'"
+        @click="archive"
+      />
     </template>
 
     <div v-if="!task" class="flex flex-col gap-4 py-4">
@@ -161,6 +174,10 @@ async function remove(): Promise<void> {
 
     <article v-else class="flex flex-col gap-6 pb-4">
       <h1 class="text-2xl leading-tight font-bold">{{ task.title }}</h1>
+
+      <div v-if="task.archived_at" class="flex items-center gap-2 rounded-(--radius-card) bg-warning-soft p-3 text-sm font-semibold text-warning">
+        <PtIcon :icon="Archive01Icon" :size="18" />{{ $t("tasks.archivedBanner") }}
+      </div>
 
       <div v-if="task.is_observer" class="flex flex-wrap items-center gap-3 rounded-(--radius-card) bg-primary-soft p-3.5">
         <PtIcon :icon="ViewIcon" :size="20" class="shrink-0 text-primary" />
@@ -199,8 +216,9 @@ async function remove(): Promise<void> {
 
         <dt class="flex items-center gap-2 self-start pt-1 text-muted"><PtIcon :icon="UserMultipleIcon" :size="17" />{{ $t("tasks.assignees") }}</dt>
         <dd class="flex flex-wrap gap-2">
-          <span v-for="user in task.assignees" :key="user.id" class="pt-chip ps-1">
+          <span v-for="user in task.assignees" :key="user.id" class="pt-chip ps-1" :class="user.deleted && 'opacity-60'">
             <PtAvatar :name="user.name" :src="user.avatar_url" :size="22" />{{ user.name }}
+            <span v-if="user.deleted" class="text-xs font-normal text-muted">· {{ $t("common.deletedUser") }}</span>
           </span>
           <span v-if="!task.assignees?.length" class="text-muted">{{ $t("tasks.unassigned") }}</span>
         </dd>
@@ -242,7 +260,7 @@ async function remove(): Promise<void> {
       </section>
 
       <p class="text-xs text-subtle">
-        {{ $t("tasks.createdBy", { name: task.creator?.name ?? "—" }) }} · {{ fmt.dateTime(task.created_at) }}
+        {{ $t("tasks.createdBy", { name: task.creator?.name ?? "—" }) }}<span v-if="task.creator?.deleted"> · {{ $t("common.deletedUser") }}</span> · {{ fmt.dateTime(task.created_at) }}
       </p>
 
       <section>

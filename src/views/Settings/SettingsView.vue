@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import {
   ArrowRight01Icon,
+  AtIcon,
   Building03Icon,
   ChartLineData01Icon,
   Activity01Icon,
@@ -20,8 +21,8 @@ import {
   TranslateIcon,
   UserMultipleIcon,
 } from "@hugeicons/core-free-icons";
-import FlagIcon from "@/components/brand/FlagIcon.vue";
-import InstallAppCard from "@/components/settings/InstallAppCard.vue";
+import FlagIcon from "@/components/Brand/FlagIcon.vue";
+import InstallAppCard from "@/components/Settings/InstallAppCard.vue";
 import PtAvatar from "@/components/ui/PtAvatar.vue";
 import PtIcon from "@/components/ui/PtIcon.vue";
 import PtSegmented from "@/components/ui/PtSegmented.vue";
@@ -58,18 +59,17 @@ const LANGUAGES: { value: Locale; label: string }[] = [
 const sections = computed<{ key: string; icon: Icon; title: string; tone: string; external?: string }[]>(() => [
   { key: "help", icon: HelpCircleIcon, title: t("help.title"), tone: "bg-primary-soft text-primary", external: "/help" },
   { key: "notifications", icon: Notification03Icon, title: t("settings.notifications"), tone: "bg-warning-soft text-warning" },
+  { key: "mentions", icon: AtIcon, title: t("settings.mentionsTitle"), tone: "bg-primary-soft text-primary" },
   { key: "security", icon: SquareLock02Icon, title: t("settings.security"), tone: "bg-danger-soft text-danger" },
   ...(session.seesWorkspace
     ? [{ key: "reports", icon: ChartLineData01Icon, title: t("settings.reportsTitle"), tone: "bg-[#EFE8FD] text-[#6C4FD1] dark:bg-[#2A2340] dark:text-[#B9A6FF]" }]
     : []),
   ...(session.canManage
-    ? [
-        { key: "users", icon: UserMultipleIcon, title: t("nav.users"), tone: "bg-primary-soft text-primary", external: "/users" },
-        { key: "labels", icon: Tag01Icon, title: t("nav.labels"), tone: "bg-success-soft text-success", external: "/labels" },
-      ]
+    ? [{ key: "labels", icon: Tag01Icon, title: t("nav.labels"), tone: "bg-success-soft text-success", external: "/labels" }]
     : []),
   ...(session.isSuperAdmin
     ? [
+        { key: "users", icon: UserMultipleIcon, title: t("nav.users"), tone: "bg-primary-soft text-primary", external: "/users" },
         { key: "access", icon: EyeIcon, title: t("settings.access"), tone: "bg-danger-soft text-danger" },
         { key: "entities", icon: Building03Icon, title: t("nav.entities"), tone: "bg-warning-soft text-warning", external: "/entities" },
         { key: "activity", icon: Activity01Icon, title: t("nav.activity"), tone: "bg-surface-3 text-fg", external: "/activity" },

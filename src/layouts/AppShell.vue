@@ -17,16 +17,16 @@ import {
   Tag01Icon,
   UserMultipleIcon,
 } from "@hugeicons/core-free-icons";
-import AppLogo from "@/components/brand/AppLogo.vue";
+import AppLogo from "@/components/Brand/AppLogo.vue";
 import PtAvatar from "@/components/ui/PtAvatar.vue";
 import PtIcon from "@/components/ui/PtIcon.vue";
 import PtIconButton from "@/components/ui/PtIconButton.vue";
-import TaskDrawer from "@/components/tasks/TaskDrawer.vue";
-import TaskFormSheet from "@/components/tasks/TaskFormSheet.vue";
+import TaskDrawer from "@/components/Task/TaskDrawer/TaskDrawer.vue";
+import TaskFormSheet from "@/components/Task/TaskFormSheet.vue";
 import CreateChooserSheet from "@/components/CreateChooserSheet.vue";
-import BoardFormSheet from "@/components/projects/BoardFormSheet.vue";
-import ProjectFormSheet from "@/components/projects/ProjectFormSheet.vue";
-import SidebarPreferences from "@/components/settings/SidebarPreferences.vue";
+import BoardFormSheet from "@/components/Project/BoardFormSheet.vue";
+import ProjectFormSheet from "@/components/Project/ProjectFormSheet.vue";
+import SidebarPreferences from "@/components/Settings/SidebarPreferences.vue";
 import { useProfileSave } from "@/composables/useProfileSave";
 import { usePreferencesStore } from "@/stores/preferences";
 import { useShake } from "@/composables/useShake";
@@ -85,6 +85,8 @@ const main = computed<NavItem[]>(() => [
   { to: "/my-tasks", label: t("nav.myTasks"), icon: CheckListIcon },
   { to: "/projects", label: t("nav.projects"), icon: Folder01Icon },
   { to: "/calendar", label: t("nav.calendar"), icon: Calendar03Icon },
+  // People without a team overview get their own performance screen instead.
+  ...(!session.hasOverview ? [{ to: "/my-performance", label: t("nav.myPerformance"), icon: Analytics01Icon }] : []),
   { to: "/notifications", label: t("nav.notifications"), icon: Notification03Icon, badge: inbox.unread },
 ]);
 
@@ -92,7 +94,7 @@ const admin = computed<NavItem[]>(() =>
   [
     session.hasOverview && { to: "/analytics", label: t("nav.analytics"), icon: Analytics01Icon },
     session.isSuperAdmin && { to: "/activity", label: t("nav.activity"), icon: Activity01Icon },
-    session.canManage && { to: "/users", label: t("nav.users"), icon: UserMultipleIcon },
+    session.isSuperAdmin && { to: "/users", label: t("nav.users"), icon: UserMultipleIcon },
     session.canManage && { to: "/labels", label: t("nav.labels"), icon: Tag01Icon },
   ].filter(Boolean) as NavItem[],
 );

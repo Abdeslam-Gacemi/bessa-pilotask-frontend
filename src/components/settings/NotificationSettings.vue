@@ -6,6 +6,7 @@ import { Notification03Icon, SentIcon } from "@hugeicons/core-free-icons";
 import PtButton from "@/components/ui/PtButton.vue";
 import PtIcon from "@/components/ui/PtIcon.vue";
 import PtSwitch from "@/components/ui/PtSwitch.vue";
+import SaveStatus from "@/components/Settings/SaveStatus.vue";
 import { useApiError } from "@/composables/useApiError";
 import { useProfileSave } from "@/composables/useProfileSave";
 import { useToast } from "@/composables/useToast";
@@ -19,7 +20,7 @@ import type { NotificationPreferences, NotificationTopic } from "@/types/models"
 const session = useSessionStore();
 const inbox = useNotificationsStore();
 const openTarget = useNotificationTarget();
-const { saveSoon } = useProfileSave();
+const { saveSoon, saving } = useProfileSave();
 
 const TOPICS = computed<NotificationTopic[]>(() => [
   "task_assigned",
@@ -87,7 +88,10 @@ async function sendTest(): Promise<void> {
     <PtButton size="sm" variant="secondary" :icon="SentIcon" flip :loading="testing" @click="sendTest">{{ $t("settings.test.action") }}</PtButton>
   </div>
 
-  <p class="px-1 text-sm text-muted">{{ $t("settings.notificationsHint") }}</p>
+  <div class="flex items-center gap-2 px-1">
+    <p class="flex-1 text-sm text-muted">{{ $t("settings.notificationsHint") }}</p>
+    <SaveStatus :saving="saving" />
+  </div>
 
   <div class="flex flex-col gap-3">
     <section v-for="(topic, i) in TOPICS" :key="topic" v-stagger="i + 1" class="pt-card p-4">

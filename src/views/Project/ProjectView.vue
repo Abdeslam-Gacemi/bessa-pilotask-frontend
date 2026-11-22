@@ -11,8 +11,8 @@ import PtMenuItem from "@/components/ui/PtMenuItem.vue";
 import PtPopover from "@/components/ui/PtPopover.vue";
 import PtProgress from "@/components/ui/PtProgress.vue";
 import PtSkeleton from "@/components/ui/PtSkeleton.vue";
-import BoardFormSheet from "@/components/projects/BoardFormSheet.vue";
-import ProjectFormSheet from "@/components/projects/ProjectFormSheet.vue";
+import BoardFormSheet from "@/components/Project/BoardFormSheet.vue";
+import ProjectFormSheet from "@/components/Project/ProjectFormSheet.vue";
 import { projectsApi } from "@/api/endpoints";
 import { useApiError } from "@/composables/useApiError";
 import { useConfirm } from "@/composables/useConfirm";
@@ -35,11 +35,13 @@ const project = ref<Project | null>(null);
 const editing = ref(false);
 const addingBoard = ref(false);
 const menu = ref(false);
+// Show the project's archived tables alongside the live ones (managers only).
+const showArchivedBoards = ref(false);
 
 async function load(): Promise<void> {
   project.value = null;
   try {
-    const result = await request.run((signal) => projectsApi.get(props.id, { signal }));
+    const result = await request.run((signal) => projectsApi.get(props.id, { signal }, showArchivedBoards.value));
     if (result) project.value = result;
   } catch (error) {
     errors.report(error);
@@ -90,6 +92,7 @@ const overall = computed(() => {
 const progress = (b: Board) => (b.tasks_count ? Math.round(((b.done_count ?? 0) / b.tasks_count) * 100) : 0);
 
 watch(() => props.id, load);
+watch(showArchivedBoards, load);
 onMounted(load);
 </script>
 
@@ -145,9 +148,21 @@ onMounted(load);
     </header>
 
     <section>
-      <div class="mb-3 flex items-center justify-between">
+      <div class="mb-3 flex items-center justify-between gap-2">
         <h2 class="text-xl font-bold">{{ $t("boards.title") }}</h2>
-        <PtIconButton v-if="project.can?.manage" :icon="Add01Icon" variant="ink" :label="$t('boards.new')" @click="addingBoard = true" />
+        <div class="flex items-center gap-2">
+          <button
+            v-if="project.can?.manage"
+            type="button"
+            class="h-9 rounded-full border px-3.5 text-xs font-semibold transition"
+            :class="showArchivedBoards ? 'border-ink bg-ink text-on-ink' : 'border-line bg-surface hover:bg-surface-2'"
+            :aria-pressed="showArchivedBoards"
+            @click="showArchivedBoards = !showArchivedBoards"
+          >
+            {{ $t("projects.showArchived") }}
+          </button>
+          <PtIconButton v-if="project.can?.manage" :icon="Add01Icon" variant="ink" :label="$t('boards.new')" @click="addingBoard = true" />
+        </div>
       </div>
       <PtEmpty v-if="!project.boards?.length" :icon="DashboardSquare01Icon" :title="$t('boards.empty')" :hint="$t('boards.emptyHint')" />
       <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -157,6 +172,7 @@ onMounted(load);
           v-stagger="i + 1"
           :to="`/boards/${board.id}`"
           class="pt-card flex items-center gap-4 p-4 transition hover:-translate-y-0.5 hover:shadow-float"
+          :class="board.archived_at && 'opacity-60'"
         >
           <span
             class="grid size-12 shrink-0 place-items-center rounded-2xl"
@@ -165,7 +181,10 @@ onMounted(load);
             <PtIcon :icon="tableIcon(board.icon)" :size="22" />
           </span>
           <div class="min-w-0 flex-1">
-            <h3 class="truncate font-bold">{{ board.name }}</h3>
+            <h3 class="flex items-center gap-2 truncate font-bold">
+              {{ board.name }}
+              <span v-if="board.archived_at" class="rounded-full bg-warning-soft px-2 py-0.5 text-[10px] font-semibold text-warning">{{ $t("projects.archived") }}</span>
+            </h3>
             <p class="mb-2 text-xs text-muted">{{ board.done_count ?? 0 }} / {{ board.tasks_count ?? 0 }} · {{ progress(board) }}%</p>
             <PtProgress :value="progress(board)" :color="board.color ?? undefined" :height="5" />
           </div>

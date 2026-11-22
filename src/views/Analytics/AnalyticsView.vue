@@ -15,10 +15,11 @@ import {
   Target02Icon,
   Timer01Icon,
 } from "@hugeicons/core-free-icons";
-import BarList from "@/components/analytics/BarList.vue";
-import TeamLoadList from "@/components/analytics/TeamLoadList.vue";
-import StatTile from "@/components/analytics/StatTile.vue";
-import ThroughputChart from "@/components/analytics/ThroughputChart.vue";
+import BarList from "@/components/Analytics/BarList.vue";
+import TeamLoadList from "@/components/Analytics/TeamLoadList.vue";
+import StatTile from "@/components/Analytics/StatTile.vue";
+import StatsPeriodPicker from "@/components/Analytics/StatsPeriodPicker.vue";
+import ThroughputChart from "@/components/Analytics/ThroughputChart.vue";
 import PtAvatar from "@/components/ui/PtAvatar.vue";
 import PtButton from "@/components/ui/PtButton.vue";
 import PtEmpty from "@/components/ui/PtEmpty.vue";
@@ -27,7 +28,7 @@ import PtIcon from "@/components/ui/PtIcon.vue";
 import PtRing from "@/components/ui/PtRing.vue";
 import PtSegmented from "@/components/ui/PtSegmented.vue";
 import PtSkeleton from "@/components/ui/PtSkeleton.vue";
-import DueChip from "@/components/tasks/DueChip.vue";
+import DueChip from "@/components/Task/DueChip.vue";
 import { analyticsApi, usersApi } from "@/api/endpoints";
 import { useApiError } from "@/composables/useApiError";
 import { useRequest } from "@/composables/useRequest";
@@ -55,7 +56,8 @@ const entityStore = useEntitiesStore();
 
 const scope = ref<AnalyticsScopeType>((route.query.scope as AnalyticsScopeType) || "global");
 const scopeId = ref<number | null>(route.query.id ? Number(route.query.id) : null);
-const period = ref<"7" | "30" | "90" | "year">("30");
+// The chosen time span, driven by StatsPeriodPicker (presets or a custom range).
+const range = ref({ from: dayjs().subtract(29, "day").format("YYYY-MM-DD"), to: dayjs().format("YYYY-MM-DD") });
 const report = ref<AnalyticsReport | null>(null);
 const request = useRequest();
 const loading = request.loading;
@@ -75,12 +77,6 @@ const choices = computed(() => {
   if (scope.value === "board") return projects.boards().map((b) => ({ id: b.id, name: `${b.project?.name} · ${b.name}` }));
   if (scope.value === "user") return people.value.map((u) => ({ id: u.id, name: u.name }));
   return [];
-});
-
-const range = computed(() => {
-  const to = dayjs();
-  const from = period.value === "year" ? to.startOf("year") : to.subtract(Number(period.value) - 1, "day");
-  return { from: from.format("YYYY-MM-DD"), to: to.format("YYYY-MM-DD") };
 });
 
 const pct = (value: number | null) => (value === null ? "—" : `${Math.round(value)}%`);
@@ -126,7 +122,8 @@ watch(scope, async (value, previous) => {
   if (value !== "global" && !scopeId.value) scopeId.value = choices.value[0]?.id ?? null;
   await load();
 });
-watch([scopeId, period, entityId], load);
+watch([scopeId, entityId], load);
+watch(range, load, { deep: true });
 
 // ─── Report export: the screen as a PDF, downloaded or shared ──────────────
 const scopeLabel = computed(() => {
@@ -164,7 +161,7 @@ onMounted(async () => {
   void entityStore.load().catch(() => undefined);
   await projects.load();
   if (scope.value === "user") people.value = await usersApi.directory();
-  await load();
+  // The first load is triggered by StatsPeriodPicker's initial range emit.
 });
 </script>
 
@@ -195,17 +192,7 @@ onMounted(async () => {
           class="shrink-0"
           :options="(['global', 'project', 'board', 'user'] as const).map((s) => ({ value: s, label: $t(`analytics.scope.${s}`) }))"
         />
-        <PtSegmented
-          v-model="period"
-          size="sm"
-          class="shrink-0 lg:ms-auto"
-          :options="[
-            { value: '7', label: $t('analytics.last7') },
-            { value: '30', label: $t('analytics.last30') },
-            { value: '90', label: $t('analytics.last90') },
-            { value: 'year', label: $t('analytics.thisYear') },
-          ]"
-        />
+        <StatsPeriodPicker class="shrink-0 lg:ms-auto" @change="range = $event" />
       </div>
       <div v-if="pickEntity || scope !== 'global'" class="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <select v-if="pickEntity" v-model="entityId" class="pt-field min-w-0 rounded-full py-2" :aria-label="$t('entities.entity')">

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { breakpointsTailwind, useBreakpoints } from "@vueuse/core";
 import { Calendar03Icon, CheckmarkCircle02Icon } from "@hugeicons/core-free-icons";
-import AppLogo from "@/components/brand/AppLogo.vue";
-import LocaleSwitch from "@/components/brand/LocaleSwitch.vue";
-import LoginForm from "@/components/auth/LoginForm.vue";
+import AppLogo from "@/components/Brand/AppLogo.vue";
+import LocaleSwitch from "@/components/Brand/LocaleSwitch.vue";
+import LoginForm from "@/components/Auth/LoginForm.vue";
 import PtAvatarStack from "@/components/ui/PtAvatarStack.vue";
 import PtIcon from "@/components/ui/PtIcon.vue";
 import PtProgress from "@/components/ui/PtProgress.vue";

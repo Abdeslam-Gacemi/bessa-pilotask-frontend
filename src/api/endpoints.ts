@@ -44,6 +44,8 @@ export type TaskQuery = Partial<{
   sort: "position" | "due_at" | "priority" | "created_at" | "updated_at";
   /** Tasks shared with me read-only (observer), outside my usual reach. */
   observed: boolean;
+  /** Only the archived tasks (hidden everywhere else). */
+  archived: boolean;
 }>;
 
 /** Hidden-captcha proof sent with the sign-in (see services/captcha). */
@@ -110,7 +112,8 @@ export const entitiesApi = {
 
 export const projectsApi = {
   list: (archived = false, o: CallOptions = {}) => data(http.get<Project[]>("/projects", { params: { archived: archived ? 1 : 0 }, ...o })),
-  get: (id: number, o: CallOptions = {}) => data(http.get<Project>(`/projects/${id}`, o)),
+  get: (id: number, o: CallOptions = {}, archived = false) =>
+    data(http.get<Project>(`/projects/${id}`, { params: archived ? { archived: 1 } : {}, ...o })),
   create: (payload: Partial<Project> & { manager_ids?: number[] }) => data(http.post<Project>("/projects", payload)),
   update: (id: number, payload: Partial<Project> & { manager_ids?: number[]; archived?: boolean }) =>
     data(http.patch<Project>(`/projects/${id}`, payload)),
@@ -120,7 +123,7 @@ export const projectsApi = {
 export const boardsApi = {
   get: (id: number, o: CallOptions = {}) => data(http.get<Board>(`/boards/${id}`, o)),
   create: (projectId: number, payload: Partial<Board>) => data(http.post<Board>(`/projects/${projectId}/boards`, payload)),
-  update: (id: number, payload: Partial<Board>) => data(http.patch<Board>(`/boards/${id}`, payload)),
+  update: (id: number, payload: Partial<Board> & { archived?: boolean }) => data(http.patch<Board>(`/boards/${id}`, payload)),
   remove: (id: number) => http.delete(`/boards/${id}`),
   addStatus: (boardId: number, payload: { name: string; color?: string }) =>
     data(http.post<Status>(`/boards/${boardId}/statuses`, payload)),
@@ -135,7 +138,7 @@ export const tasksApi = {
   list: (params: TaskQuery, o: CallOptions = {}) => data(http.get<Task[]>("/tasks", { params, ...o })),
   get: (id: number, o: CallOptions = {}) => data(http.get<Task>(`/tasks/${id}`, o)),
   create: (boardId: number, payload: TaskInput) => data(http.post<Task>(`/boards/${boardId}/tasks`, payload)),
-  update: (id: number, payload: Partial<TaskInput>) => data(http.patch<Task>(`/tasks/${id}`, payload)),
+  update: (id: number, payload: Partial<TaskInput> & { archived?: boolean }) => data(http.patch<Task>(`/tasks/${id}`, payload)),
   move: (id: number, statusId: number, position?: number) =>
     data(http.post<Task>(`/tasks/${id}/move`, { status_id: statusId, position })),
   remove: (id: number) => http.delete(`/tasks/${id}`),

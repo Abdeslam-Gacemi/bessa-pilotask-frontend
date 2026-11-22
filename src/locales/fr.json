@@ -14,6 +14,7 @@
     "settings": "Paramètres",
     "notifications": "Notifications",
     "myTasks": "Mes tâches",
+    "myPerformance": "Mes performances",
     "admin": "Administration",
     "entities": "Entités"
   },
@@ -50,7 +51,15 @@
     "of": "sur",
     "undo": "Annuler l'action",
     "pressAgainToExit": "Appuyez encore pour quitter",
-    "less": "Moins"
+    "less": "Moins",
+    "archive": "Archiver",
+    "unarchive": "Restaurer",
+    "deletedUser": "supprimé"
+  },
+  "myPerformance": {
+    "title": "Mes performances",
+    "subtitle": "Vos tâches et votre progression.",
+    "noData": "Aucune activité sur cette période."
   },
   "auth": {
     "title": "Bon retour",
@@ -120,6 +129,15 @@
     "empty": "Aucun tableau dans ce projet",
     "emptyHint": "Un tableau regroupe des tâches et leurs statuts.",
     "deleteConfirm": "Supprimer le tableau « {name} » et ses tâches ?",
+    "archive": "Archiver le tableau",
+    "unarchive": "Restaurer le tableau",
+    "archived": "Tableau archivé",
+    "unarchived": "Tableau restauré",
+    "archivedBanner": "Ce tableau est archivé.",
+    "archivedTasksBanner": "Tâches archivées.",
+    "showArchivedTasks": "Afficher les tâches archivées",
+    "hideArchivedTasks": "Masquer les tâches archivées",
+    "backToBoard": "Retour au tableau",
     "statuses": "Statuts",
     "statusesHint": "Glissez pour réorganiser. Les quatre statuts par défaut structurent les analyses ; les vôtres sont libres.",
     "addStatus": "Ajouter un statut",
@@ -173,6 +191,9 @@
     "createdBy": "Créée par {name}",
     "table": "Tableau",
     "deleteConfirm": "Supprimer la tâche « {name} » ?",
+    "archived": "Tâche archivée",
+    "unarchived": "Tâche restaurée",
+    "archivedBanner": "Cette tâche est archivée.",
     "comments": "Commentaires",
     "activity": "Activité",
     "details": "Détails",
@@ -231,6 +252,10 @@
     "last30": "30 jours",
     "last90": "90 jours",
     "thisYear": "Cette année",
+    "customRange": "Personnalisé",
+    "from": "Du",
+    "to": "Au",
+    "apply": "Appliquer",
     "total": "Tâches",
     "open": "Ouvertes",
     "inProgress": "En cours",
@@ -347,7 +372,7 @@
     "lastLogin": "Dernière connexion",
     "never": "Jamais",
     "roles": {
-      "super_admin": "Super manager",
+      "super_admin": "Super admin",
       "admin": "Manager",
       "user": "Utilisateur",
       "viewer": "Lecteur"
@@ -385,6 +410,13 @@
     "language": "Langue",
     "notifications": "Notifications",
     "notificationsHint": "Choisissez comment être prévenu. La boîte de réception de l'app reçoit tout.",
+    "saving": "Enregistrement…",
+    "saved": "Enregistré",
+    "mentionsTitle": "Mentions",
+    "mentionsIntro": "Mentions {'@'} dans les commentaires",
+    "mentionsHint": "Choisissez si vos collègues peuvent vous identifier dans les commentaires.",
+    "allowMentions": "Autoriser les mentions {'@'}",
+    "allowMentionsHint": "Désactivé, personne ne peut vous identifier dans les commentaires et vous n'apparaissez plus dans les suggestions.",
     "channels": {
       "mail": "E-mail",
       "push": "Push"
@@ -703,7 +735,7 @@
     "stillStuckHint": "Votre manager ou votre chef de projet peut vous aider.",
     "audience": {
       "managers": "Managers",
-      "superAdmin": "Super manager",
+      "superAdmin": "Super admin",
       "projectManagers": "Managers et chefs de projet",
       "workspace": "Managers et lecteurs",
       "overview": "Managers, lecteurs et chefs de projet"

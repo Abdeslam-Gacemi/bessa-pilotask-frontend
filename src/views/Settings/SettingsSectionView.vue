@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import NotificationSettings from "@/components/settings/NotificationSettings.vue";
-import SecuritySettings from "@/components/settings/SecuritySettings.vue";
-import ReportSettings from "@/components/settings/ReportSettings.vue";
-import AccessSettings from "@/components/settings/AccessSettings.vue";
+import NotificationSettings from "@/components/Settings/NotificationSettings.vue";
+import SecuritySettings from "@/components/Settings/SecuritySettings.vue";
+import ReportSettings from "@/components/Settings/ReportSettings.vue";
+import AccessSettings from "@/components/Settings/AccessSettings.vue";
+import MentionSettings from "@/components/Settings/MentionSettings.vue";
 import PtBackButton from "@/components/ui/PtBackButton.vue";
 
-export type SettingsSection = "notifications" | "security" | "reports" | "access";
+export type SettingsSection = "notifications" | "security" | "reports" | "access" | "mentions";
 
 /** One settings section on its own screen, with a back button to the hub. */
 const props = defineProps<{ section: SettingsSection }>();
@@ -18,6 +19,7 @@ const VIEWS = {
   security: SecuritySettings,
   reports: ReportSettings,
   access: AccessSettings,
+  mentions: MentionSettings,
 };
 // Section keys don't all match a plain string ("settings.reports" holds the frequency labels).
 const TITLES: Record<SettingsSection, string> = {
@@ -25,6 +27,7 @@ const TITLES: Record<SettingsSection, string> = {
   security: "settings.security",
   reports: "settings.reportsTitle",
   access: "settings.access",
+  mentions: "settings.mentionsTitle",
 };
 const title = computed(() => t(TITLES[props.section]));
 </script>

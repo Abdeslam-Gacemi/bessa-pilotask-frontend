@@ -13,9 +13,9 @@ import {
   Search01Icon,
   SidebarLeft01Icon,
 } from "@hugeicons/core-free-icons";
-import HelpArticleCard from "@/components/help/HelpArticleCard.vue";
-import HelpIndexList from "@/components/help/HelpIndexList.vue";
-import { HELP_ICONS } from "@/components/help/helpIcons";
+import HelpArticleCard from "@/components/Help/HelpArticleCard/HelpArticleCard.vue";
+import HelpIndexList from "@/components/Help/HelpIndexList.vue";
+import { HELP_ICONS } from "@/components/Help/helpIcons";
 import PtEmpty from "@/components/ui/PtEmpty.vue";
 import PtIcon from "@/components/ui/PtIcon.vue";
 import PtIconButton from "@/components/ui/PtIconButton.vue";

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from "vue";
-import ActivityFeed from "@/components/activity/ActivityFeed.vue";
+import ActivityFeed from "@/components/Activity/ActivityFeed/ActivityFeed.vue";
 import { activityApi, usersApi, type ActivityQuery } from "@/api/endpoints";
 import type { ActivityEvent, User } from "@/types/models";
 import PtBackButton from "@/components/ui/PtBackButton.vue";

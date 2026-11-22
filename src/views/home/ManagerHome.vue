@@ -13,11 +13,11 @@ import {
 import PtIcon from "@/components/ui/PtIcon.vue";
 import PtProgress from "@/components/ui/PtProgress.vue";
 import PtRing from "@/components/ui/PtRing.vue";
-import TeamLoadList from "@/components/analytics/TeamLoadList.vue";
+import TeamLoadList from "@/components/Analytics/TeamLoadList.vue";
 import PtSkeleton from "@/components/ui/PtSkeleton.vue";
 import { dashboardApi, type DashboardBucket, type DashboardOverview } from "@/api/endpoints";
-import DecisionListSheet from "@/components/home/DecisionListSheet.vue";
-import DecisionTaskRow from "@/components/home/DecisionTaskRow.vue";
+import DecisionListSheet from "@/components/Home/DecisionListSheet.vue";
+import DecisionTaskRow from "@/components/Home/DecisionTaskRow.vue";
 import { useApiError } from "@/composables/useApiError";
 import { useRequest } from "@/composables/useRequest";
 import { useTaskUi } from "@/composables/useTaskUi";

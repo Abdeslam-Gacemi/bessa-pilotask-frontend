@@ -6,8 +6,8 @@ import { useSessionStore } from "@/stores/session";
  * Home: managers and viewers get the "what needs action" view; everyone
  * else gets their own day (tasks, week progress, projects).
  */
-const ManagerHome = defineAsyncComponent(() => import("@/views/home/ManagerHome.vue"));
-const HomeView = defineAsyncComponent(() => import("@/views/HomeView.vue"));
+const ManagerHome = defineAsyncComponent(() => import("@/views/Home/ManagerHome.vue"));
+const HomeView = defineAsyncComponent(() => import("@/views/Home/HomeView.vue"));
 const session = useSessionStore();
 </script>
 

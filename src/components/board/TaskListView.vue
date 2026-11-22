@@ -3,7 +3,7 @@ import { statusName } from "@/domain/statusName";
 import { ref } from "vue";
 import { ArrowDown01Icon } from "@hugeicons/core-free-icons";
 import PtIcon from "@/components/ui/PtIcon.vue";
-import TaskRow from "@/components/tasks/TaskRow.vue";
+import TaskRow from "@/components/Task/TaskRow.vue";
 import type { Status, Task } from "@/types/models";
 
 /** Tasks grouped by status, collapsible, with a done checkbox per row. */

@@ -11,7 +11,7 @@ import PtIconButton from "@/components/ui/PtIconButton.vue";
 import PtIconPicker from "@/components/ui/PtIconPicker.vue";
 import PtSheet from "@/components/ui/PtSheet.vue";
 import PtSkeleton from "@/components/ui/PtSkeleton.vue";
-import TeamVisibilityField from "@/components/settings/TeamVisibilityField.vue";
+import TeamVisibilityField from "@/components/Settings/TeamVisibilityField.vue";
 import { useMetaStore } from "@/stores/meta";
 import { entitiesApi } from "@/api/endpoints";
 import { ApiError } from "@/api/client";

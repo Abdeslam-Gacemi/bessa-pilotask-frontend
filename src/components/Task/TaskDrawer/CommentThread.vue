@@ -5,9 +5,9 @@ import PtAvatar from "@/components/ui/PtAvatar.vue";
 import PtButton from "@/components/ui/PtButton.vue";
 import PtIcon from "@/components/ui/PtIcon.vue";
 import PtIconButton from "@/components/ui/PtIconButton.vue";
-import RichEditor from "@/components/editor/RichEditor.vue";
-import AttachmentTray from "@/components/attachments/AttachmentTray.vue";
-import AttachmentGallery from "@/components/attachments/AttachmentGallery.vue";
+import RichEditor from "@/components/Editor/RichEditor/RichEditor.vue";
+import AttachmentTray from "@/components/Attachment/AttachmentTray.vue";
+import AttachmentGallery from "@/components/Attachment/AttachmentGallery.vue";
 import { commentsApi } from "@/api/endpoints";
 import { useApiError } from "@/composables/useApiError";
 import { useAttachmentUploads } from "@/composables/useAttachmentUploads";
@@ -227,6 +227,7 @@ async function remove(comment: Comment): Promise<void> {
         <div class="min-w-0 flex-1">
           <div class="flex items-center gap-2">
             <span class="truncate text-sm font-bold">{{ comment.author?.name }}</span>
+            <span v-if="comment.author?.deleted" class="shrink-0 text-xs text-muted">· {{ $t("common.deletedUser") }}</span>
             <time class="shrink-0 text-xs text-subtle" :title="fmt.dateTime(comment.created_at)">{{ fmt.relative(comment.created_at) }}</time>
             <span v-if="comment.edited_at" class="shrink-0 text-xs text-subtle">· {{ $t("tasks.edited") }}</span>
             <div class="ms-auto flex opacity-0 transition group-hover:opacity-100 focus-within:opacity-100 max-md:opacity-100">

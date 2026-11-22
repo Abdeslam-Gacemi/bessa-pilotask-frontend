@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { ComputerIcon, Moon02Icon, Settings02Icon, Sun03Icon } from "@hugeicons/core-free-icons";
-import LocaleSwitch from "@/components/brand/LocaleSwitch.vue";
+import LocaleSwitch from "@/components/Brand/LocaleSwitch.vue";
 import PtIcon from "@/components/ui/PtIcon.vue";
 import { usePreferencesStore } from "@/stores/preferences";
 import type { ThemePreference } from "@/types/models";

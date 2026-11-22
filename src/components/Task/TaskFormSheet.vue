@@ -10,7 +10,7 @@ import PtLabelPicker from "@/components/ui/PtLabelPicker.vue";
 import PtSegmented from "@/components/ui/PtSegmented.vue";
 import PtSheet from "@/components/ui/PtSheet.vue";
 import PtUserPicker from "@/components/ui/PtUserPicker.vue";
-import RichEditor from "@/components/editor/RichEditor.vue";
+import RichEditor from "@/components/Editor/RichEditor/RichEditor.vue";
 import { boardsApi, tasksApi } from "@/api/endpoints";
 import { ApiError } from "@/api/client";
 import { useApiError } from "@/composables/useApiError";

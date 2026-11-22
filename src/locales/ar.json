@@ -14,6 +14,7 @@
     "settings": "الإعدادات",
     "notifications": "الإشعارات",
     "myTasks": "مهامي",
+    "myPerformance": "أدائي",
     "admin": "الإدارة",
     "entities": "الكيانات"
   },
@@ -50,7 +51,15 @@
     "of": "من",
     "undo": "تراجع",
     "pressAgainToExit": "اضغط مرة أخرى للخروج",
-    "less": "أقل"
+    "less": "أقل",
+    "archive": "أرشفة",
+    "unarchive": "استعادة",
+    "deletedUser": "محذوف"
+  },
+  "myPerformance": {
+    "title": "أدائي",
+    "subtitle": "مهامك وتقدّمك.",
+    "noData": "لا يوجد نشاط في هذه الفترة بعد."
   },
   "auth": {
     "title": "مرحبًا بعودتك",
@@ -120,6 +129,15 @@
     "empty": "لا توجد جداول في هذا المشروع",
     "emptyHint": "يجمع الجدول المهام وحالاتها.",
     "deleteConfirm": "حذف الجدول «{name}» ومهامه؟",
+    "archive": "أرشفة الجدول",
+    "unarchive": "استعادة الجدول",
+    "archived": "تمت أرشفة الجدول",
+    "unarchived": "تمت استعادة الجدول",
+    "archivedBanner": "هذا الجدول مؤرشف.",
+    "archivedTasksBanner": "عرض المهام المؤرشفة.",
+    "showArchivedTasks": "عرض المهام المؤرشفة",
+    "hideArchivedTasks": "إخفاء المهام المؤرشفة",
+    "backToBoard": "العودة إلى الجدول",
     "statuses": "الحالات",
     "statusesHint": "اسحب لإعادة الترتيب. الحالات الأربع الافتراضية تُبنى عليها التحليلات، وحالاتك الخاصة حرّة.",
     "addStatus": "إضافة حالة",
@@ -173,6 +191,9 @@
     "createdBy": "أنشأها {name}",
     "table": "الجدول",
     "deleteConfirm": "حذف المهمة «{name}»؟",
+    "archived": "تمت أرشفة المهمة",
+    "unarchived": "تمت استعادة المهمة",
+    "archivedBanner": "هذه المهمة مؤرشفة.",
     "comments": "التعليقات",
     "activity": "النشاط",
     "details": "التفاصيل",
@@ -231,6 +252,10 @@
     "last30": "30 يومًا",
     "last90": "90 يومًا",
     "thisYear": "هذه السنة",
+    "customRange": "مخصص",
+    "from": "من",
+    "to": "إلى",
+    "apply": "تطبيق",
     "total": "المهام",
     "open": "مفتوحة",
     "inProgress": "قيد التنفيذ",
@@ -347,7 +372,7 @@
     "lastLogin": "آخر دخول",
     "never": "أبدًا",
     "roles": {
-      "super_admin": "مدير عام",
+      "super_admin": "مشرف عام",
       "admin": "مدير",
       "user": "مستخدم",
       "viewer": "مُطّلع"
@@ -385,6 +410,13 @@
     "language": "اللغة",
     "notifications": "الإشعارات",
     "notificationsHint": "اختر طريقة تنبيهك. صندوق الوارد في التطبيق يتلقى كل شيء.",
+    "saving": "جارٍ الحفظ…",
+    "saved": "تم الحفظ",
+    "mentionsTitle": "الإشارات",
+    "mentionsIntro": "الإشارة إليك ({'@'}) في التعليقات",
+    "mentionsHint": "اختر ما إذا كان بإمكان زملائك الإشارة إليك في التعليقات.",
+    "allowMentions": "السماح بالإشارة ({'@'})",
+    "allowMentionsHint": "عند الإيقاف، لا يمكن لأحد الإشارة إليك في التعليقات ولن تظهر ضمن الاقتراحات.",
     "channels": {
       "mail": "البريد",
       "push": "إشعار فوري"
@@ -703,7 +735,7 @@
     "stillStuckHint": "يمكن لمديرك أو لمدير مشروعك مساعدتك.",
     "audience": {
       "managers": "المديرون",
-      "superAdmin": "المدير العام",
+      "superAdmin": "المشرف العام",
       "projectManagers": "المديرون ومديرو المشاريع",
       "workspace": "المديرون والقرّاء",
       "overview": "المديرون والقرّاء ومديرو المشاريع"
