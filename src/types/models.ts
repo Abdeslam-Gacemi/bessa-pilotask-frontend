@@ -155,6 +155,16 @@ export interface Task {
   can?: { update: boolean; move: boolean; delete: boolean; comment: boolean; observers?: boolean };
 }
 
+/** The Android build served to signed-in people (see AppDownloadController). */
+export interface ApkInfo {
+  available: boolean;
+  size?: number;
+  version?: string | null;
+  updated_at?: string;
+  /** Short-lived signed download URL (present only when available). */
+  url?: string;
+}
+
 export type ObserverRequestStatus = "pending" | "approved" | "rejected";
 
 /** A person's ask to observe tasks they cannot see; a manager decides. */

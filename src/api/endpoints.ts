@@ -9,6 +9,7 @@ import type {
   Comment,
   Entity,
   Label,
+  ApkInfo,
   Meta,
   ObserverRequest,
   Paginated,
@@ -140,6 +141,8 @@ export const tasksApi = {
   get: (id: number, o: CallOptions = {}) => data(http.get<Task>(`/tasks/${id}`, o)),
   create: (boardId: number, payload: TaskInput) => data(http.post<Task>(`/boards/${boardId}/tasks`, payload)),
   update: (id: number, payload: Partial<TaskInput> & { archived?: boolean }) => data(http.patch<Task>(`/tasks/${id}`, payload)),
+  /** Live progress save that never locks the task sheet (background write). */
+  setProgress: (id: number, progress: number | null) => data(http.patch<Task>(`/tasks/${id}`, { progress }, { ptBackground: true } as never)),
   move: (id: number, statusId: number, position?: number) =>
     data(http.post<Task>(`/tasks/${id}/move`, { status_id: statusId, position })),
   remove: (id: number) => http.delete(`/tasks/${id}`),
@@ -231,6 +234,11 @@ export const dashboardApi = {
 export const analyticsApi = {
   report: (params: { scope: AnalyticsScopeType; id?: number | null; from?: string; to?: string; entity_id?: number | null }, o: CallOptions = {}) =>
     data(http.get<AnalyticsReport>("/analytics", { params, ...o })),
+};
+
+export const appApi = {
+  /** Android build info + a fresh signed download link, for signed-in people. */
+  android: (o: CallOptions = {}) => data(http.get<ApkInfo>("/app/android", o)),
 };
 
 export const observerRequestsApi = {

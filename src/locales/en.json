@@ -442,6 +442,9 @@
       "system": "System"
     },
     "language": "Language",
+    "androidApp": "Android app",
+    "androidAppHint": "Install Pilotask on your phone",
+    "androidDownload": "Download APK",
     "notifications": "Notifications",
     "notificationsHint": "Choose how you get alerted. The in-app inbox always gets everything.",
     "saving": "Saving…",

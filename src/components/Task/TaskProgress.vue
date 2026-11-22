@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { useDebounceFn } from "@vueuse/core";
 import PtProgress from "@/components/ui/PtProgress.vue";
 import { tasksApi } from "@/api/endpoints";
 import { useApiError } from "@/composables/useApiError";
@@ -26,22 +25,25 @@ const shown = computed(() => (done.value ? 100 : value.value));
 const accent = computed(() => (shown.value >= 100 ? "#22A06B" : "#53AEFF"));
 const saving = ref(false);
 
+// Background save: never locks the task sheet, so it closes even mid-save.
 async function persist(next: number | null): Promise<void> {
   saving.value = true;
   try {
-    emit("updated", await tasksApi.update(props.task.id, { progress: next }));
+    emit("updated", await tasksApi.setProgress(props.task.id, next));
   } catch (error) {
     errors.report(error);
   } finally {
     saving.value = false;
   }
 }
-const persistSoon = useDebounceFn((v: number) => persist(v), 350);
 
+// Dragging only moves the local value (smooth); the save happens on release.
 function onSlide(v: number): void {
   value.value = v;
   tracked.value = true;
-  persistSoon(v);
+}
+function commit(): void {
+  void persist(value.value);
 }
 function setValue(v: number): void {
   value.value = v;
@@ -89,6 +91,7 @@ const STEPS = [0, 25, 50, 75, 100];
         class="pt-range h-2 w-full cursor-pointer appearance-none rounded-full"
         :style="{ color: accent, accentColor: accent, background: `linear-gradient(90deg, ${accent} ${value}%, var(--pt-surface-3) ${value}%)` }"
         @input="onSlide(+($event.target as HTMLInputElement).value)"
+        @change="commit"
       />
       <PtProgress v-else :value="shown" :color="accent" :height="8" />
 

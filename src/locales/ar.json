@@ -442,6 +442,9 @@
       "system": "حسب النظام"
     },
     "language": "اللغة",
+    "androidApp": "تطبيق أندرويد",
+    "androidAppHint": "ثبّت بيلوتاسك على هاتفك",
+    "androidDownload": "تنزيل APK",
     "notifications": "الإشعارات",
     "notificationsHint": "اختر طريقة تنبيهك. صندوق الوارد في التطبيق يتلقى كل شيء.",
     "saving": "جارٍ الحفظ…",

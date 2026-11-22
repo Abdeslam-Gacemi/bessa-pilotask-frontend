@@ -23,6 +23,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import FlagIcon from "@/components/Brand/FlagIcon.vue";
 import InstallAppCard from "@/components/Settings/InstallAppCard.vue";
+import AndroidAppCard from "@/components/Settings/AndroidAppCard.vue";
 import PtAvatar from "@/components/ui/PtAvatar.vue";
 import PtIcon from "@/components/ui/PtIcon.vue";
 import PtSegmented from "@/components/ui/PtSegmented.vue";
@@ -112,6 +113,7 @@ async function signOut(): Promise<void> {
     </div>
 
     <InstallAppCard v-stagger="2" />
+    <AndroidAppCard v-stagger="2" />
 
     <section v-stagger="2" class="pt-card flex flex-col gap-3 p-4">
       <h2 class="flex items-center gap-2.5 font-semibold">

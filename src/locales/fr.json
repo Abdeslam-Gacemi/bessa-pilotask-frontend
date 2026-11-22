@@ -442,6 +442,9 @@
       "system": "Système"
     },
     "language": "Langue",
+    "androidApp": "Application Android",
+    "androidAppHint": "Installez Pilotask sur votre téléphone",
+    "androidDownload": "Télécharger l'APK",
     "notifications": "Notifications",
     "notificationsHint": "Choisissez comment être prévenu. La boîte de réception de l'app reçoit tout.",
     "saving": "Enregistrement…",
