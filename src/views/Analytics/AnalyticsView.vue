@@ -64,7 +64,8 @@ const loading = request.loading;
 const people = ref<User[]>([]);
 // Global managers can narrow everything to one entity; entity managers always see their own.
 const entityId = ref<number | null>(route.query.entity ? Number(route.query.entity) : null);
-const pickEntity = computed(() => entityStore.entities.length > 1 || (session.isGlobal && entityStore.entities.length > 0));
+// Only super admins narrow analytics by entity; admins never see the entity field.
+const pickEntity = computed(() => session.isSuperAdmin && entityStore.entities.length > 0);
 const sheet = ref<HTMLElement | null>(null);
 const exporting = ref<"download" | "share" | null>(null);
 const sortKey = ref<"completed_in_period" | "open" | "overdue" | "on_time_rate">("completed_in_period");

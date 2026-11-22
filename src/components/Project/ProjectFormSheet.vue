@@ -41,8 +41,8 @@ function onManagers(next: User[]): void {
   form.managers = simple;
 }
 
-// Global managers pick any entity (or none: global); managers of several entities pick one of theirs.
-const pickEntity = computed(() => (session.isGlobal ? entityStore.entities.length > 0 : entityStore.entities.length > 1));
+// Only super admins choose the entity; admins create inside their own.
+const pickEntity = computed(() => session.isSuperAdmin && entityStore.entities.length > 0);
 const saving = ref(false);
 const nameError = ref("");
 
