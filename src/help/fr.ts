@@ -20,7 +20,7 @@ const content: HelpContent = [
         title: "Qui voit et fait quoi",
         blocks: [
           { type: "list", items: [
-            "**Super manager** : gère les personnes, les entités, les réglages et le journal ; voit tout.",
+            "**Super admin** : gère les personnes, les entités, les réglages, les clés API et le journal ; voit tout.",
             "**Manager** : crée et pilote les projets, tableaux et tâches de ses entités ; voit les analyses.",
             "**Chef de projet** : un utilisateur désigné sur un projet ; il en gère les tableaux, statuts et tâches, sans pouvoir l'archiver ni le supprimer.",
             "**Utilisateur** : voit ses tâches et les tableaux qui les contiennent ; fait avancer son travail et commente.",
@@ -106,6 +106,14 @@ const content: HelpContent = [
         ],
       },
       {
+        id: "tasks-progress",
+        title: "Montrer votre avancement",
+        blocks: [
+          { type: "p", text: "Une tâche peut porter un avancement de 0 à 100 %. Glissez le curseur ou touchez un palier ; il s'enregistre quand vous relâchez, et la barre s'affiche sur la carte et dans les listes." },
+          { type: "tip", text: "L'avancement est facultatif. Une tâche **Terminé** affiche toujours 100 %. Utilisez **Ne plus suivre** pour retirer le chiffre." },
+        ],
+      },
+      {
         id: "tasks-find",
         title: "Retrouver ses tâches",
         blocks: [
@@ -126,6 +134,25 @@ const content: HelpContent = [
         title: "Visibilité d'équipe",
         blocks: [
           { type: "p", text: "Par défaut, un utilisateur ne voit que ses propres tâches. La **visibilité d'équipe** lui montre aussi celles de ses collègues, en lecture seule, pour tout l'espace, une entité ou un seul tableau." },
+        ],
+      },
+      {
+        id: "tasks-observe-request",
+        title: "Demander à observer une tâche",
+        blocks: [
+          { type: "p", text: "Si vous ne voyez que vos tâches, vous pouvez demander à observer d'autres travaux. Ouvrez **Demandes d'observation**, expliquez pourquoi, et choisissez un projet si c'est utile." },
+          { type: "steps", items: ["Ouvrez **Demandes d'observation** puis **Nouvelle demande**.", "Dites ce que vous devez suivre, et le projet si vous le connaissez.", "Envoyez : un responsable décide, et vous êtes prévenu du résultat."] },
+          { type: "tip", text: "Une fois acceptées, les tâches choisies deviennent lisibles pour vous, liées à votre demande." },
+        ],
+      },
+      {
+        id: "tasks-observe-decide",
+        title: "Traiter les demandes d'observation",
+        audience: "projectManagers",
+        blocks: [
+          { type: "p", text: "Les managers et chefs de projet examinent les demandes d'observation de leurs travaux dans **Demandes d'observation**." },
+          { type: "steps", items: ["Ouvrez **Demandes d'observation** et lisez celles en attente.", "**Acceptez** en choisissant les tâches exactes à ouvrir à la personne.", "Ou **Refusez** avec un court motif."] },
+          { type: "tip", text: "Qui a décidé, et le lien entre la demande et les tâches, est conservé." },
         ],
       },
     ],
@@ -195,7 +222,16 @@ const content: HelpContent = [
         blocks: [
           { type: "p", text: "Les analyses montrent les tâches créées et terminées, la répartition par statut et priorité, la charge par personne et les échéances à venir, sur la période choisie." },
           { type: "p", text: "Changez de portée (tout, un projet, un tableau, une personne) et, si vous gérez plusieurs entités, filtrez par entité. Le rapport s'exporte en PDF pour être partagé." },
+          { type: "p", text: "Choisissez une période, ou touchez **Personnalisé** pour fixer des dates précises." },
           { type: "tip", text: "Un chef de projet voit les analyses de ses projets uniquement." },
+        ],
+      },
+      {
+        id: "analytics-mine",
+        title: "Mes performances",
+        blocks: [
+          { type: "p", text: "Chaque utilisateur a un écran **Mes performances** : vos tâches créées et terminées, votre répartition par statut et priorité, et vos échéances, sur la période choisie." },
+          { type: "p", text: "Il ne montre que votre travail. Choisissez une période prédéfinie ou une plage **Personnalisée**." },
         ],
       },
     ],
@@ -227,6 +263,16 @@ const content: HelpContent = [
         audience: "superAdmin",
         blocks: [{ type: "p", text: "Le journal trace qui a fait quoi et quand : créations, modifications, déplacements, partages et connexions." }],
       },
+      {
+        id: "admin-apikeys",
+        title: "Clés API",
+        audience: "superAdmin",
+        blocks: [
+          { type: "p", text: "Les clés API permettent aux scripts et au job de build d'accéder à l'API. Créez-les dans **Paramètres → Clés API**." },
+          { type: "steps", items: ["Touchez **Nouvelle clé**, nommez-la et choisissez ses droits : **Lecture**, **Écriture**, **Envoi d'APK**.", "Fixez une expiration si la clé ne doit pas vivre pour toujours.", "Copiez le jeton tout de suite — il n'est montré qu'une fois et ne peut pas être récupéré.", "**Révoquez** une clé pour l'arrêter aussitôt."] },
+          { type: "warning", text: "Une clé agit au nom de la personne qui l'a créée ; ses droits limitent encore ce qu'elle peut faire. Gardez les jetons secrets." },
+        ],
+      },
     ],
   },
   {
@@ -238,7 +284,7 @@ const content: HelpContent = [
       {
         id: "account-profile",
         title: "Profil",
-        blocks: [{ type: "p", text: "Votre carte, en haut des **Paramètres**, montre votre nom, votre rôle et vos entités. Ils sont tenus à jour par un super manager, dans **Utilisateurs** : demandez-lui une correction." }],
+        blocks: [{ type: "p", text: "Votre carte, en haut des **Paramètres**, montre votre nom, votre rôle et vos entités. Ils sont tenus à jour par un super admin, dans **Utilisateurs** : demandez-lui une correction." }],
       },
       {
         id: "account-security",
@@ -246,10 +292,25 @@ const content: HelpContent = [
         blocks: [{ type: "p", text: "**Paramètres → Sécurité** permet de changer votre mot de passe. Choisissez-en un long, que vous n'utilisez nulle part ailleurs." }],
       },
       {
+        id: "account-mentions",
+        title: "Être mentionné",
+        blocks: [
+          { type: "p", text: "**Paramètres → Mentions** contient un interrupteur pour autoriser ou bloquer les **@mentions** dans les commentaires. Désactivé, votre nom ne remonte pas pour être mentionné." },
+        ],
+      },
+      {
         id: "account-look",
         title: "Thème, langue et menu",
         blocks: [
           { type: "list", items: ["**Thème** : clair, sombre, ou celui de l'appareil.", "**Langue** : français, anglais ou arabe (affichage de droite à gauche).", "Dans le menu latéral, les projets se replient ; votre choix est gardé sur cet appareil."] },
+        ],
+      },
+      {
+        id: "account-android",
+        title: "Application Android",
+        blocks: [
+          { type: "p", text: "Quand un build est publié, les **Paramètres** affichent une carte **Application Android** avec la version et un téléchargement. Elle est réservée aux personnes connectées." },
+          { type: "p", text: "Sur l'application Android, un build plus récent propose une mise à jour : touchez pour télécharger et installer." },
         ],
       },
     ],
