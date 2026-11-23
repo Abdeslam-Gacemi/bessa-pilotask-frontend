@@ -21,5 +21,11 @@ export const useMetaStore = defineStore("meta", () => {
 
   const palette = (): string[] => Object.values(meta.value?.colors ?? {});
 
-  return { meta, labels, load, reloadLabels, palette };
+  /** Drop everything (called on sign-out). */
+  function reset(): void {
+    meta.value = null;
+    labels.value = [];
+  }
+
+  return { meta, labels, load, reloadLabels, palette, reset };
 });

@@ -27,5 +27,11 @@ export const useProjectsStore = defineStore("projects", () => {
 
   const boards = () => projects.value.flatMap((p) => (p.boards ?? []).map((b) => ({ ...b, project: p })));
 
-  return { projects, loaded, load, upsert, remove, boards };
+  /** Drop everything (called on sign-out, so the next person starts clean). */
+  function reset(): void {
+    projects.value = [];
+    loaded.value = false;
+  }
+
+  return { projects, loaded, load, upsert, remove, boards, reset };
 });

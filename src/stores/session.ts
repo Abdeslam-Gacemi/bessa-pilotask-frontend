@@ -4,6 +4,8 @@ import { authApi, type CaptchaProof } from "@/api/endpoints";
 import { onUnauthorized } from "@/api/client";
 import { tokenStore } from "@/services/tokenStore";
 import { cancelAllRequests } from "@/services/requests";
+import { useProjectsStore } from "@/stores/projects";
+import { useMetaStore } from "@/stores/meta";
 import type { User } from "@/types/models";
 
 /** Who is signed in, and what their role lets them do. */
@@ -61,6 +63,10 @@ export const useSessionStore = defineStore("session", () => {
     cancelAllRequests();
     await tokenStore.set(null);
     user.value = null;
+    // Drop another person's cached data so the next sign-in starts clean
+    // (the SPA keeps stores alive across sign-out → sign-in).
+    useProjectsStore().reset();
+    useMetaStore().reset();
   }
 
   function setUser(next: User): void {
