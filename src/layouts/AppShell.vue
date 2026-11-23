@@ -43,6 +43,7 @@ import { startPush, stopPush } from "@/services/push";
 import { useMetaStore } from "@/stores/meta";
 import { useNotificationsStore } from "@/stores/notifications";
 import { useProjectsStore } from "@/stores/projects";
+import { useMyTasksStore } from "@/stores/myTasks";
 import { useSessionStore } from "@/stores/session";
 import type { Board, Project, Task } from "@/types/models";
 
@@ -53,6 +54,7 @@ import type { Board, Project, Task } from "@/types/models";
 const session = useSessionStore();
 const meta = useMetaStore();
 const projects = useProjectsStore();
+const myTasks = useMyTasksStore();
 const inbox = useNotificationsStore();
 const taskUi = useTaskUi();
 const openTarget = useNotificationTarget();
@@ -84,7 +86,7 @@ interface NavItem {
 
 const main = computed<NavItem[]>(() => [
   { to: "/", label: t("nav.home"), icon: Home09Icon },
-  { to: "/my-tasks", label: t("nav.myTasks"), icon: CheckListIcon },
+  { to: "/my-tasks", label: t("nav.myTasks"), icon: CheckListIcon, badge: myTasks.count || undefined },
   { to: "/projects", label: t("nav.projects"), icon: Folder01Icon },
   { to: "/calendar", label: t("nav.calendar"), icon: Calendar03Icon },
   // People without a team overview get their own performance screen instead.
@@ -109,8 +111,11 @@ const mobile = computed<NavItem[]>(() => [
   session.hasOverview ? admin.value[0]! : main.value[1]!,
 ]);
 
+// Keep the "My tasks" badge current: on load, and whenever a task changes.
+taskUi.onChanged(() => void myTasks.refresh());
+
 onMounted(async () => {
-  await Promise.all([meta.load(), projects.load()]).catch(() => toast.error(t("errors.network")));
+  await Promise.all([meta.load(), projects.load(), myTasks.refresh()]).catch(() => toast.error(t("errors.network")));
   inbox.start();
   void startPush({
     onMessage: () => void inbox.refresh(),

@@ -140,6 +140,8 @@ export const boardsApi = {
 
 export const tasksApi = {
   list: (params: TaskQuery, o: CallOptions = {}) => data(http.get<Task[]>("/tasks", { params, ...o })),
+  /** Count of my open tasks (assigned + shared), for the nav badge. */
+  mineCount: (o: CallOptions = {}) => data(http.get<{ count: number }>("/tasks/mine/count", o)),
   get: (id: number, o: CallOptions = {}) => data(http.get<Task>(`/tasks/${id}`, o)),
   create: (boardId: number, payload: TaskInput) => data(http.post<Task>(`/boards/${boardId}/tasks`, payload)),
   update: (id: number, payload: Partial<TaskInput> & { archived?: boolean }) => data(http.patch<Task>(`/tasks/${id}`, payload)),
