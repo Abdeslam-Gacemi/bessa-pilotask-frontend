@@ -25,8 +25,11 @@ const shown = computed(() => (done.value ? 100 : value.value));
 const accent = computed(() => (shown.value >= 100 ? "#22A06B" : "#53AEFF"));
 const saving = ref(false);
 
-// Background save: never locks the task sheet, so it closes even mid-save.
+// Update the card right away (optimistic), then save in the background. The
+// card never waits on the server, so the value always lands even if the sheet
+// closes mid-save.
 async function persist(next: number | null): Promise<void> {
+  emit("updated", { ...props.task, progress: next });
   saving.value = true;
   try {
     emit("updated", await tasksApi.setProgress(props.task.id, next));
@@ -50,7 +53,6 @@ function setValue(v: number): void {
   tracked.value = true;
   void persist(v);
 }
-const STEPS = [0, 25, 50, 75, 100];
 </script>
 
 <template>
@@ -67,19 +69,6 @@ const STEPS = [0, 25, 50, 75, 100];
     </button>
 
     <template v-else>
-      <div class="flex items-baseline justify-between">
-        <span class="text-2xl font-bold tabular-nums" :style="{ color: accent }">{{ shown }}%</span>
-        <span v-if="done" class="text-xs font-semibold text-success">{{ $t("tasks.completed") }}</span>
-        <button
-          v-else-if="editable"
-          type="button"
-          class="text-xs font-semibold text-subtle transition hover:text-danger"
-          @click="(tracked = false), persist(null)"
-        >
-          {{ $t("tasks.progressClear") }}
-        </button>
-      </div>
-
       <input
         v-if="editable && !done"
         type="range"
@@ -95,16 +84,16 @@ const STEPS = [0, 25, 50, 75, 100];
       />
       <PtProgress v-else :value="shown" :color="accent" :height="8" />
 
-      <div v-if="editable && !done" class="flex gap-1.5">
+      <div class="flex items-center justify-between gap-3">
+        <span class="text-2xl font-bold tabular-nums" :style="{ color: accent }">{{ shown }}%</span>
+        <span v-if="done" class="text-xs font-semibold text-success">{{ $t("tasks.completed") }}</span>
         <button
-          v-for="p in STEPS"
-          :key="p"
+          v-else-if="editable"
           type="button"
-          class="h-7 flex-1 rounded-lg text-xs font-bold tabular-nums transition"
-          :class="value === p ? 'bg-ink text-on-ink' : 'bg-surface-2 text-muted hover:bg-surface-3'"
-          @click="setValue(p)"
+          class="shrink-0 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-semibold text-subtle transition hover:bg-danger-soft hover:text-danger"
+          @click="(tracked = false), persist(null)"
         >
-          {{ p }}
+          {{ $t("tasks.progressClear") }}
         </button>
       </div>
     </template>
