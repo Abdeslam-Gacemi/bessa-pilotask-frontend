@@ -21,6 +21,7 @@
   "common": {
     "save": "حفظ",
     "cancel": "إلغاء",
+    "done": "تم",
     "delete": "حذف",
     "edit": "تعديل",
     "create": "إنشاء",
