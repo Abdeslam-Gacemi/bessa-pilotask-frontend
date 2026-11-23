@@ -24,3 +24,8 @@ export function taskAccent(task: Task): string {
 
 /** Sorts within a column the way the server stores it. */
 export const byPosition = (a: Task, b: Task) => a.position - b.position || a.id - b.id;
+
+/** The progress bar to show: a completed task reads full; otherwise the set value (null = none). */
+export function taskProgress(task: Pick<Task, "completed_at" | "progress">): number | null {
+  return task.completed_at ? 100 : task.progress;
+}

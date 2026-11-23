@@ -1,5 +1,5 @@
 import type { Directive } from "vue";
-import { trackImageLoading } from "@/components/editor/imageNode";
+import { trackImageLoading } from "@/components/Editor/RichEditor/imageNode";
 
 /**
  * `v-media` on read-only rich text (v-html): images show a shimmer while they

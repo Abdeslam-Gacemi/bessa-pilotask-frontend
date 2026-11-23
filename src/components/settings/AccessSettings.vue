@@ -5,6 +5,7 @@ import { EyeIcon, SquareLock02Icon } from "@hugeicons/core-free-icons";
 import PtIcon from "@/components/ui/PtIcon.vue";
 import PtSkeleton from "@/components/ui/PtSkeleton.vue";
 import PtSwitch from "@/components/ui/PtSwitch.vue";
+import SaveStatus from "@/components/Settings/SaveStatus.vue";
 import { settingsApi } from "@/api/endpoints";
 import { useApiError } from "@/composables/useApiError";
 import { useToast } from "@/composables/useToast";
@@ -53,6 +54,7 @@ onMounted(async () => {
       <p class="text-sm font-semibold">{{ $t("settings.accessIntro") }}</p>
       <p class="mt-0.5 text-xs text-muted">{{ $t("settings.accessHint") }}</p>
     </div>
+    <SaveStatus :saving="saving" class="shrink-0" />
   </div>
 
   <section v-stagger="1" class="pt-card flex items-center gap-3.5 p-4">

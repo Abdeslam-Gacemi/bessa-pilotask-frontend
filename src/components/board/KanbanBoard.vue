@@ -5,7 +5,7 @@ import { VueDraggable, type DraggableEvent } from "vue-draggable-plus";
 import { Add01Icon, ArrowShrink01Icon } from "@hugeicons/core-free-icons";
 import { useLocalStorage } from "@vueuse/core";
 import PtIcon from "@/components/ui/PtIcon.vue";
-import TaskCard from "@/components/tasks/TaskCard.vue";
+import TaskCard from "@/components/Task/TaskCard.vue";
 import { haptics } from "@/services/haptics";
 import type { Status, Task } from "@/types/models";
 

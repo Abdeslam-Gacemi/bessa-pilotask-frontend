@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
-import PriorityChip from "@/components/tasks/PriorityChip.vue";
+import PriorityChip from "@/components/Task/PriorityChip.vue";
 import PtAvatarStack from "@/components/ui/PtAvatarStack.vue";
 import PtIcon from "@/components/ui/PtIcon.vue";
 import type { DashboardBucket } from "@/api/endpoints";

@@ -17,13 +17,15 @@ http.interceptors.request.use((config) => {
   if (token) config.headers.Authorization = `Bearer ${token}`;
   config.headers["Accept-Language"] = document.documentElement.lang || "fr";
   // Writes keep open sheets and dialogs from being dismissed until they settle.
-  if (!["get", "head", "options"].includes((config.method ?? "get").toLowerCase())) {
+  // Background writes (ptBackground) save quietly and never lock the UI.
+  const method = (config.method ?? "get").toLowerCase();
+  if (!["get", "head", "options"].includes(method) && !(config as WriteConfig).ptBackground) {
     (config as WriteConfig).ptRelease = beginWrite();
   }
   return config;
 });
 
-type WriteConfig = { ptRelease?: () => void };
+type WriteConfig = { ptRelease?: () => void; ptBackground?: boolean };
 
 export class ApiError extends Error {
   constructor(

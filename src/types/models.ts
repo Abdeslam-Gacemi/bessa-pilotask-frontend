@@ -39,6 +39,8 @@ export interface User {
   avatar_url: string | null;
   job_title: string | null;
   role: Role;
+  /** Set when the account has been deleted: its name is kept on past work. */
+  deleted?: boolean;
   /** Entities the person belongs to; empty = all entities (global). */
   entity_ids?: number[];
   entities?: Entity[];
@@ -54,6 +56,8 @@ export interface User {
   created_at?: string;
   notification_preferences?: NotificationPreferences;
   report_preferences?: ReportPreferences;
+  /** Signed-in person only: whether others may @mention them in comments. */
+  allow_mentions?: boolean;
 }
 
 export interface Status {
@@ -109,6 +113,8 @@ export interface Board {
   /** Effective value (table > entity > workspace), on single-table responses. */
   team_tasks_visible?: boolean;
   position: number;
+  /** Set when the table is archived (kept, but out of the way). */
+  archived_at?: string | null;
   created_at: string;
   project?: Project;
   statuses?: Status[];
@@ -129,7 +135,11 @@ export interface Task {
   start_at: string | null;
   due_at: string | null;
   completed_at: string | null;
+  /** Optional self-reported progress, 0–100 (null = not tracked). */
+  progress: number | null;
   position: number;
+  /** Set when the task is archived (kept, but out of the way). */
+  archived_at?: string | null;
   is_overdue: boolean;
   created_at: string;
   updated_at: string;
@@ -143,6 +153,54 @@ export interface Task {
   observers?: User[];
   is_observer?: boolean;
   can?: { update: boolean; move: boolean; delete: boolean; comment: boolean; observers?: boolean };
+}
+
+/** The current app build served to signed-in people (see AppReleaseController). */
+export interface AppRelease {
+  available: boolean;
+  platform?: "android";
+  version_name?: string;
+  version_code?: number;
+  size?: number;
+  notes?: string | null;
+  created_at?: string;
+  /** Short-lived signed download URL (present only when available). */
+  download_url?: string;
+}
+
+export type ApiAbility = "read" | "write" | "apk_upload";
+
+/** A super-admin-issued machine credential. */
+export interface ApiKey {
+  id: number;
+  name: string;
+  prefix: string;
+  abilities: ApiAbility[];
+  created_by?: User;
+  last_used_at: string | null;
+  expires_at: string | null;
+  revoked_at: string | null;
+  active: boolean;
+  created_at: string;
+  /** Plaintext token, present only in the create response. */
+  token?: string;
+}
+
+export type ObserverRequestStatus = "pending" | "approved" | "rejected";
+
+/** A person's ask to observe tasks they cannot see; a manager decides. */
+export interface ObserverRequest {
+  id: number;
+  message: string;
+  status: ObserverRequestStatus;
+  decision_message: string | null;
+  created_at: string;
+  decided_at: string | null;
+  project?: { id: number; name: string };
+  requester?: User;
+  decider?: User;
+  /** Tasks granted on approval (the kept request↔task link). */
+  tasks?: { id: number; title: string; board_id: number }[];
 }
 
 export interface Comment {
@@ -300,6 +358,7 @@ export interface TaskInput {
   status_id?: number | null;
   start_at?: string | null;
   due_at?: string | null;
+  progress?: number | null;
   assignee_ids?: number[];
   label_ids?: number[];
 }

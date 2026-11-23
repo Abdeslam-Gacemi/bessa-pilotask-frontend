@@ -138,6 +138,37 @@ jobs:
           path: ${{ env.APK_PATH }}
           retention-days: 14
 
+      # Upload the APK to the backend so signed-in people can download it in
+      # Settings and the Android app can offer an in-app update. Uses an
+      # apk_upload API key (made by a super admin in Settings → API keys).
+      # Skipped unless the APK_UPLOAD_KEY secret is set. The API base comes from
+      # the VITE_API_URL repository variable (same as the build).
+      - name: Upload APK for in-app download
+        env:
+          APK_UPLOAD_KEY: ${{ secrets.APK_UPLOAD_KEY }}
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+        run: |
+          if [ -z "$APK_UPLOAD_KEY" ]; then
+            echo "APK_UPLOAD_KEY not set — skipping in-app APK upload."
+            exit 0
+          fi
+          api="${VITE_API_URL:-https://pilotask.bessapromotion.net/api}"
+          code="${{ github.run_number }}"
+          name="1.0.${{ github.run_number }}"
+          echo "Uploading $name (versionCode $code) to $api/app/releases"
+          http=$(curl -sS -o /tmp/upload.out -w '%{http_code}' \
+            -X POST "$api/app/releases" \
+            -H "X-Api-Key: $APK_UPLOAD_KEY" \
+            -H "Accept: application/json" \
+            -F "platform=android" \
+            -F "version_name=$name" \
+            -F "version_code=$code" \
+            --form-string "notes=$(git log -1 --pretty=%s)" \
+            -F "file=@$APK_PATH;type=application/vnd.android.package-archive")
+          echo "HTTP $http"; cat /tmp/upload.out; echo
+          if [ "$http" != "201" ]; then echo "::error::APK upload failed ($http)."; exit 1; fi
+          echo "APK uploaded for in-app download."
+
       - name: Release notes
         env:
           NOTES: ${{ github.event.inputs.notes }}
