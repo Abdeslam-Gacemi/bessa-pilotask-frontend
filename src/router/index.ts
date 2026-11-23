@@ -37,7 +37,7 @@ const routes: RouteRecordRaw[] = [
       { path: "help", name: "help", component: () => import("@/views/Help/HelpView.vue"), meta: { title: "help.title" } },
       { path: "settings", name: "settings", component: () => import("@/views/Settings/SettingsView.vue"), meta: { title: "nav.settings" } },
       {
-        path: "settings/:section(notifications|security|reports|access|mentions)",
+        path: "settings/:section(notifications|security|reports|access|mentions|apikeys)",
         name: "settings-section",
         component: () => import("@/views/Settings/SettingsSectionView.vue"),
         props: true,

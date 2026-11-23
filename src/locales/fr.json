@@ -781,5 +781,48 @@
     "showAll": "Tout afficher",
     "hidden": "Aucune rubrique masquée | 1 rubrique d'autres rôles masquée | {n} rubriques d'autres rôles masquées",
     "projectManager": "chef de projet"
+  },
+  "apiKeys": {
+    "title": "Clés API",
+    "intro": "Clés pour les scripts et le job CI de build.",
+    "new": "Nouvelle clé",
+    "create": "Créer la clé",
+    "name": "Nom",
+    "namePlaceholder": "ex. Build CI",
+    "abilitiesLabel": "Privilèges",
+    "abilities": {
+      "read": "Lecture",
+      "write": "Écriture",
+      "apk_upload": "Envoi d'APK"
+    },
+    "abilityHints": {
+      "read": "Appeler les endpoints en lecture seule.",
+      "write": "Créer, modifier et supprimer.",
+      "apk_upload": "Téléverser un nouveau build."
+    },
+    "expiry": "Expiration",
+    "expiryHint": "Laisser vide pour une clé sans expiration.",
+    "createdTitle": "Clé créée",
+    "tokenOnce": "Copiez ce jeton maintenant — il n'est affiché qu'une fois et ne peut pas être récupéré.",
+    "copy": "Copier",
+    "copied": "Jeton copié",
+    "copiedShort": "Copié",
+    "revoke": "Révoquer",
+    "revokeTitle": "Révoquer cette clé ?",
+    "revokeMessage": "« {name} » cessera de fonctionner immédiatement. Action irréversible.",
+    "revoked": "Clé révoquée",
+    "lastUsed": "utilisée {when}",
+    "neverUsed": "jamais utilisée",
+    "expires": "expire {when}",
+    "stateActive": "Active",
+    "stateRevoked": "Révoquée",
+    "stateExpired": "Expirée",
+    "emptyTitle": "Aucune clé API",
+    "emptyHint": "Créez une clé pour que la CI envoie des builds ou que des scripts appellent l'API."
+  },
+  "appUpdate": {
+    "title": "Mise à jour disponible",
+    "message": "La version {version} est prête. Mettre à jour maintenant ?",
+    "update": "Mettre à jour"
   }
 }

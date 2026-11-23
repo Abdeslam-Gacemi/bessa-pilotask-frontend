@@ -27,6 +27,7 @@ import TaskFormSheet from "@/components/Task/TaskFormSheet.vue";
 import CreateChooserSheet from "@/components/CreateChooserSheet.vue";
 import BoardFormSheet from "@/components/Project/BoardFormSheet.vue";
 import ProjectFormSheet from "@/components/Project/ProjectFormSheet.vue";
+import AppUpdatePrompt from "@/components/App/AppUpdatePrompt.vue";
 import SidebarPreferences from "@/components/Settings/SidebarPreferences.vue";
 import { useProfileSave } from "@/composables/useProfileSave";
 import { usePreferencesStore } from "@/stores/preferences";
@@ -333,6 +334,7 @@ router.afterEach((to, from) => {
       </button>
     </nav>
 
+    <AppUpdatePrompt />
     <CreateChooserSheet v-model="taskUi.state.chooserOpen" @pick="onPick" />
     <ProjectFormSheet v-model="taskUi.state.projectFormOpen" @saved="onProjectSaved" />
     <BoardFormSheet v-model="taskUi.state.boardFormOpen" @saved="onBoardSaved" />

@@ -138,31 +138,36 @@ jobs:
           path: ${{ env.APK_PATH }}
           retention-days: 14
 
-      # Copy the APK to the server so signed-in people can download it in Settings.
-      # Skipped unless the SERVER_* secrets are set (SERVER_HOST, SERVER_USER,
-      # SERVER_SSH_KEY; optional SERVER_APK_DIR). The backend serves it from
-      # storage/app/android/ through a short-lived signed link.
-      - name: Publish APK to the server for in-app download
+      # Upload the APK to the backend so signed-in people can download it in
+      # Settings and the Android app can offer an in-app update. Uses an
+      # apk_upload API key (made by a super admin in Settings → API keys).
+      # Skipped unless the APK_UPLOAD_KEY secret is set. The API base comes from
+      # the VITE_API_URL repository variable (same as the build).
+      - name: Upload APK for in-app download
         env:
-          SERVER_HOST: ${{ secrets.SERVER_HOST }}
-          SERVER_USER: ${{ secrets.SERVER_USER }}
-          SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
-          SERVER_APK_DIR: ${{ secrets.SERVER_APK_DIR }}
+          APK_UPLOAD_KEY: ${{ secrets.APK_UPLOAD_KEY }}
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
         run: |
-          if [ -z "$SERVER_SSH_KEY" ] || [ -z "$SERVER_HOST" ] || [ -z "$SERVER_USER" ]; then
-            echo "SERVER_* secrets not set — skipping in-app APK publish."
+          if [ -z "$APK_UPLOAD_KEY" ]; then
+            echo "APK_UPLOAD_KEY not set — skipping in-app APK upload."
             exit 0
           fi
-          dir="${SERVER_APK_DIR:-/opt/pilotask/backend/storage/app/android}"
-          mkdir -p ~/.ssh
-          printf '%s' "$SERVER_SSH_KEY" > ~/.ssh/id_deploy
-          chmod 600 ~/.ssh/id_deploy
-          ssh-keyscan -H "$SERVER_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
-          echo "1.0.${{ github.run_number }}" > version.txt
-          ssh -i ~/.ssh/id_deploy -o StrictHostKeyChecking=no "$SERVER_USER@$SERVER_HOST" "mkdir -p '$dir'"
-          scp -i ~/.ssh/id_deploy -o StrictHostKeyChecking=no "$APK_PATH" "$SERVER_USER@$SERVER_HOST:$dir/pilotask.apk"
-          scp -i ~/.ssh/id_deploy -o StrictHostKeyChecking=no version.txt "$SERVER_USER@$SERVER_HOST:$dir/version.txt"
-          echo "APK published to $SERVER_USER@$SERVER_HOST:$dir"
+          api="${VITE_API_URL:-https://pilotask.bessapromotion.net/api}"
+          code="${{ github.run_number }}"
+          name="1.0.${{ github.run_number }}"
+          echo "Uploading $name (versionCode $code) to $api/app/releases"
+          http=$(curl -sS -o /tmp/upload.out -w '%{http_code}' \
+            -X POST "$api/app/releases" \
+            -H "X-Api-Key: $APK_UPLOAD_KEY" \
+            -H "Accept: application/json" \
+            -F "platform=android" \
+            -F "version_name=$name" \
+            -F "version_code=$code" \
+            --form-string "notes=$(git log -1 --pretty=%s)" \
+            -F "file=@$APK_PATH;type=application/vnd.android.package-archive")
+          echo "HTTP $http"; cat /tmp/upload.out; echo
+          if [ "$http" != "201" ]; then echo "::error::APK upload failed ($http)."; exit 1; fi
+          echo "APK uploaded for in-app download."
 
       - name: Release notes
         env:

@@ -155,14 +155,35 @@ export interface Task {
   can?: { update: boolean; move: boolean; delete: boolean; comment: boolean; observers?: boolean };
 }
 
-/** The Android build served to signed-in people (see AppDownloadController). */
-export interface ApkInfo {
+/** The current app build served to signed-in people (see AppReleaseController). */
+export interface AppRelease {
   available: boolean;
+  platform?: "android";
+  version_name?: string;
+  version_code?: number;
   size?: number;
-  version?: string | null;
-  updated_at?: string;
+  notes?: string | null;
+  created_at?: string;
   /** Short-lived signed download URL (present only when available). */
-  url?: string;
+  download_url?: string;
+}
+
+export type ApiAbility = "read" | "write" | "apk_upload";
+
+/** A super-admin-issued machine credential. */
+export interface ApiKey {
+  id: number;
+  name: string;
+  prefix: string;
+  abilities: ApiAbility[];
+  created_by?: User;
+  last_used_at: string | null;
+  expires_at: string | null;
+  revoked_at: string | null;
+  active: boolean;
+  created_at: string;
+  /** Plaintext token, present only in the create response. */
+  token?: string;
 }
 
 export type ObserverRequestStatus = "pending" | "approved" | "rejected";

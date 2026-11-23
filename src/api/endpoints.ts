@@ -9,7 +9,9 @@ import type {
   Comment,
   Entity,
   Label,
-  ApkInfo,
+  AppRelease,
+  ApiKey,
+  ApiAbility,
   Meta,
   ObserverRequest,
   Paginated,
@@ -237,8 +239,15 @@ export const analyticsApi = {
 };
 
 export const appApi = {
-  /** Android build info + a fresh signed download link, for signed-in people. */
-  android: (o: CallOptions = {}) => data(http.get<ApkInfo>("/app/android", o)),
+  /** Current build info + a fresh signed download link, for signed-in people. */
+  latest: (platform: "android" = "android", o: CallOptions = {}) =>
+    data(http.get<AppRelease>("/app/releases/latest", { params: { platform }, ...o })),
+};
+
+export const apiKeysApi = {
+  list: (o: CallOptions = {}) => data(http.get<ApiKey[]>("/api-keys", o)),
+  create: (payload: { name: string; abilities: ApiAbility[]; expires_at?: string | null }) => data(http.post<ApiKey>("/api-keys", payload)),
+  revoke: (id: number) => http.delete(`/api-keys/${id}`),
 };
 
 export const observerRequestsApi = {

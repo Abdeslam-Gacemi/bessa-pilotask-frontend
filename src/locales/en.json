@@ -781,5 +781,48 @@
     "showAll": "Show everything",
     "hidden": "No article hidden | 1 article for other roles hidden | {n} articles for other roles hidden",
     "projectManager": "project manager"
+  },
+  "apiKeys": {
+    "title": "API keys",
+    "intro": "Keys for scripts and the CI build job.",
+    "new": "New key",
+    "create": "Create key",
+    "name": "Name",
+    "namePlaceholder": "e.g. CI build",
+    "abilitiesLabel": "Privileges",
+    "abilities": {
+      "read": "Read",
+      "write": "Write",
+      "apk_upload": "APK upload"
+    },
+    "abilityHints": {
+      "read": "Call read-only endpoints.",
+      "write": "Create, update and delete.",
+      "apk_upload": "Upload a new app build."
+    },
+    "expiry": "Expiry",
+    "expiryHint": "Leave empty for a key that never expires.",
+    "createdTitle": "Key created",
+    "tokenOnce": "Copy this token now — it is shown only once and cannot be recovered.",
+    "copy": "Copy",
+    "copied": "Token copied",
+    "copiedShort": "Copied",
+    "revoke": "Revoke",
+    "revokeTitle": "Revoke this key?",
+    "revokeMessage": "\"{name}\" will stop working at once. This cannot be undone.",
+    "revoked": "Key revoked",
+    "lastUsed": "used {when}",
+    "neverUsed": "never used",
+    "expires": "expires {when}",
+    "stateActive": "Active",
+    "stateRevoked": "Revoked",
+    "stateExpired": "Expired",
+    "emptyTitle": "No API keys yet",
+    "emptyHint": "Create a key to let CI upload builds or scripts call the API."
+  },
+  "appUpdate": {
+    "title": "Update available",
+    "message": "Version {version} is ready. Update now?",
+    "update": "Update"
   }
 }

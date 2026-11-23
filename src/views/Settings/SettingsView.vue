@@ -11,6 +11,7 @@ import {
   ComputerIcon,
   EyeIcon,
   HelpCircleIcon,
+  KeyframeIcon,
   Logout01Icon,
   Moon02Icon,
   Notification03Icon,
@@ -71,6 +72,7 @@ const sections = computed<{ key: string; icon: Icon; title: string; tone: string
   ...(session.isSuperAdmin
     ? [
         { key: "users", icon: UserMultipleIcon, title: t("nav.users"), tone: "bg-primary-soft text-primary", external: "/users" },
+        { key: "apikeys", icon: KeyframeIcon, title: t("apiKeys.title"), tone: "bg-surface-3 text-fg" },
         { key: "access", icon: EyeIcon, title: t("settings.access"), tone: "bg-danger-soft text-danger" },
         { key: "entities", icon: Building03Icon, title: t("nav.entities"), tone: "bg-warning-soft text-warning", external: "/entities" },
         { key: "activity", icon: Activity01Icon, title: t("nav.activity"), tone: "bg-surface-3 text-fg", external: "/activity" },

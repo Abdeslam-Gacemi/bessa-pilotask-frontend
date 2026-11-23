@@ -6,9 +6,10 @@ import SecuritySettings from "@/components/Settings/SecuritySettings.vue";
 import ReportSettings from "@/components/Settings/ReportSettings.vue";
 import AccessSettings from "@/components/Settings/AccessSettings.vue";
 import MentionSettings from "@/components/Settings/MentionSettings.vue";
+import ApiKeySettings from "@/components/Settings/ApiKeySettings.vue";
 import PtBackButton from "@/components/ui/PtBackButton.vue";
 
-export type SettingsSection = "notifications" | "security" | "reports" | "access" | "mentions";
+export type SettingsSection = "notifications" | "security" | "reports" | "access" | "mentions" | "apikeys";
 
 /** One settings section on its own screen, with a back button to the hub. */
 const props = defineProps<{ section: SettingsSection }>();
@@ -20,6 +21,7 @@ const VIEWS = {
   reports: ReportSettings,
   access: AccessSettings,
   mentions: MentionSettings,
+  apikeys: ApiKeySettings,
 };
 // Section keys don't all match a plain string ("settings.reports" holds the frequency labels).
 const TITLES: Record<SettingsSection, string> = {
@@ -28,6 +30,7 @@ const TITLES: Record<SettingsSection, string> = {
   reports: "settings.reportsTitle",
   access: "settings.access",
   mentions: "settings.mentionsTitle",
+  apikeys: "apiKeys.title",
 };
 const title = computed(() => t(TITLES[props.section]));
 </script>
