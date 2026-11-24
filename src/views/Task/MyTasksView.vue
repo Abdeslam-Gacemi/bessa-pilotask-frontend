@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
+import { useRouter } from "vue-router";
 import { refDebounced } from "@vueuse/core";
 import { CheckListIcon, Search01Icon, ViewIcon } from "@hugeicons/core-free-icons";
 import PtButton from "@/components/ui/PtButton.vue";
 import PtEmpty from "@/components/ui/PtEmpty.vue";
-import ObserverRequestSheet from "@/components/Observer/ObserverRequestSheet.vue";
 import PtIcon from "@/components/ui/PtIcon.vue";
 import PtSegmented from "@/components/ui/PtSegmented.vue";
 import PtSkeleton from "@/components/ui/PtSkeleton.vue";
@@ -28,6 +28,7 @@ import type { Task } from "@/types/models";
 
 /** Everything assigned to me, bucketed by urgency. */
 const { t } = useI18n();
+const router = useRouter();
 const taskUi = useTaskUi();
 const errors = useApiError();
 
@@ -36,7 +37,6 @@ const taskFilters = useTaskFilters(loaded);
 const access = useAccess();
 const { sort: order, pick: pickOrder } = useTaskSort("my-tasks");
 const showOrder = ref(false);
-const observeOpen = ref(false);
 // Everything here is assigned to me: a people filter would be noise.
 const HIDE_PEOPLE = true;
 const tasks = taskFilters.filtered;
@@ -111,7 +111,7 @@ taskUi.onChanged(() => void load());
         <h1 class="text-3xl font-bold">{{ $t("nav.myTasks") }}</h1>
         <p class="mt-1 text-sm text-muted">{{ $t("home.tasks", tasks.length) }}</p>
       </div>
-      <PtButton variant="secondary" size="sm" :icon="ViewIcon" @click="observeOpen = true">{{ $t("observer.ask") }}</PtButton>
+      <PtButton variant="secondary" size="sm" :icon="ViewIcon" @click="router.push('/my-observer-requests')">{{ $t("observer.ask") }}</PtButton>
       <PtSegmented
         v-model="scope"
         :options="[
@@ -153,6 +153,5 @@ taskUi.onChanged(() => void load());
       :results="tasks.length"
       @reset="taskFilters.reset"
     />
-    <ObserverRequestSheet v-model="observeOpen" />
   </div>
 </template>
