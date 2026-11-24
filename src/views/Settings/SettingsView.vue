@@ -61,7 +61,10 @@ const LANGUAGES: { value: Locale; label: string }[] = [
 const sections = computed<{ key: string; icon: Icon; title: string; tone: string; external?: string }[]>(() => [
   { key: "help", icon: HelpCircleIcon, title: t("help.title"), tone: "bg-primary-soft text-primary", external: "/help" },
   { key: "notifications", icon: Notification03Icon, title: t("settings.notifications"), tone: "bg-warning-soft text-warning" },
-  { key: "mentions", icon: AtIcon, title: t("settings.mentionsTitle"), tone: "bg-primary-soft text-primary" },
+  // Choosing who may @mention you is a managers'/super admins' setting only.
+  ...(session.canManage
+    ? [{ key: "mentions", icon: AtIcon, title: t("settings.mentionsTitle"), tone: "bg-primary-soft text-primary" }]
+    : []),
   { key: "security", icon: SquareLock02Icon, title: t("settings.security"), tone: "bg-danger-soft text-danger" },
   ...(session.seesWorkspace
     ? [{ key: "reports", icon: ChartLineData01Icon, title: t("settings.reportsTitle"), tone: "bg-[#EFE8FD] text-[#6C4FD1] dark:bg-[#2A2340] dark:text-[#B9A6FF]" }]

@@ -66,6 +66,8 @@ router.beforeEach(async (to) => {
   if (to.meta.manager && !session.canManage) return { name: "home" };
   if (to.meta.workspace && !session.hasOverview) return { name: "home" };
   if (to.meta.decider && !session.canCreate) return { name: "home" };
+  // The mentions setting (who may @mention you) is for managers/super admins only.
+  if (to.name === "settings-section" && to.params.section === "mentions" && !session.canManage) return { name: "settings" };
   return true;
 });
 
