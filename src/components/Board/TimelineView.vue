@@ -5,6 +5,7 @@ import PtIconButton from "@/components/ui/PtIconButton.vue";
 import PtSegmented from "@/components/ui/PtSegmented.vue";
 import PtAvatarStack from "@/components/ui/PtAvatarStack.vue";
 import { dayjs } from "@/plugins/dayjs";
+import { startOfWeek } from "@/domain/calendar";
 import { timelineBars } from "@/domain/timeline";
 import { taskAccent } from "@/domain/tasks";
 import { usePreferencesStore } from "@/stores/preferences";
@@ -16,7 +17,7 @@ defineEmits<{ open: [task: Task] }>();
 
 const prefs = usePreferencesStore();
 const span = ref<"14" | "30">("14");
-const from = ref(dayjs().startOf("isoWeek"));
+const from = ref(startOfWeek(dayjs()));
 const days = computed(() => Number(span.value));
 const DAY = computed(() => (days.value === 14 ? 64 : 36));
 
@@ -40,7 +41,7 @@ function barStyle(offset: number, width: number, color: string) {
     <div class="flex flex-wrap items-center gap-2">
       <PtIconButton :icon="ArrowLeft01Icon" class="rtl:rotate-180" :label="$t('common.back')" variant="surface" @click="shift(-1)" />
       <PtIconButton :icon="ArrowRight01Icon" class="rtl:rotate-180" :label="$t('common.more')" variant="surface" @click="shift(1)" />
-      <button type="button" class="pt-chip" @click="from = dayjs().startOf('isoWeek')">{{ $t("calendar.today") }}</button>
+      <button type="button" class="pt-chip" @click="from = startOfWeek(dayjs())">{{ $t("calendar.today") }}</button>
       <span class="text-sm font-bold capitalize">{{ from.format("D MMM") }} – {{ from.add(days - 1, "day").format("D MMM YYYY") }}</span>
       <PtSegmented
         v-model="span"
