@@ -28,6 +28,7 @@ import { useRequest } from "@/composables/useRequest";
 import { useTaskUi } from "@/composables/useTaskUi";
 import { isTaskBusy, whileTaskBusy } from "@/composables/useTaskBusy";
 import { dayjs } from "@/plugins/dayjs";
+import { startOfWeek, endOfWeek } from "@/domain/calendar";
 import { tableIcon } from "@/plugins/icons";
 import { useProjectsStore } from "@/stores/projects";
 import { useSessionStore } from "@/stores/session";
@@ -53,7 +54,7 @@ const greeting = computed(() => {
 });
 const firstName = computed(() => session.user?.name.split(" ")[0] ?? "");
 
-const days = computed(() => Array.from({ length: 7 }, (_, i) => dayjs().startOf("isoWeek").add(i, "day")));
+const days = computed(() => Array.from({ length: 7 }, (_, i) => startOfWeek(dayjs()).add(i, "day")));
 const weekStats = computed(() => {
   const live = week.value.filter((task) => task.status?.category !== "canceled");
   const done = live.filter((task) => task.status?.category === "done").length;
@@ -83,8 +84,8 @@ const hasTasksOn = (day: ReturnType<typeof dayjs>) =>
 async function load(): Promise<void> {
   try {
     const result = await request.run(async (signal) => {
-      const from = dayjs().startOf("isoWeek").format("YYYY-MM-DD");
-      const to = dayjs().endOf("isoWeek").format("YYYY-MM-DD");
+      const from = startOfWeek(dayjs()).format("YYYY-MM-DD");
+      const to = endOfWeek(dayjs()).format("YYYY-MM-DD");
       return Promise.all([
         tasksApi.list({ assignee_id: "me", from, to }, { signal }),
         tasksApi.list({ assignee_id: "me", dated: true, sort: "due_at", category: ["todo", "in_progress", "done"] }, { signal }),
