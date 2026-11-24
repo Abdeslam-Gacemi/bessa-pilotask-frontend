@@ -1,4 +1,5 @@
 import { Capacitor } from "@capacitor/core";
+import { safeDownloadUrl } from "@/services/downloadUrl";
 import type { Attachment } from "@/types/models";
 
 /**
@@ -11,7 +12,7 @@ export async function openAttachment(attachment: Attachment, mode: "view" | "dow
     const { Filesystem, Directory } = await import("@capacitor/filesystem");
     const { Share } = await import("@capacitor/share");
     const { path } = await Filesystem.downloadFile({
-      url: attachment.download_url,
+      url: safeDownloadUrl(attachment.download_url),
       path: `attachments/${attachment.id}/${attachment.name}`,
       directory: Directory.Cache,
       recursive: true,
@@ -22,11 +23,11 @@ export async function openAttachment(attachment: Attachment, mode: "view" | "dow
   }
 
   if (mode === "view" && attachment.opens_inline) {
-    window.open(attachment.url, "_blank", "noopener");
+    window.open(safeDownloadUrl(attachment.url), "_blank", "noopener");
     return;
   }
   const link = document.createElement("a");
-  link.href = attachment.download_url;
+  link.href = safeDownloadUrl(attachment.download_url);
   link.rel = "noopener";
   link.download = attachment.name;
   document.body.append(link);

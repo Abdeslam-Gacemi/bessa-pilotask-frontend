@@ -1,5 +1,6 @@
 import { Capacitor } from "@capacitor/core";
 import { appApi } from "@/api/endpoints";
+import { safeDownloadUrl } from "@/services/downloadUrl";
 import type { AppRelease } from "@/types/models";
 
 /**
@@ -36,7 +37,7 @@ export async function installAndroidUpdate(release: AppRelease): Promise<void> {
   const { Share } = await import("@capacitor/share");
 
   const { path } = await Filesystem.downloadFile({
-    url: release.download_url,
+    url: safeDownloadUrl(release.download_url),
     path: `updates/pilotask-${release.version_name ?? "latest"}.apk`,
     directory: Directory.Cache,
     recursive: true,

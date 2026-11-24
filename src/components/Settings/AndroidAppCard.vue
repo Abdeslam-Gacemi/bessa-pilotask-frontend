@@ -4,6 +4,7 @@ import { Download04Icon, SmartPhone01Icon } from "@hugeicons/core-free-icons";
 import PtIcon from "@/components/ui/PtIcon.vue";
 import PtButton from "@/components/ui/PtButton.vue";
 import { appApi } from "@/api/endpoints";
+import { safeDownloadUrl } from "@/services/downloadUrl";
 import type { AppRelease } from "@/types/models";
 
 /** Download the Android build (served to signed-in people only). Hidden until a build exists. */
@@ -24,7 +25,7 @@ function mb(bytes?: number): string {
 function download(): void {
   if (!release.value?.download_url) return;
   const a = document.createElement("a");
-  a.href = release.value.download_url;
+  a.href = safeDownloadUrl(release.value.download_url);
   a.rel = "noopener";
   document.body.appendChild(a);
   a.click();
