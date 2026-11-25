@@ -7,11 +7,18 @@ import type { Project } from "@/types/models";
 export const useProjectsStore = defineStore("projects", () => {
   const projects = ref<Project[]>([]);
   const loaded = ref(false);
+  // Latest-wins: overlapping loads can resolve out of order, so an older
+  // response must never overwrite a newer one (stale list until refresh).
+  let token = 0;
 
   async function load(force = false): Promise<Project[]> {
     if (loaded.value && !force) return projects.value;
-    projects.value = await projectsApi.list();
-    loaded.value = true;
+    const mine = ++token;
+    const result = await projectsApi.list();
+    if (mine === token) {
+      projects.value = result;
+      loaded.value = true;
+    }
     return projects.value;
   }
 
