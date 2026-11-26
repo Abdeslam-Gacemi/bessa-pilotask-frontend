@@ -11,6 +11,7 @@ import { projectsApi } from "@/api/endpoints";
 import { useApiError } from "@/composables/useApiError";
 import { useConfirm } from "@/composables/useConfirm";
 import { useEntitiesStore } from "@/stores/entities";
+import { useMetaStore } from "@/stores/meta";
 import { useSessionStore } from "@/stores/session";
 import type { Project, User } from "@/types/models";
 
@@ -33,6 +34,7 @@ const form = reactive({
 });
 const session = useSessionStore();
 const entityStore = useEntitiesStore();
+const meta = useMetaStore();
 // Admins name project managers (simple users who run this project's tables and tasks).
 const canNameManagers = computed(() => (props.project ? Boolean(props.project.can?.administer) : session.canManage));
 const managerChoices = computed(() => form.managers);
@@ -52,7 +54,7 @@ watch(open, (value) => {
   Object.assign(form, {
     name: p?.name ?? "",
     description: p?.description ?? "",
-    color: p?.color ?? "#53AEFF",
+    color: p?.color ?? meta.palette()[0] ?? "#53AEFF",
     icon: p?.icon ?? "folder-01",
     starts_on: p?.starts_on ?? "",
     ends_on: p?.ends_on ?? "",

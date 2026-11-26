@@ -49,8 +49,8 @@ watch(open, (value) => {
   Object.assign(form, {
     name: props.board?.name ?? "",
     description: props.board?.description ?? "",
-    color: props.board?.color ?? "#326899",
-    icon: props.board?.icon ?? null,
+    color: props.board?.color ?? meta.palette()[0] ?? "#326899",
+    icon: props.board?.icon ?? "folder-01",
     project_id: props.board?.project_id ?? props.projectId ?? null,
     users_see_team_tasks: props.board?.users_see_team_tasks ?? null,
   });

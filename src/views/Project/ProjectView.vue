@@ -55,8 +55,9 @@ function onProjectSaved(saved: Project): void {
 }
 
 function onBoardSaved(board: Board): void {
+  // Show the new table in this project's list right away; keep the sidebar/projects list in sync too.
+  if (project.value) project.value.boards = [...(project.value.boards ?? []), board];
   void store.load(true);
-  void router.push(`/boards/${board.id}`);
 }
 
 async function toggleArchive(): Promise<void> {
